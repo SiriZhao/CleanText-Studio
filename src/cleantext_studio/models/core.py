@@ -37,6 +37,9 @@ class CleanStats:
     merged_linebreaks: int = 0
     removed_emoji: int = 0
     removed_markdown: int = 0
+    removed_separators: int = 0
+    headings_detected: int = 0
+    residual_count: int = 0
     elapsed_ms: float = 0
 
 
@@ -46,3 +49,11 @@ class CleanResult:
     blocks: list[TextBlock]
     stats: CleanStats
     changes: list[str]
+    residuals: list[ResidualWarning] = field(default_factory=list)
+
+
+@dataclass(slots=True, frozen=True)
+class ResidualWarning:
+    line: int
+    kind: str
+    excerpt: str

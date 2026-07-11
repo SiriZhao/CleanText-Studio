@@ -1,6 +1,5 @@
 param([switch]$SkipChecks)
 $ErrorActionPreference = 'Stop'
-$Version = '1.0.0'
 if (-not $SkipChecks) {
   if (-not (Test-Path .venv)) { py -3.12 -m venv .venv }
   & .\.venv\Scripts\python -m pip install -e ".[dev]"
@@ -9,9 +8,12 @@ if (-not $SkipChecks) {
   $env:QT_QPA_PLATFORM='offscreen'; & .\.venv\Scripts\pytest
   $Python = '.\.venv\Scripts\python'
 } else { $Python = 'python' }
+$Version = & $Python -c "from cleantext_studio import __version__; print(__version__)"
 Remove-Item build, 'dist\CleanText Studio' -Recurse -Force -ErrorAction SilentlyContinue
-& $Python -m PyInstaller --clean cleantext-studio.spec
-New-Item dist\release -ItemType Directory -Force | Out-Null
+& $Python -m PyInstaller --clean -y cleantext-studio.spec
+$Release = 'dist\release'
+if (Test-Path $Release) { Remove-Item $Release -Recurse -Force }
+New-Item $Release -ItemType Directory -Force | Out-Null
 $Stage = "dist\portable"
 Remove-Item $Stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item $Stage -ItemType Directory | Out-Null
@@ -22,7 +24,10 @@ $Zip = "dist\release\CleanText-Studio-v$Version-Windows-x64-Portable.zip"
 Remove-Item $Zip -Force -ErrorAction SilentlyContinue
 Compress-Archive "$Stage\*" $Zip
 $Iscc = Get-Command iscc -ErrorAction SilentlyContinue
-if ($Iscc) { & $Iscc installer.iss }
+if (-not $Iscc) {
+  $LocalIscc = Join-Path $env:LOCALAPPDATA 'Programs\Inno Setup 6\ISCC.exe'
+  if (Test-Path $LocalIscc) { $Iscc = $LocalIscc }
+}
+if ($Iscc) { & $Iscc "/DAppVersion=$Version" installer.iss }
 Get-ChildItem dist\release -File | Where-Object Name -ne 'SHA256SUMS.txt' | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } | Set-Content dist\release\SHA256SUMS.txt
 Copy-Item CHANGELOG.md dist\release\release-notes.md -Force
-

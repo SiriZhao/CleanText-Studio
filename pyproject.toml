@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cleantext-studio"
-version = "1.0.0"
+dynamic = ["version"]
 description = "Local-first text cleaning and document formatting desktop app"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -19,6 +19,9 @@ cleantext-studio = "cleantext_studio.main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/cleantext_studio"]
+
+[tool.hatch.version]
+path = "src/cleantext_studio/version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

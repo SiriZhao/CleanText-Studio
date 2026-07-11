@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import tempfile
 from pathlib import Path
 
@@ -11,6 +12,10 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
 from cleantext_studio.models import DocumentTemplate
+
+HEADING_NUMBER = re.compile(
+    r"^(?:第[一二三四五六七八九十]+[章节]|[一二三四五六七八九十]+、|\d+(?:\.\d+){1,3})"
+)
 
 
 def export_txt(text: str, path: Path, encoding: str = "utf-8", newline: str = "\r\n") -> None:
@@ -39,8 +44,14 @@ def export_docx(text: str, path: Path, template: DocumentTemplate | None = None)
         is_heading = len(line) < 40 and (
             line.endswith(("：", ":"))
             or line.startswith(("一、", "二、", "三、", "第一章", "第二章"))
+            or bool(HEADING_NUMBER.match(line))
         )
-        paragraph = doc.add_paragraph(style="Heading 1" if is_heading else None)
+        is_list = line.startswith("• ")
+        paragraph = doc.add_paragraph(
+            style="Heading 1" if is_heading else "List Bullet" if is_list else None
+        )
+        if is_list:
+            line = line[2:]
         run = paragraph.add_run(line)
         _font(
             run,

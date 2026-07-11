@@ -9,6 +9,12 @@ class MergeLevel(StrEnum):
     AGGRESSIVE = "aggressive"
 
 
+class ListMode(StrEnum):
+    KEEP = "keep"
+    REMOVE_MARKERS = "remove_markers"
+    NATURAL_PARAGRAPH = "natural_paragraph"
+
+
 class CleanOptions(BaseModel):
     remove_markdown: bool = True
     remove_emoji: bool = True
@@ -16,6 +22,7 @@ class CleanOptions(BaseModel):
     merge_fragments: bool = True
     merge_level: MergeLevel = MergeLevel.STANDARD
     keep_bullets: bool = True
+    list_mode: ListMode = ListMode.KEEP
     normalize_punctuation: bool = True
     remove_template_phrases: bool = False
     keep_link_url: bool = False

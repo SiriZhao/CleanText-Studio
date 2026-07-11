@@ -1,4 +1,6 @@
-#define AppVersion "1.0.0"
+#ifndef AppVersion
+  #define AppVersion "1.0.1"
+#endif
 [Setup]
 AppId={{A8A01C8C-7B35-4F18-9C14-72CAEE75A811}
 AppName=CleanText Studio
