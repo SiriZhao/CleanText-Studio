@@ -1,0 +1,25 @@
+name: Release
+on:
+  push: {tags: ['v*']}
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: pip install -e ".[dev]"
+      - run: choco install innosetup -y
+      - run: ruff check .
+      - run: mypy src
+      - run: pytest
+        env: {QT_QPA_PLATFORM: offscreen}
+      - shell: pwsh
+        run: ./scripts/build_windows.ps1 -SkipChecks
+      - uses: actions/upload-artifact@v4
+        with: {name: windows-release, path: dist/release/*}
+      - uses: softprops/action-gh-release@v2
+        with: {files: 'dist/release/*', generate_release_notes: true}
+

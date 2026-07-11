@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cleantext-studio"
+version = "1.0.0"
+description = "Local-first text cleaning and document formatting desktop app"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+dependencies = ["PySide6>=6.8", "python-docx>=1.1", "regex>=2024.11", "emoji>=2.14", "ftfy>=6.3", "bleach>=6.2", "beautifulsoup4>=4.12", "charset-normalizer>=3.4", "platformdirs>=4.3", "pydantic>=2.10"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3", "pytest-qt>=4.4", "pytest-cov>=6", "ruff>=0.9", "mypy>=1.14", "PyInstaller>=6.11", "types-beautifulsoup4"]
+
+[project.scripts]
+cleantext-studio = "cleantext_studio.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cleantext_studio"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --cov=cleantext_studio.cleaners --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["cleantext_studio.cleaners", "cleantext_studio.models"]

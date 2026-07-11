@@ -1,0 +1,18 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip}
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: mypy src
+      - run: pytest --junitxml=test-results.xml
+        env: {QT_QPA_PLATFORM: offscreen}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: test-results, path: test-results.xml}
+
