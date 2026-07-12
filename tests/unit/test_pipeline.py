@@ -20,7 +20,7 @@ from cleantext_studio.cleaners import clean_text
             "Artificial intelligence is changing\nthe way students learn.",
             "Artificial intelligence is changing the way students learn.",
         ),
-        ("一、标题\n这是正文。", "一、标题\n这是正文。"),
+        ("一、标题\n这是正文。", "一、标题\n\n这是正文。"),
         ("1. A\n2. B", "1. A\n2. B"),
         ("```python\nprint('x')\n```", "print('x')"),
         ("| A | B |\n|---|---|", "| A | B |\n|---|---|"),

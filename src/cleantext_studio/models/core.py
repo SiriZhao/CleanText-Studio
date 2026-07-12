@@ -47,6 +47,8 @@ class CleanStats:
     removed_emoji: int = 0
     removed_markdown: int = 0
     removed_separators: int = 0
+    removed_ai_patterns: int = 0
+    removed_blank_lines: int = 0
     headings_detected: int = 0
     residual_count: int = 0
     elapsed_ms: float = 0

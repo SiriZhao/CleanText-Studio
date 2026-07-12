@@ -65,7 +65,7 @@ def test_list_modes_keep_items_separate(mode: ListMode) -> None:
 
 def test_complete_steps_are_not_merged() -> None:
     source = "第一步，选择作物。\n第二步，上传照片。\n第三步，填写描述。"
-    assert clean_text(source).text.splitlines() == source.splitlines()
+    assert clean_text(source).text == source.replace("\n", "\n\n")
 
 
 def test_code_and_table_are_protected() -> None:

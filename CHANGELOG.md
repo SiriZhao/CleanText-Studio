@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.1 - 2026-07-12
+
+### Fixed
+
+- 修复 Markdown 标题、分隔线、强调标记和列表符号残留。
+- 修复 AI 模板标签、文档边界聊天语句和教程型 URL 残留，同时保护正文内容与普通网址。
+- 修复代码块在段落格式化阶段可能被插入额外空行。
+
+### Changed
+
+- 将清洗流程拆分为 Normalize、Markdown Parser、Structure Cleaner、AI Pattern Cleaner、URL Cleaner 和 Paragraph Formatter 阶段。
+- 统一标题、普通段落、连续列表、代码及表格的空行输出，并增加 Markdown、AI 模板和空行清理统计。
+
 ## 1.2.0 - 2026-07-12
 
 ### Added

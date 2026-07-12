@@ -454,7 +454,7 @@ class MainWindow(QMainWindow):
             f"清洗完成 · 删除 {result.stats.removed_chars} 个字符 · 合并 {result.stats.merged_linebreaks} 处换行{warning}"
         )
         self.result_meta.setText(
-            f"Markdown {result.stats.removed_markdown} · 表情 {result.stats.removed_emoji} · 分隔线 {result.stats.removed_separators} · 标题 {result.stats.headings_detected} · {result.stats.elapsed_ms:.1f} ms"
+            f"本次清理：Markdown {result.stats.removed_markdown} · AI模板 {result.stats.removed_ai_patterns} · 空行 {result.stats.removed_blank_lines} · 表情 {result.stats.removed_emoji} · 标题 {result.stats.headings_detected} · {result.stats.elapsed_ms:.1f} ms"
         )
 
     def _render_preview(self, blocks: list[TextBlock]) -> None:

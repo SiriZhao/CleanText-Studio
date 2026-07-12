@@ -2,7 +2,7 @@
 
 # 净文排版 · CleanText Studio
 
-本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.0**。
+本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.1**。
 
 开发者：**SiriZhao** · 项目主页：[github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 
@@ -28,6 +28,7 @@
 - 保护代码、表格、列表和标题结构，检测清洗残留
 - 三种换行模式：删除段落间换行、仅保留大分段、保留所有段落间换行
 - 智能 Markdown 表格解析、结构化预览和真实 Word 表格导出
+- 分阶段清理 AI 文本模板标签、聊天边界语句和教程型 URL，同时保护正文网址
 - 导入 TXT、Markdown、DOCX，导出 UTF-8 TXT 和规范 DOCX
 - 跟随 Windows 系统主题，也可固定浅色或深色
 - 可选 BYOK AI：OpenAI、DeepSeek、Anthropic、OpenAI 兼容和本地兼容接口
