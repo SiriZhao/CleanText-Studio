@@ -26,9 +26,18 @@ from PySide6.QtWidgets import (
 )
 
 from cleantext_studio import __version__
+from cleantext_studio.ai_dialogs import AIDiffDialog, ProviderDialog, SendConfirmationDialog
 from cleantext_studio.cleaners import clean_text
 from cleantext_studio.exporters import export_docx, export_txt
 from cleantext_studio.importers import import_file
+from cleantext_studio.llm.base import LLMProvider
+from cleantext_studio.llm.config_store import ProviderConfigStore
+from cleantext_studio.llm.credentials import CredentialStore
+from cleantext_studio.llm.models import OptimizationMode
+from cleantext_studio.llm.registry import create_provider
+from cleantext_studio.llm.retry import with_retry
+from cleantext_studio.llm.schemas import OptimizationResponse
+from cleantext_studio.llm.sensitive import redact_sensitive
 from cleantext_studio.models import CleanOptions, CleanResult, DocumentSession, ListMode, MergeLevel
 from cleantext_studio.theme import Theme, stylesheet
 
@@ -62,11 +71,37 @@ class CleanWorker(QThread):
             self.failed.emit(str(exc))
 
 
+class AIWorker(QThread):
+    completed = Signal(object)
+    failed = Signal(str)
+
+    def __init__(self, provider: LLMProvider, text: str, mode: OptimizationMode) -> None:
+        super().__init__()
+        self.provider = provider
+        self.text = text
+        self.mode = mode
+
+    def run(self) -> None:
+        try:
+            if not self.isInterruptionRequested():
+                self.completed.emit(
+                    with_retry(
+                        lambda: self.provider.optimize_document(self.text, self.mode),
+                        self.isInterruptionRequested,
+                    )
+                )
+        except Exception as exc:
+            self.failed.emit(str(exc))
+
+
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.session = DocumentSession()
+        self.provider_store = ProviderConfigStore()
+        self.credential_store = CredentialStore()
         self.worker: CleanWorker | None = None
+        self.ai_worker: AIWorker | None = None
         self.settings_store = QSettings("CleanText Studio", "CleanText Studio")
         self.setWindowTitle("净文排版 · CleanText Studio")
         self.resize(1440, 900)
@@ -214,6 +249,10 @@ class MainWindow(QMainWindow):
             ],
         )
         self.word_button, self.copy_button, self.txt_button = result_buttons[:3]
+        self.ai_button = QPushButton("AI 智能优化")
+        self.ai_button.setToolTip("可选功能：使用你自行配置的第三方 API")
+        self.ai_button.clicked.connect(self.start_ai_optimization)
+        ov.addWidget(self.ai_button)
         self.output = QPlainTextEdit()
         self.output.setPlaceholderText("清洗后的文本将在这里显示")
         ov.addWidget(self.output)
@@ -442,9 +481,70 @@ class MainWindow(QMainWindow):
         self.theme_action.setText("浅色" if theme == Theme.DARK else "深色")
 
     def show_settings(self) -> None:
-        QMessageBox.information(
-            self, "设置", f"CleanText Studio v{__version__}\n文本只在本机处理，不收集遥测。"
+        self.configure_provider()
+
+    def configure_provider(self) -> None:
+        dialog = ProviderDialog(self)
+        if dialog.exec() != dialog.DialogCode.Accepted:
+            return
+        try:
+            config = dialog.config()
+            self.provider_store.save([config])
+            stored = self.credential_store.save(
+                config.name, dialog.api_key.text(), dialog.remember.currentIndex() == 0
+            )
+            message = (
+                "配置已保存，API Key 已写入 Windows 凭据库。"
+                if stored
+                else "配置已保存，API Key 仅保留在本次会话。"
+            )
+            QMessageBox.information(self, "AI 配置", message)
+        except Exception as exc:
+            QMessageBox.critical(self, "配置无效", str(exc))
+
+    def start_ai_optimization(self) -> None:
+        if self.ai_worker and self.ai_worker.isRunning():
+            self.ai_worker.requestInterruption()
+            self.ai_worker.provider.cancel()
+            self.ai_button.setText("正在取消…")
+            return
+        if not self.output.toPlainText():
+            QMessageBox.information(self, "AI 智能优化", "请先完成本地清洗。")
+            return
+        providers = self.provider_store.load()
+        if not providers:
+            QMessageBox.information(self, "AI 智能优化", "请先在设置中配置你自己的 API。")
+            return
+        config = providers[0]
+        key = self.credential_store.get(config.name)
+        if not key:
+            QMessageBox.warning(self, "AI 智能优化", "未找到 API Key，请重新配置。")
+            return
+        provider = create_provider(config, key)
+        redacted = redact_sensitive(self.output.toPlainText())
+        dialog = SendConfirmationDialog(
+            config, provider.estimate_request_size(redacted.text), redacted.counts, self
         )
+        if dialog.exec() != dialog.DialogCode.Accepted:
+            return
+        self.ai_button.setText("取消 AI 优化")
+        self.ai_worker = AIWorker(provider, redacted.text, dialog.selected_mode())
+        self.ai_worker.completed.connect(self._ai_completed)
+        self.ai_worker.failed.connect(self._ai_failed)
+        self.ai_worker.start()
+
+    def _ai_completed(self, response: OptimizationResponse) -> None:
+        self.ai_button.setText("AI 智能优化")
+        suggested = "\n".join(block.text for block in response.blocks)
+        metadata = response.metadata
+        risky = metadata.facts_added or metadata.facts_removed or metadata.references_changed
+        dialog = AIDiffDialog(self.output.toPlainText(), suggested, risky, self)
+        if dialog.exec() == dialog.DialogCode.Accepted:
+            self.output.setPlainText(suggested)
+
+    def _ai_failed(self, message: str) -> None:
+        self.ai_button.setText("AI 智能优化")
+        QMessageBox.critical(self, "AI 优化失败", f"{message}\n本地清洗结果未被覆盖。")
 
     def show_help(self) -> None:
         QMessageBox.information(self, "帮助", "粘贴或打开文本，选择清洗规则，然后点击开始清洗。")
@@ -454,6 +554,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.settings_store.setValue("splitter_sizes", self.splitter.sizes())
+        self.credential_store.clear_session()
         if (
             self.session.result_modified
             and QMessageBox.question(self, "退出", "结果尚未保存，确定退出？")

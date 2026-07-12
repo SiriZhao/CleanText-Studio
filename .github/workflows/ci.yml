@@ -26,7 +26,8 @@ jobs:
         shell: pwsh
         run: |
           if (!(Test-Path 'dist/CleanText Studio/_internal/PySide6/plugins/platforms/qwindows.dll')) { exit 1 }
-          if (!(Test-Path 'dist/release/CleanText-Studio-v1.0.1-Windows-x64-Portable.zip')) { exit 1 }
+          $version = python -c "from cleantext_studio import __version__; print(__version__)"
+          if (!(Test-Path "dist/release/CleanText-Studio-v$version-Windows-x64-Portable.zip")) { exit 1 }
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: test-results, path: test-results.xml}
