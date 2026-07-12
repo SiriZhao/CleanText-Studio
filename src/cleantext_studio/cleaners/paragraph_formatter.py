@@ -27,6 +27,7 @@ class ParagraphFormatter:
                 previous = active[index - 1]
                 same_compact_structure = previous.type == block.type and block.type in {
                     TextBlockType.LIST_ITEM,
+                    TextBlockType.ORDERED_LIST_ITEM,
                     TextBlockType.CODE,
                     TextBlockType.TABLE,
                 }

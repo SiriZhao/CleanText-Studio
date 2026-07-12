@@ -37,11 +37,14 @@ def parse_table(lines: list[str]) -> TableData | None:
         for cell in separator
     ]
     rows: list[list[str]] = []
-    for line in lines[2:]:
+    malformed_rows: list[int] = []
+    for row_number, line in enumerate(lines[2:], 3):
         cells = split_row(line)
+        if len(cells) != len(header):
+            malformed_rows.append(row_number)
         cells = (cells + [""] * len(header))[: len(header)]
         rows.append(cells)
-    return TableData(header, rows, alignments, "\n".join(lines))
+    return TableData(header, rows, alignments, "\n".join(lines), malformed_rows)
 
 
 def consolidate_table_blocks(blocks: list[TextBlock]) -> list[TextBlock]:

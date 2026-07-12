@@ -62,6 +62,8 @@ class DocxRenderer:
         style = heading_styles.get(block.type)
         if block.type == TextBlockType.LIST_ITEM:
             style = "List Bullet"
+        if block.type == TextBlockType.ORDERED_LIST_ITEM:
+            style = "List Number"
         if block.type == TextBlockType.QUOTE:
             style = "Quote"
         paragraph = doc.add_paragraph(style=style)

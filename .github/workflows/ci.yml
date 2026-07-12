@@ -10,8 +10,10 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: mypy src
-      - run: pytest --junitxml=test-results.xml
+      - run: pytest --junitxml=test-results.xml --cov=cleantext_studio.cleaners --cov-report=term
         env: {QT_QPA_PLATFORM: offscreen}
+      - name: Verify DOCX structure export
+        run: pytest tests/integration/test_docx_structure_export.py tests/unit/tables/test_table_docx_renderer.py
       - name: Secret pattern scan
         shell: pwsh
         run: |

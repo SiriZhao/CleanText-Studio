@@ -10,9 +10,11 @@ import ftfy
 from bs4 import BeautifulSoup
 
 from cleantext_studio.models import (
+    CleaningChange,
     CleanOptions,
     CleanResult,
     CleanStats,
+    LinkMode,
     MergeLevel,
     TextBlock,
     TextBlockType,
@@ -22,7 +24,7 @@ from .ai_pattern_cleaner import AIPatternCleaner
 from .layout import ParagraphLayoutEngine
 from .markdown_cleaner import MarkdownCleaner
 from .paragraph_formatter import ParagraphFormatter
-from .residuals import detect_residuals
+from .residuals import detect_block_residuals
 from .tables import consolidate_table_blocks
 from .url_cleaner import URLCleaner
 
@@ -69,9 +71,12 @@ def _should_merge(previous: TextBlock, current: TextBlock, level: MergeLevel) ->
         TextBlockType.CODE,
         TextBlockType.TABLE,
         TextBlockType.LIST_ITEM,
+        TextBlockType.ORDERED_LIST_ITEM,
         TextBlockType.QUOTE,
     }
     if previous.type in protected or current.type in protected:
+        return False
+    if "#" in previous.text or "#" in current.text:
         return False
     if previous.type.value.startswith("heading") or current.type.value.startswith("heading"):
         return False
@@ -102,7 +107,8 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
     text = _html_to_text(_normalize(text))
     markdown_cleaner = MarkdownCleaner()
     blocks: list[TextBlock] = []
-    markdown_count = emoji_count = separator_count = heading_count = 0
+    direct_changes: list[CleaningChange] = []
+    markdown_count = emoji_count = separator_count = heading_count = links_processed = 0
     in_code = False
     for position, raw in enumerate(text.split("\n")):
         line = raw.rstrip()
@@ -111,24 +117,43 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             markdown_count += len(line.strip())
             continue
         if in_code:
-            blocks.append(TextBlock(TextBlockType.CODE, raw, line, position))
+            blocks.append(
+                TextBlock(
+                    TextBlockType.CODE, raw, line, position, protected=True,
+                    block_id=f"b{position}", source_start=position, source_end=position,
+                )
+            )
             continue
         if TABLE.match(line):
-            blocks.append(TextBlock(TextBlockType.TABLE, raw, line, position))
+            blocks.append(
+                TextBlock(
+                    TextBlockType.TABLE, raw, line, position, protected=True,
+                    block_id=f"b{position}", source_start=position, source_end=position,
+                )
+            )
             continue
         if markdown_cleaner.is_separator(line):
             separator_count += 1
             markdown_count += len(line.strip())
+            direct_changes.append(
+                CleaningChange(
+                    "horizontal_rule", "remove", raw, "", (position, position),
+                    f"b{position}", 1, "删除独立 Markdown 分隔线",
+                )
+            )
             continue
         markdown_level: int | None = None
         parsed_markdown = None
         if options.remove_markdown:
             parsed_markdown = markdown_cleaner.clean(
-                line, keep_url=options.keep_link_url, list_mode=options.list_mode
+                line,
+                link_mode=LinkMode.TEXT_AND_URL if options.keep_link_url else options.link_mode,
+                list_mode=options.list_mode,
             )
             line = parsed_markdown.text
             markdown_level = parsed_markdown.heading_level
             markdown_count += parsed_markdown.removed
+            links_processed += parsed_markdown.links_processed
         quote_level = 0
         quote = re.match(r"^\s*(>+)\s*", line)
         if quote:
@@ -153,21 +178,51 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             line = re.sub(r"(?<=[\u4e00-\u9fff]),(?=[\u4e00-\u9fff])", "，", line)
         if not line:
             block_type = TextBlockType.BLANK
-        elif markdown_level or NUMBERED.match(line):
-            block_type = _heading_type(markdown_level, line)
-            heading_count += 1
         elif quote_level:
             block_type = TextBlockType.QUOTE
         elif is_list:
-            block_type = TextBlockType.LIST_ITEM
+            block_type = (
+                TextBlockType.ORDERED_LIST_ITEM
+                if parsed_markdown and parsed_markdown.ordered_index is not None
+                else TextBlockType.LIST_ITEM
+            )
+        elif markdown_level or NUMBERED.match(line):
+            block_type = _heading_type(markdown_level, line)
+            heading_count += 1
         else:
             block_type = TextBlockType.PARAGRAPH
         blocks.append(
-            TextBlock(block_type, raw, line, position, markdown_level, list_level, raw != line)
+            TextBlock(
+                block_type, raw, line, position, markdown_level, list_level, raw != line,
+                block_id=f"b{position}", source_start=position, source_end=position,
+                protected=block_type in {TextBlockType.CODE, TextBlockType.TABLE},
+                list_marker=parsed_markdown.list_marker if parsed_markdown else None,
+                ordered_index=parsed_markdown.ordered_index if parsed_markdown else None,
+            )
         )
+        if blocks[-1].modified:
+            if markdown_level:
+                blocks[-1].reasons.append("markdown_heading")
+            elif parsed_markdown and parsed_markdown.removed:
+                blocks[-1].reasons.append("markdown_marker")
+            elif raw.rstrip() != line:
+                blocks[-1].reasons.append("whitespace_normalization")
     blocks = consolidate_table_blocks(blocks)
-    ai_pattern_count = AIPatternCleaner().clean(blocks)
-    ai_pattern_count += URLCleaner().clean(blocks)
+    pending_blank = 0
+    previous_nonblank: TextBlock | None = None
+    for block in blocks:
+        if block.type == TextBlockType.BLANK:
+            pending_blank += 1
+            continue
+        block.original_blank_lines_before = pending_blank
+        if previous_nonblank is not None:
+            previous_nonblank.original_blank_lines_after = pending_blank
+        pending_blank = 0
+        previous_nonblank = block
+    ai_pattern_count = (
+        AIPatternCleaner().clean(blocks) if options.clean_instructional_labels else 0
+    )
+    ai_pattern_count += URLCleaner().clean(blocks, options.independent_url_mode)
     merged = 0
     if options.merge_fragments:
         compact: list[TextBlock] = []
@@ -186,7 +241,23 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         layout = ParagraphLayoutEngine().render(blocks, options.paragraph_break_mode)
         result_text = layout.text
         merged += layout.removed_breaks
-    residuals = detect_residuals(result_text)
+    residuals = detect_block_residuals(blocks, result_text)
+    table_count = sum(block.table is not None for block in blocks)
+    list_count = sum("list_item" in block.type.value for block in blocks)
+    change_records = direct_changes + [
+        CleaningChange(
+            rule_id=block.reasons[-1] if block.reasons else "block_cleanup",
+            change_type="remove" if not block.text else "replace",
+            original_text=block.original_text[:120],
+            cleaned_text=block.text[:120],
+            source_range=(block.source_start, block.source_end),
+            block_id=block.block_id,
+            count=1,
+            reason="、".join(block.reasons) or "格式规范化",
+        )
+        for block in blocks
+        if block.modified and block.original_text != block.text
+    ]
     stats = CleanStats(
         original_chars=len(original),
         result_chars=len(result_text),
@@ -200,6 +271,10 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         headings_detected=heading_count,
         residual_count=len(residuals),
         elapsed_ms=(time.perf_counter() - started) * 1000,
+        tables_detected=table_count,
+        tables_preserved=table_count,
+        list_items_detected=list_count,
+        links_processed=links_processed,
     )
     changes = [
         f"删除 Markdown 标记 {markdown_count} 个",
@@ -210,4 +285,4 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         f"合并换行 {merged} 处",
         f"识别标题 {heading_count} 个",
     ]
-    return CleanResult(result_text, blocks, stats, changes, residuals)
+    return CleanResult(result_text, blocks, stats, changes, residuals, change_records)

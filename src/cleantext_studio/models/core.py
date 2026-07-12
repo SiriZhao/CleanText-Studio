@@ -15,6 +15,9 @@ class TextBlockType(StrEnum):
     CODE = "code"
     TABLE = "table"
     BLANK = "blank"
+    ORDERED_LIST_ITEM = "ordered_list_item"
+    HORIZONTAL_RULE = "horizontal_rule"
+    RAW = "raw"
 
 
 @dataclass(slots=True)
@@ -23,6 +26,16 @@ class TableData:
     rows: list[list[str]]
     alignments: list[str]
     source: str
+    malformed_rows: list[int] = field(default_factory=list)
+    caption: str | None = None
+
+    @property
+    def column_count(self) -> int:
+        return len(self.headers)
+
+    @property
+    def source_markdown(self) -> str:
+        return self.source
 
 
 @dataclass(slots=True)
@@ -36,6 +49,24 @@ class TextBlock:
     modified: bool = False
     reasons: list[str] = field(default_factory=list)
     table: TableData | None = None
+    block_id: str = ""
+    source_start: int = 0
+    source_end: int = 0
+    list_marker: str | None = None
+    ordered_index: int | None = None
+    protected: bool = False
+    original_blank_lines_before: int = 0
+    original_blank_lines_after: int = 0
+    warnings: list[str] = field(default_factory=list)
+    metadata: dict[str, object] = field(default_factory=dict)
+
+    @property
+    def cleaned_text(self) -> str:
+        return self.text
+
+    @cleaned_text.setter
+    def cleaned_text(self, value: str) -> None:
+        self.text = value
 
 
 @dataclass(slots=True)
@@ -52,6 +83,22 @@ class CleanStats:
     headings_detected: int = 0
     residual_count: int = 0
     elapsed_ms: float = 0
+    tables_detected: int = 0
+    tables_preserved: int = 0
+    list_items_detected: int = 0
+    links_processed: int = 0
+
+
+@dataclass(slots=True, frozen=True)
+class CleaningChange:
+    rule_id: str
+    change_type: str
+    original_text: str
+    cleaned_text: str
+    source_range: tuple[int, int]
+    block_id: str
+    count: int
+    reason: str
 
 
 @dataclass(slots=True)
@@ -61,6 +108,7 @@ class CleanResult:
     stats: CleanStats
     changes: list[str]
     residuals: list[ResidualWarning] = field(default_factory=list)
+    change_records: list[CleaningChange] = field(default_factory=list)
 
 
 @dataclass(slots=True, frozen=True)
@@ -68,3 +116,19 @@ class ResidualWarning:
     line: int
     kind: str
     excerpt: str
+    column: int = 1
+    severity: str = "warning"
+    suggestion: str = "再次清理或检查该位置"
+    block_id: str = ""
+
+    @property
+    def warning_type(self) -> str:
+        return self.kind
+
+    @property
+    def line_number(self) -> int:
+        return self.line
+
+    @property
+    def snippet(self) -> str:
+        return self.excerpt

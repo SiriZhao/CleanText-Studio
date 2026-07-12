@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (
 from cleantext_studio.about_dialog import AboutDialog
 from cleantext_studio.ai_dialogs import AIDiffDialog, ProviderDialog, SendConfirmationDialog
 from cleantext_studio.cleaners import clean_text
-from cleantext_studio.exporters import export_docx, export_txt
+from cleantext_studio.exporters import export_docx_blocks, export_txt
 from cleantext_studio.font_manager import FontManager
 from cleantext_studio.importers import import_file
 from cleantext_studio.llm.base import LLMProvider
@@ -50,6 +50,8 @@ from cleantext_studio.models import (
     CleanOptions,
     CleanResult,
     DocumentSession,
+    IndependentURLMode,
+    LinkMode,
     ListMode,
     MergeLevel,
     ParagraphBreakMode,
@@ -239,6 +241,12 @@ class MainWindow(QMainWindow):
         self.remove_markdown.setChecked(True)
         self.remove_emoji = QCheckBox("删除表情和装饰符号")
         self.remove_emoji.setChecked(True)
+        self.clean_instructional = QCheckBox("清理碎片化操作标签\n清理独立的填写、点击、等待等短标签")
+        self.clean_instructional.setChecked(False)
+        self.link_mode = QComboBox()
+        self.link_mode.addItems(["仅保留显示文字", "保留显示文字和 URL", "保持 Markdown 原样"])
+        self.url_mode = QComboBox()
+        self.url_mode.addItems(["保留独立 URL", "合并到上一段", "删除教程型独立 URL"])
         self.paragraph_mode = QComboBox()
         self.paragraph_mode.addItems(
             ["删除段落间换行", "仅保留大分段之间的换行", "保留所有段落间换行"]
@@ -252,6 +260,11 @@ class MainWindow(QMainWindow):
             QLabel("基础格式"),
             self.remove_markdown,
             self.remove_emoji,
+            self.clean_instructional,
+            QLabel("链接处理"),
+            self.link_mode,
+            QLabel("独立 URL 处理"),
+            self.url_mode,
             QLabel("段落与换行"),
             self.paragraph_mode,
             QLabel("标题与列表"),
@@ -315,6 +328,10 @@ class MainWindow(QMainWindow):
         self.result_notice.setObjectName("muted")
         self.result_notice.setWordWrap(True)
         ov.addWidget(self.result_notice)
+        self.residual_button = QPushButton("查看残留")
+        self.residual_button.clicked.connect(self.show_residuals)
+        self.residual_button.hide()
+        ov.addWidget(self.residual_button)
         self.open_folder_button = QPushButton("打开文件夹")
         self.open_folder_button.hide()
         ov.addWidget(self.open_folder_button)
@@ -337,10 +354,12 @@ class MainWindow(QMainWindow):
         self.output.textChanged.connect(self._result_changed)
         self.result_mode.currentIndexChanged.connect(self.result_stack.setCurrentIndex)
         self.preset.currentTextChanged.connect(self._preset_changed)
-        for control in (self.remove_markdown, self.remove_emoji):
+        for control in (self.remove_markdown, self.remove_emoji, self.clean_instructional):
             control.toggled.connect(self._customized)
         self.paragraph_mode.currentTextChanged.connect(self._customized)
         self.list_mode.currentTextChanged.connect(self._customized)
+        self.link_mode.currentTextChanged.connect(self._customized)
+        self.url_mode.currentTextChanged.connect(self._customized)
         self._set_result_actions(False)
 
     def _shortcuts(self) -> None:
@@ -366,12 +385,21 @@ class MainWindow(QMainWindow):
             1: ParagraphBreakMode.SMART_SECTIONS,
             2: ParagraphBreakMode.PRESERVE_ALL,
         }
+        link_modes = {0: LinkMode.TEXT_ONLY, 1: LinkMode.TEXT_AND_URL, 2: LinkMode.KEEP_MARKDOWN}
+        url_modes = {
+            0: IndependentURLMode.PRESERVE,
+            1: IndependentURLMode.MERGE_PREVIOUS,
+            2: IndependentURLMode.DELETE_TUTORIAL,
+        }
         return CleanOptions(
             remove_markdown=self.remove_markdown.isChecked(),
             remove_emoji=self.remove_emoji.isChecked(),
             merge_level=MergeLevel.STANDARD,
             paragraph_break_mode=paragraph_modes[self.paragraph_mode.currentIndex()],
             list_mode=modes[self.list_mode.currentIndex()],
+            clean_instructional_labels=self.clean_instructional.isChecked(),
+            link_mode=link_modes[self.link_mode.currentIndex()],
+            independent_url_mode=url_modes[self.url_mode.currentIndex()],
         )
 
     def _source_changed(self) -> None:
@@ -412,6 +440,7 @@ class MainWindow(QMainWindow):
             return
         self.remove_markdown.setChecked(name != "仅修复换行")
         self.remove_emoji.setChecked(name not in {"仅清除 Markdown", "仅修复换行"})
+        self.clean_instructional.setChecked(name == "深度清洗")
         self.paragraph_mode.setCurrentIndex(
             2 if name == "轻度清洗" else 0 if name == "深度清洗" else 1
         )
@@ -426,7 +455,8 @@ class MainWindow(QMainWindow):
         self.session.processing_state = "processing"
         self.clean_button.setText("取消清洗")
         self.clean_button.setEnabled(True)
-        self.worker = CleanWorker(self.input.toPlainText(), self._options())
+        self.session.cleaning_options = self._options()
+        self.worker = CleanWorker(self.input.toPlainText(), self.session.cleaning_options)
         self.worker.completed.connect(self._cleaned)
         self.worker.failed.connect(self._failed)
         self.worker.start()
@@ -450,12 +480,22 @@ class MainWindow(QMainWindow):
         self.clean_button.setEnabled(True)
         self._set_result_actions(bool(result.text))
         warning = f" · 检测到 {len(result.residuals)} 项残留" if result.residuals else ""
+        self.residual_button.setVisible(bool(result.residuals))
         self.result_notice.setText(
             f"清洗完成 · 删除 {result.stats.removed_chars} 个字符 · 合并 {result.stats.merged_linebreaks} 处换行{warning}"
         )
         self.result_meta.setText(
             f"本次清理：Markdown {result.stats.removed_markdown} · AI模板 {result.stats.removed_ai_patterns} · 空行 {result.stats.removed_blank_lines} · 表情 {result.stats.removed_emoji} · 标题 {result.stats.headings_detected} · {result.stats.elapsed_ms:.1f} ms"
         )
+
+    def show_residuals(self) -> None:
+        if not self.session.residual_warnings:
+            return
+        details = "\n".join(
+            f"第 {item.line_number} 行 · {item.warning_type} · {item.snippet}"
+            for item in self.session.residual_warnings[:50]
+        )
+        QMessageBox.warning(self, "可能的格式残留", details)
 
     def _render_preview(self, blocks: list[TextBlock]) -> None:
         while self.preview_layout.count() > 1:
@@ -550,21 +590,22 @@ class MainWindow(QMainWindow):
     def save_word(self) -> None:
         if not self.output.toPlainText():
             return
-        parsed = clean_text(self.output.toPlainText())
-        detected = []
-        if any(b.type.value.startswith("heading") for b in parsed.blocks):
-            detected.append("标题")
-        if any(b.table for b in parsed.blocks):
-            detected.append("表格")
-        if any(b.type.value == "list_item" for b in parsed.blocks):
-            detected.append("列表")
-        if detected:
+        if self.session.result_modified:
+            export_result = clean_text(self.output.toPlainText(), self.session.cleaning_options)
+            export_blocks = export_result.blocks
+            residuals = export_result.residuals
+        else:
+            export_blocks = self.session.result_blocks
+            residuals = self.session.residual_warnings
+        counts = self._word_structure_counts(export_blocks)
+        if any(counts.values()) or residuals:
             box = QMessageBox(self)
-            box.setWindowTitle("检测到结构化内容")
+            box.setWindowTitle("即将导出 Word")
             box.setText(
-                "检测到：\n"
-                + "\n".join(f"• {item}" for item in detected)
-                + "\n\n推荐使用 Word 导出获得最佳效果。"
+                "已识别：\n"
+                + "\n".join(f"✓ {count} 个{name}" for name, count in counts.items() if count)
+                + (f"\n\n⚠ 仍有 {len(residuals)} 处可能残留" if residuals else "")
+                + "\n\n推荐导出 Word，可完整保留标题、列表和表格结构。"
             )
             continue_button = box.addButton("继续导出 Word", QMessageBox.ButtonRole.AcceptRole)
             box.addButton("取消", QMessageBox.ButtonRole.RejectRole)
@@ -576,7 +617,7 @@ class MainWindow(QMainWindow):
         )
         if name:
             try:
-                export_docx(self.output.toPlainText(), Path(name))
+                export_docx_blocks(export_blocks, Path(name))
                 self.result_notice.setText(
                     "导出成功 · 已保留标题结构、表格、列表和中文排版\n" + name
                 )
@@ -588,6 +629,16 @@ class MainWindow(QMainWindow):
                 )
             except Exception as exc:
                 QMessageBox.critical(self, "导出失败", str(exc))
+
+    @staticmethod
+    def _word_structure_counts(blocks: list[TextBlock]) -> dict[str, int]:
+        return {
+            "标题": sum(b.type.value.startswith("heading") for b in blocks),
+            "列表": sum("list_item" in b.type.value for b in blocks),
+            "表格": sum(b.table is not None for b in blocks),
+            "引用": sum(b.type.value == "quote" for b in blocks),
+            "代码块": sum(b.type.value == "code" for b in blocks),
+        }
 
     def set_theme_preference(self, theme: Theme) -> None:
         self.theme_preference = theme

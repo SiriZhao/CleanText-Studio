@@ -8,6 +8,7 @@ STRUCTURAL = {
     TextBlockType.HEADING_2,
     TextBlockType.HEADING_3,
     TextBlockType.LIST_ITEM,
+    TextBlockType.ORDERED_LIST_ITEM,
     TextBlockType.QUOTE,
     TextBlockType.CODE,
     TextBlockType.TABLE,

@@ -21,6 +21,18 @@ class ParagraphBreakMode(StrEnum):
     PRESERVE_ALL = "preserve_all"
 
 
+class LinkMode(StrEnum):
+    TEXT_ONLY = "text_only"
+    TEXT_AND_URL = "text_and_url"
+    KEEP_MARKDOWN = "keep_markdown"
+
+
+class IndependentURLMode(StrEnum):
+    PRESERVE = "preserve"
+    MERGE_PREVIOUS = "merge_previous"
+    DELETE_TUTORIAL = "delete_tutorial"
+
+
 class CleanOptions(BaseModel):
     remove_markdown: bool = True
     remove_emoji: bool = True
@@ -32,6 +44,9 @@ class CleanOptions(BaseModel):
     list_mode: ListMode = ListMode.KEEP
     normalize_punctuation: bool = True
     keep_link_url: bool = False
+    link_mode: LinkMode = LinkMode.TEXT_ONLY
+    clean_instructional_labels: bool = False
+    independent_url_mode: IndependentURLMode = IndependentURLMode.PRESERVE
 
 
 class DocumentTemplate(BaseModel):

@@ -1,5 +1,5 @@
 from cleantext_studio.cleaners import clean_text
-from cleantext_studio.models import TextBlockType
+from cleantext_studio.models import CleanOptions, IndependentURLMode, TextBlockType
 
 
 def test_ai_markdown_residue_pipeline() -> None:
@@ -30,7 +30,13 @@ https://example.com/reference
 
 感谢阅读：
 """
-    result = clean_text(source)
+    result = clean_text(
+        source,
+        CleanOptions(
+            clean_instructional_labels=True,
+            independent_url_mode=IndependentURLMode.DELETE_TUTORIAL,
+        ),
+    )
     assert "#" not in result.text
     assert "---" not in result.text
     assert "***" not in result.text
@@ -51,7 +57,10 @@ def test_markdown_heading_and_list_structure_is_preserved() -> None:
 
 
 def test_chat_prefix_keeps_real_body_and_middle_phrase() -> None:
-    result = clean_text("当然：人工智能正在发展。\n\n本文说明，希望：是项目名称的一部分。")
+    result = clean_text(
+        "当然：人工智能正在发展。\n\n本文说明，希望：是项目名称的一部分。",
+        CleanOptions(clean_instructional_labels=True),
+    )
     assert result.text.startswith("人工智能正在发展。")
     assert "本文说明，希望:是项目名称的一部分。" in result.text
 
@@ -88,3 +97,18 @@ def test_fieldgpt_business_plan_keeps_structure() -> None:
     assert any(block.type == TextBlockType.QUOTE for block in result.blocks)
     assert sum(block.type == TextBlockType.LIST_ITEM for block in result.blocks) == 2
     assert "#" not in result.text
+
+
+def test_tutorial_url_is_preserved_by_default() -> None:
+    result = clean_text(
+        "打开：\n\nhttps://mp.weixin.qq.com",
+        CleanOptions(clean_instructional_labels=True),
+    )
+    assert "打开" not in result.text
+    assert "https://mp.weixin.qq.com" in result.text
+
+
+def test_reference_definition_and_footnote_are_cleaned() -> None:
+    result = clean_text("正文（[来源名称][1]）\n\n[1]: https://example.com \"标题\"")
+    assert "来源名称" in result.text
+    assert "[1]:" not in result.text

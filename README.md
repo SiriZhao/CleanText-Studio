@@ -2,7 +2,7 @@
 
 # 净文排版 · CleanText Studio
 
-本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.1**。
+本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.2**。
 
 开发者：**SiriZhao** · 项目主页：[github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 
@@ -14,13 +14,21 @@
 
 ## 界面
 
-| 主界面 | Markdown 表格预览 |
+| 浅色主界面 | 深色主界面 |
 |---|---|
-| ![主界面](assets/screenshots/main-ui.png) | ![表格预览](assets/screenshots/table-preview.png) |
+| ![浅色主界面](assets/screenshots/main-light-v1.2.2.png) | ![深色主界面](assets/screenshots/main-dark-v1.2.2.png) |
 
-| AI Provider 设置 | Word 导出引导 |
+| Markdown 表格预览 | 清洗前后对比 |
 |---|---|
-| ![Provider](assets/screenshots/ai-config.png) | ![Word 导出](assets/screenshots/word-export.png) |
+| ![表格预览](assets/screenshots/table-preview-v1.2.2.png) | ![清洗对比](assets/screenshots/cleaning-before-after-v1.2.2.png) |
+
+| 残留提示 | Word 导出摘要 |
+|---|---|
+| ![残留提示](assets/screenshots/residual-warning-v1.2.2.png) | ![Word 摘要](assets/screenshots/word-export-summary-v1.2.2.png) |
+
+| AI Provider 设置 | 关于页面 |
+|---|---|
+| ![AI 设置](assets/screenshots/ai-config-v1.2.2.png) | ![关于](assets/screenshots/about-v1.2.2.png) |
 
 ## 核心功能
 
@@ -28,9 +36,31 @@
 - 保护代码、表格、列表和标题结构，检测清洗残留
 - 三种换行模式：删除段落间换行、仅保留大分段、保留所有段落间换行
 - 智能 Markdown 表格解析、结构化预览和真实 Word 表格导出
-- 分阶段清理 AI 文本模板标签、聊天边界语句和教程型 URL，同时保护正文网址
+- 分阶段清理 Markdown、碎片化操作标签和教程结构，同时保护正文网址
+- 深度清洗可清理独立操作标签；独立 URL 默认保留，也可显式选择合并或删除教程链接
+- 块感知残留检测与 Word 导出结构摘要，结果预览和导出共享同一文档块
 - 导入 TXT、Markdown、DOCX，导出 UTF-8 TXT 和规范 DOCX
 - 跟随 Windows 系统主题，也可固定浅色或深色
+
+## v1.2.2 清洗示例
+
+清洗前：
+
+```text
+### 测试账号
+
+---
+
+**无需登录**
+```
+
+清洗后：
+
+```text
+测试账号
+
+无需登录
+```
 - 可选 BYOK AI：OpenAI、DeepSeek、Anthropic、OpenAI 兼容和本地兼容接口
 
 清洗示例：`#### 项目背景`、Markdown 表格和碎片换行可以在不扩写事实的前提下整理为干净的标题、正文与结构化表格。
