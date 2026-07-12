@@ -16,7 +16,9 @@ jobs:
         shell: pwsh
         run: |
           $hits = git grep -n -E '(sk-[A-Za-z0-9]{20,}|api[_-]?key\s*[:=]\s*["''][^"'']+)' -- ':!*.md'
+          if ($LASTEXITCODE -gt 1) { throw "git grep failed" }
           if ($hits) { $hits; exit 1 }
+          exit 0
       - name: Windows package build
         shell: pwsh
         run: ./scripts/build_windows.ps1 -SkipChecks
