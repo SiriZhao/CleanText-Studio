@@ -2,10 +2,15 @@ param([switch]$SkipChecks)
 $ErrorActionPreference = 'Stop'
 $Python = '.\.venv\Scripts\python.exe'
 if (-not (Test-Path $Python)) {
-  if ($SkipChecks) { throw 'Missing .venv Python. Run the script without -SkipChecks first.' }
-  py -3.12 -m venv .venv
-  if ($LASTEXITCODE -ne 0) { throw 'Unable to create the Python 3.12 virtual environment.' }
+  if ($SkipChecks) {
+    $Python = 'python'
+  } else {
+    py -3.12 -m venv .venv
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to create the Python 3.12 virtual environment.' }
+  }
 }
+$PythonVersion = & $Python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"
+if ($LASTEXITCODE -ne 0 -or $PythonVersion -ne '3.12') { throw "Python 3.12 is required; found $PythonVersion." }
 if (-not $SkipChecks) {
   & .\.venv\Scripts\python -m pip install -e ".[dev]"
   if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
