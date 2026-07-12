@@ -15,12 +15,19 @@ class ListMode(StrEnum):
     NATURAL_PARAGRAPH = "natural_paragraph"
 
 
+class ParagraphBreakMode(StrEnum):
+    COMPACT = "compact"
+    SMART_SECTIONS = "smart_sections"
+    PRESERVE_ALL = "preserve_all"
+
+
 class CleanOptions(BaseModel):
     remove_markdown: bool = True
     remove_emoji: bool = True
     remove_decorations: bool = True
     merge_fragments: bool = True
     merge_level: MergeLevel = MergeLevel.STANDARD
+    paragraph_break_mode: ParagraphBreakMode = ParagraphBreakMode.SMART_SECTIONS
     keep_bullets: bool = True
     list_mode: ListMode = ListMode.KEEP
     normalize_punctuation: bool = True

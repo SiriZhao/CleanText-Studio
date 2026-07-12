@@ -32,6 +32,10 @@ jobs:
             if (!(Test-Path "dist/release/CleanText-Studio-v$version-Windows-x64-$_")) { throw "Missing $_" }
           }
           if (!(Test-Path "dist/release/SHA256SUMS.txt")) { throw "Missing SHA256SUMS.txt" }
+          $process = Start-Process 'dist/CleanText Studio/CleanText Studio.exe' -PassThru
+          Start-Sleep -Seconds 5
+          if ($process.HasExited) { throw "Packaged application exited unexpectedly" }
+          Stop-Process -Id $process.Id
       - uses: actions/upload-artifact@v4
         with: {name: windows-release, path: dist/release/*}
       - uses: softprops/action-gh-release@v2

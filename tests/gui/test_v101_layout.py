@@ -22,6 +22,7 @@ def test_three_panel_actions_and_states(qtbot) -> None:
     assert window.session.result_outdated
     window.output.appendPlainText("手工修改")
     assert window.session.result_modified
+    window.session.result_modified = False
 
 
 def test_themes_and_collapsible_settings(qtbot) -> None:

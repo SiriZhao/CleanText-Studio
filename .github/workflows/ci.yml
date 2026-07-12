@@ -28,6 +28,10 @@ jobs:
           if (!(Test-Path 'dist/CleanText Studio/_internal/PySide6/plugins/platforms/qwindows.dll')) { exit 1 }
           $version = python -c "from cleantext_studio import __version__; print(__version__)"
           if (!(Test-Path "dist/release/CleanText-Studio-v$version-Windows-x64-Portable.zip")) { exit 1 }
+          $process = Start-Process 'dist/CleanText Studio/CleanText Studio.exe' -PassThru
+          Start-Sleep -Seconds 5
+          if ($process.HasExited) { throw "Packaged application exited unexpectedly" }
+          Stop-Process -Id $process.Id
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: test-results, path: test-results.xml}

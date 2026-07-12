@@ -1,4 +1,4 @@
-from .config import CleanOptions, DocumentTemplate, ListMode, MergeLevel
+from .config import CleanOptions, DocumentTemplate, ListMode, MergeLevel, ParagraphBreakMode
 from .core import CleanResult, CleanStats, ResidualWarning, TextBlock, TextBlockType
 from .session import DocumentSession
 
@@ -7,6 +7,7 @@ __all__ = [
     "DocumentTemplate",
     "MergeLevel",
     "ListMode",
+    "ParagraphBreakMode",
     "CleanResult",
     "CleanStats",
     "TextBlock",

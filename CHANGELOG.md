@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.1.1 - 2026-07-12
+
+### Added
+
+- 系统主题自动跟随及浅色、深色固定模式。
+- 三种明确的段落换行模式。
+- Provider 默认 Base URL、推荐模型和恢复默认功能。
+- 开发者、版权、隐私和项目主页信息完整的关于页面。
+- 新版浅色、深色、Provider、段落模式、结果和关于截图。
+
+### Fixed
+
+- 修复 DeepSeek 错误显示 OpenAI Base URL、提供商切换不更新模型建议。
+- 修复离线聊天式套话清理对 Emoji、Markdown、前导空行和组合句无效。
+- 修复段落模式语义不明确、下拉框箭头区域圆角和弹窗主题不一致。
+
+### Changed
+
+- 重构 ProviderPreset、ParagraphLayoutEngine、BoilerplatePhraseCleaner、主题 watcher、字体回退和 DesignToken。
+- 改进 API 配置窗口、控件状态、间距、圆角和主界面视觉层级。
+
 ## 1.1.0 - 2026-07-12
 
 ### Added

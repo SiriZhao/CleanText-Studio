@@ -19,6 +19,8 @@ from cleantext_studio.models import (
     TextBlockType,
 )
 
+from .boilerplate import BoilerplatePhraseCleaner
+from .layout import ParagraphLayoutEngine
 from .residuals import detect_residuals
 
 MARKDOWN_HEADING = re.compile(r"^[\s\u3000]*([#＃]{1,6})[\s\u3000]*")
@@ -213,8 +215,9 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         blocks.append(
             TextBlock(block_type, raw, line, position, markdown_level, list_level, raw != line)
         )
+    boilerplate_count = 0
     if options.remove_template_phrases:
-        _trim_chat_phrases(blocks)
+        blocks, boilerplate_count = BoilerplatePhraseCleaner().clean(blocks)
     merged = 0
     if options.merge_fragments:
         compact: list[TextBlock] = []
@@ -234,6 +237,10 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
     while output and not output[-1]:
         output.pop()
     result_text = "\n".join(output)
+    if options.paragraph_break_mode.value == "compact":
+        layout = ParagraphLayoutEngine().render(blocks, options.paragraph_break_mode)
+        result_text = layout.text
+        merged += layout.removed_breaks
     residuals = detect_residuals(result_text)
     stats = CleanStats(
         original_chars=len(original),
@@ -253,5 +260,6 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         f"删除分隔线 {separator_count} 条",
         f"合并换行 {merged} 处",
         f"识别标题 {heading_count} 个",
+        f"聊天套话：删除 {boilerplate_count} 处",
     ]
     return CleanResult(result_text, blocks, stats, changes, residuals)
