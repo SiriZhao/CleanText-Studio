@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.2.0 - 2026-07-12
+
+### Added
+
+- Markdown 表格增强解析、结构化预览和真实 Word 表格导出。
+- Word 导出效果提示、结构检测和导出完成文件夹入口。
+
+### Fixed
+
+- 修复 Word 导出表格内容丢失和复杂 Markdown 表格解析失败。
+
+### Improved
+
+- AI 配置模型刷新与接口状态、控件箭头、顶栏尺寸、Tooltip 和导出流程。
+
+### Removed
+
+- 删除不稳定的聊天套话清理功能及其规则、统计和测试。
+
 ## 1.1.1 - 2026-07-12
 
 ### Added
@@ -18,7 +37,7 @@
 
 ### Changed
 
-- 重构 ProviderPreset、ParagraphLayoutEngine、BoilerplatePhraseCleaner、主题 watcher、字体回退和 DesignToken。
+- 重构 ProviderPreset、ParagraphLayoutEngine、主题 watcher、字体回退和 DesignToken。
 - 改进 API 配置窗口、控件状态、间距、圆角和主界面视觉层级。
 
 ## 1.1.0 - 2026-07-12

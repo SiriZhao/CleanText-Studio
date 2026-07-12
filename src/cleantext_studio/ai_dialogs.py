@@ -76,11 +76,12 @@ class ProviderDialog(QDialog):
         self.provider.addItems([p.display_name for p in self.presets])
         self.model = QComboBox()
         self.model.setEditable(True)
-        self.fetch_models = QPushButton("获取模型")
+        self.fetch_models = QPushButton("刷新模型")
         model_row = QHBoxLayout()
         model_row.addWidget(self.model)
         model_row.addWidget(self.fetch_models)
         self.base_url = QLineEdit()
+        self.url_status = QLabel()
         restore = QPushButton("恢复默认")
         url_row = QHBoxLayout()
         url_row.addWidget(self.base_url)
@@ -114,6 +115,7 @@ class ProviderDialog(QDialog):
         form.addRow("提供商", self.provider)
         form.addRow("模型", model_row)
         form.addRow("Base URL", url_row)
+        form.addRow("", self.url_status)
         form.addRow("API Key", key_row)
         form.addRow("密钥保存方式", self.remember)
         root.addLayout(form)
@@ -133,7 +135,7 @@ class ProviderDialog(QDialog):
         buttons.addWidget(save)
         root.addLayout(buttons)
         self.provider.currentIndexChanged.connect(self._provider_changed)
-        self.base_url.textEdited.connect(lambda: setattr(self, "_custom_url", True))
+        self.base_url.textEdited.connect(self._mark_custom_url)
         restore.clicked.connect(self.restore_default)
         show.toggled.connect(
             lambda checked: self.api_key.setEchoMode(
@@ -163,7 +165,7 @@ class ProviderDialog(QDialog):
         self.test_button.setEnabled(True)
 
     def start_model_fetch(self, provider: LLMProvider) -> None:
-        self.fetch_models.setText("正在获取……")
+        self.fetch_models.setText("正在刷新……")
         self.fetch_models.setEnabled(False)
         self._model_worker = ModelWorker(provider)
         self._model_worker.succeeded.connect(self._models_loaded)
@@ -176,7 +178,7 @@ class ProviderDialog(QDialog):
             self.model.clear()
             self.model.addItems(models)
             self.model.setEditText(current or models[0])
-        self.fetch_models.setText("获取模型")
+        self.fetch_models.setText("刷新模型")
         self.fetch_models.setEnabled(True)
 
     def preset(self) -> ProviderPreset:
@@ -186,6 +188,7 @@ class ProviderDialog(QDialog):
         if update_url:
             self.base_url.setText(preset.default_base_url)
             self._custom_url = False
+            self.url_status.setText(f"使用 {preset.display_name} 默认接口")
         current = self.model.currentText()
         self.model.clear()
         self.model.addItems(preset.default_models)
@@ -199,6 +202,10 @@ class ProviderDialog(QDialog):
         if not self.name.text() or self.name.text() == f"{self._last_preset.display_name} 默认配置":
             self.name.setText(f"{preset.display_name} 默认配置")
         self._last_preset = preset
+
+    def _mark_custom_url(self) -> None:
+        self._custom_url = True
+        self.url_status.setText("自定义接口地址")
 
     def _provider_changed(self, _: int) -> None:
         self._apply_preset(self.preset(), not self._custom_url)
@@ -215,6 +222,11 @@ class ProviderDialog(QDialog):
         self.name.setText(config.name)
         self.base_url.setText(config.base_url)
         self._custom_url = config.base_url != self.presets[index].default_base_url
+        self.url_status.setText(
+            "自定义接口地址"
+            if self._custom_url
+            else f"使用 {self.presets[index].display_name} 默认接口"
+        )
         self.model.setEditText(config.model)
         self.timeout.setValue(int(config.timeout))
         self.tokens.setValue(config.max_output_tokens)

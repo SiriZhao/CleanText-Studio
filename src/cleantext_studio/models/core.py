@@ -18,6 +18,14 @@ class TextBlockType(StrEnum):
 
 
 @dataclass(slots=True)
+class TableData:
+    headers: list[str]
+    rows: list[list[str]]
+    alignments: list[str]
+    source: str
+
+
+@dataclass(slots=True)
 class TextBlock:
     type: TextBlockType
     original_text: str
@@ -27,6 +35,7 @@ class TextBlock:
     list_level: int | None = None
     modified: bool = False
     reasons: list[str] = field(default_factory=list)
+    table: TableData | None = None
 
 
 @dataclass(slots=True)

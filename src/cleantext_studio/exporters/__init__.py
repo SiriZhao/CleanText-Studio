@@ -1,3 +1,3 @@
-from .files import export_docx, export_txt
+from .files import DocxRenderer, export_docx, export_docx_blocks, export_txt
 
-__all__ = ["export_docx", "export_txt"]
+__all__ = ["DocxRenderer", "export_docx", "export_docx_blocks", "export_txt"]

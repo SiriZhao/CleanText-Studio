@@ -1,7 +1,6 @@
 import pytest
 
 from cleantext_studio.cleaners import clean_text
-from cleantext_studio.models import CleanOptions
 
 
 @pytest.mark.parametrize(
@@ -33,12 +32,6 @@ from cleantext_studio.models import CleanOptions
 )
 def test_clean(source: str, expected: str) -> None:
     assert clean_text(source).text == expected
-
-
-def test_template_phrase_is_opt_in() -> None:
-    source = "正文。\n\n希望以上内容对你有所帮助。"
-    assert "希望" in clean_text(source).text
-    assert clean_text(source, CleanOptions(remove_template_phrases=True)).text == "正文。"
 
 
 def test_idempotent() -> None:

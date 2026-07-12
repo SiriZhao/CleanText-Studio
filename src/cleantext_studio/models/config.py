@@ -31,7 +31,6 @@ class CleanOptions(BaseModel):
     keep_bullets: bool = True
     list_mode: ListMode = ListMode.KEEP
     normalize_punctuation: bool = True
-    remove_template_phrases: bool = False
     keep_link_url: bool = False
 
 

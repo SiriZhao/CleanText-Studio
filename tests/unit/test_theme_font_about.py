@@ -46,5 +46,5 @@ def test_font_fallback_order() -> None:
 
 def test_about_information_has_no_sensitive_context() -> None:
     value = version_information()
-    assert "v1.1.1" in value and REPOSITORY in value
+    assert "v1.2.0" in value and REPOSITORY in value
     assert "API Key" not in value and "Users\\" not in value

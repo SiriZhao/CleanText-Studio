@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import sys
+from contextlib import suppress
 from pathlib import Path
 from typing import cast
 
-from PySide6.QtCore import QSettings, Qt, QThread, Signal
-from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence
+from PySide6.QtCore import QSettings, Qt, QThread, QUrl, Signal
+from PySide6.QtGui import QAction, QCloseEvent, QDesktopServices, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -13,6 +14,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QFrame,
     QHBoxLayout,
+    QHeaderView,
     QLabel,
     QMainWindow,
     QMenu,
@@ -21,6 +23,9 @@ from PySide6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSplitter,
+    QStackedWidget,
+    QTableWidget,
+    QTableWidgetItem,
     QToolBar,
     QToolButton,
     QVBoxLayout,
@@ -48,6 +53,7 @@ from cleantext_studio.models import (
     ListMode,
     MergeLevel,
     ParagraphBreakMode,
+    TextBlock,
 )
 from cleantext_studio.system_theme import SystemThemeWatcher
 from cleantext_studio.theme import Theme, stylesheet
@@ -205,11 +211,11 @@ class MainWindow(QMainWindow):
         self._buttons(
             lv,
             [
-                ("新建", self.new, "新建 Ctrl+N"),
-                ("打开", self.open, "打开 Ctrl+O"),
-                ("粘贴", self.paste_source, "粘贴 Ctrl+V"),
-                ("示例", self.load_sample, "载入示例"),
-                ("清空", self.clear_source, "清空原文"),
+                ("新建", self.new, "创建新的文本任务 · Ctrl+N"),
+                ("打开", self.open, "打开 TXT、Markdown、Word 文件 · Ctrl+O"),
+                ("粘贴", self.paste_source, "粘贴剪贴板内容 · Ctrl+V"),
+                ("示例", self.load_sample, "加载示例文本"),
+                ("清空", self.clear_source, "清空当前内容"),
             ],
         )[-1].setObjectName("danger")
         self.input = QPlainTextEdit()
@@ -233,7 +239,6 @@ class MainWindow(QMainWindow):
         self.remove_markdown.setChecked(True)
         self.remove_emoji = QCheckBox("删除表情和装饰符号")
         self.remove_emoji.setChecked(True)
-        self.chat_phrases = QCheckBox("清理聊天式套话（仅开头和结尾）")
         self.paragraph_mode = QComboBox()
         self.paragraph_mode.addItems(
             ["删除段落间换行", "仅保留大分段之间的换行", "保留所有段落间换行"]
@@ -251,8 +256,6 @@ class MainWindow(QMainWindow):
             self.paragraph_mode,
             QLabel("标题与列表"),
             self.list_mode,
-            QLabel("高级选项"),
-            self.chat_phrases,
         ):
             rv.addWidget(widget)
         rv.addStretch()
@@ -270,29 +273,51 @@ class MainWindow(QMainWindow):
         self.clean_button.clicked.connect(self.start_clean)
         mv.addWidget(self.clean_button)
         right, ov = self._panel("清洗结果")
+        mode_row = QHBoxLayout()
+        mode_row.addWidget(QLabel("显示模式"))
+        self.result_mode = QComboBox()
+        self.result_mode.addItems(["文本模式", "预览模式"])
+        mode_row.addWidget(self.result_mode)
+        mode_row.addStretch()
+        ov.addLayout(mode_row)
         result_buttons = self._buttons(
             ov,
             [
-                ("导出 Word", self.save_word, "导出 Word Ctrl+Shift+W"),
-                ("复制", self.copy_result, "复制结果 Ctrl+Shift+C"),
+                ("导出 Word", self.save_word, "生成结构化 Word 文档 · Ctrl+Shift+W"),
+                ("复制", self.copy_result, "复制清洗结果 · Ctrl+Shift+C"),
                 ("导出 TXT", self.save_txt, "导出 TXT Ctrl+Shift+T"),
-                ("撤销", self.undo_result, "撤销 Ctrl+Z"),
-                ("恢复本次", self.restore_result, "恢复本次清洗结果"),
+                ("撤销", self.undo_result, "撤销最近一次修改 · Ctrl+Z"),
+                ("恢复本次", self.restore_result, "恢复上一次状态"),
                 ("清空", self.clear_result, "清空结果"),
             ],
         )
         self.word_button, self.copy_button, self.txt_button = result_buttons[:3]
+        self.word_tip = QLabel("推荐导出 Word：支持标题、列表、表格完整排版。")
+        self.word_tip.setObjectName("muted")
+        ov.addWidget(self.word_tip)
         self.ai_button = QPushButton("AI 智能优化")
-        self.ai_button.setToolTip("可选功能：使用你自行配置的第三方 API")
+        self.ai_button.setToolTip("调用 AI 进一步优化文本")
         self.ai_button.clicked.connect(self.start_ai_optimization)
         ov.addWidget(self.ai_button)
         self.output = QPlainTextEdit()
         self.output.setPlaceholderText("清洗后的文本将在这里显示")
-        ov.addWidget(self.output)
+        self.preview_container = QWidget()
+        self.preview_layout = QVBoxLayout(self.preview_container)
+        self.preview_layout.addStretch()
+        self.preview = QScrollArea()
+        self.preview.setWidgetResizable(True)
+        self.preview.setWidget(self.preview_container)
+        self.result_stack = QStackedWidget()
+        self.result_stack.addWidget(self.output)
+        self.result_stack.addWidget(self.preview)
+        ov.addWidget(self.result_stack)
         self.result_notice = QLabel("尚未清洗")
         self.result_notice.setObjectName("muted")
         self.result_notice.setWordWrap(True)
         ov.addWidget(self.result_notice)
+        self.open_folder_button = QPushButton("打开文件夹")
+        self.open_folder_button.hide()
+        ov.addWidget(self.open_folder_button)
         self.result_meta = QLabel("0 字符 · 0 项修改")
         self.result_meta.setObjectName("muted")
         ov.addWidget(self.result_meta)
@@ -310,8 +335,9 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.splitter)
         self.input.textChanged.connect(self._source_changed)
         self.output.textChanged.connect(self._result_changed)
+        self.result_mode.currentIndexChanged.connect(self.result_stack.setCurrentIndex)
         self.preset.currentTextChanged.connect(self._preset_changed)
-        for control in (self.remove_markdown, self.remove_emoji, self.chat_phrases):
+        for control in (self.remove_markdown, self.remove_emoji):
             control.toggled.connect(self._customized)
         self.paragraph_mode.currentTextChanged.connect(self._customized)
         self.list_mode.currentTextChanged.connect(self._customized)
@@ -343,7 +369,6 @@ class MainWindow(QMainWindow):
         return CleanOptions(
             remove_markdown=self.remove_markdown.isChecked(),
             remove_emoji=self.remove_emoji.isChecked(),
-            remove_template_phrases=self.chat_phrases.isChecked(),
             merge_level=MergeLevel.STANDARD,
             paragraph_break_mode=paragraph_modes[self.paragraph_mode.currentIndex()],
             list_mode=modes[self.list_mode.currentIndex()],
@@ -418,6 +443,9 @@ class MainWindow(QMainWindow):
         self.output.blockSignals(True)
         self.output.setPlainText(result.text)
         self.output.blockSignals(False)
+        self._render_preview(result.blocks)
+        if any(block.table for block in result.blocks):
+            self.result_mode.setCurrentIndex(1)
         self.clean_button.setText("开始清洗")
         self.clean_button.setEnabled(True)
         self._set_result_actions(bool(result.text))
@@ -428,6 +456,36 @@ class MainWindow(QMainWindow):
         self.result_meta.setText(
             f"Markdown {result.stats.removed_markdown} · 表情 {result.stats.removed_emoji} · 分隔线 {result.stats.removed_separators} · 标题 {result.stats.headings_detected} · {result.stats.elapsed_ms:.1f} ms"
         )
+
+    def _render_preview(self, blocks: list[TextBlock]) -> None:
+        while self.preview_layout.count() > 1:
+            item = self.preview_layout.takeAt(0)
+            if item is not None:
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+        for block in blocks:
+            if block.table is not None:
+                data = block.table
+                assert data is not None
+                table = QTableWidget(len(data.rows), len(data.headers))
+                table.setHorizontalHeaderLabels(data.headers)
+                table.setWordWrap(True)
+                table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+                table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+                table.verticalHeader().hide()
+                for row, values in enumerate(data.rows):
+                    for column, value in enumerate(values):
+                        table.setItem(row, column, QTableWidgetItem(value))
+                table.resizeRowsToContents()
+                table.setMinimumHeight(
+                    min(420, 70 + sum(table.rowHeight(i) for i in range(table.rowCount())))
+                )
+                self.preview_layout.insertWidget(self.preview_layout.count() - 1, table)
+            elif getattr(block, "text", ""):
+                label = QLabel(block.text)
+                label.setWordWrap(True)
+                self.preview_layout.insertWidget(self.preview_layout.count() - 1, label)
 
     def _failed(self, message: str) -> None:
         self.session.processing_state = "idle"
@@ -492,12 +550,42 @@ class MainWindow(QMainWindow):
     def save_word(self) -> None:
         if not self.output.toPlainText():
             return
+        parsed = clean_text(self.output.toPlainText())
+        detected = []
+        if any(b.type.value.startswith("heading") for b in parsed.blocks):
+            detected.append("标题")
+        if any(b.table for b in parsed.blocks):
+            detected.append("表格")
+        if any(b.type.value == "list_item" for b in parsed.blocks):
+            detected.append("列表")
+        if detected:
+            box = QMessageBox(self)
+            box.setWindowTitle("检测到结构化内容")
+            box.setText(
+                "检测到：\n"
+                + "\n".join(f"• {item}" for item in detected)
+                + "\n\n推荐使用 Word 导出获得最佳效果。"
+            )
+            continue_button = box.addButton("继续导出 Word", QMessageBox.ButtonRole.AcceptRole)
+            box.addButton("取消", QMessageBox.ButtonRole.RejectRole)
+            box.exec()
+            if box.clickedButton() != continue_button:
+                return
         name, _ = QFileDialog.getSaveFileName(
             self, "导出 Word", "CleanText_cleaned.docx", "Word (*.docx)"
         )
         if name:
             try:
                 export_docx(self.output.toPlainText(), Path(name))
+                self.result_notice.setText(
+                    "导出成功 · 已保留标题结构、表格、列表和中文排版\n" + name
+                )
+                self.open_folder_button.show()
+                with suppress(RuntimeError):
+                    self.open_folder_button.clicked.disconnect()
+                self.open_folder_button.clicked.connect(
+                    lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(Path(name).parent)))
+                )
             except Exception as exc:
                 QMessageBox.critical(self, "导出失败", str(exc))
 

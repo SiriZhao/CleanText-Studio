@@ -10,6 +10,7 @@ from cleantext_studio.llm.config_store import ProviderConfigStore
 from cleantext_studio.llm.exceptions import InvalidResponseError, SchemaValidationError
 from cleantext_studio.llm.mock_provider import MockProvider
 from cleantext_studio.llm.models import OptimizationMode, ProviderConfig, ProviderType
+from cleantext_studio.llm.presets import get_preset
 from cleantext_studio.llm.prompts import build_messages
 from cleantext_studio.llm.response_parser import parse_response
 from cleantext_studio.llm.sensitive import redact_sensitive, restore_sensitive
@@ -22,6 +23,12 @@ def config(kind: ProviderType = ProviderType.OPENAI) -> ProviderConfig:
         base_url="https://api.example.com/v1",
         model="editable-model",
     )
+
+
+def test_deepseek_new_config_recommends_v4_flash() -> None:
+    preset = get_preset("deepseek")
+    assert preset.default_base_url == "https://api.deepseek.com"
+    assert preset.default_models[0] == "deepseek-v4-flash"
 
 
 def response_json(text: str = "正文") -> str:

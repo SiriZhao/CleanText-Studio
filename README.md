@@ -2,7 +2,7 @@
 
 # 净文排版 · CleanText Studio
 
-本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.1.1**。
+本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.0**。
 
 开发者：**SiriZhao** · 项目主页：[github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 
@@ -14,35 +14,31 @@
 
 ## 界面
 
-| 浅色模式 | 深色模式 |
+| 主界面 | Markdown 表格预览 |
 |---|---|
-| ![浅色](assets/screenshots/main-light-v1.1.1.png) | ![深色](assets/screenshots/main-dark-v1.1.1.png) |
+| ![主界面](assets/screenshots/main-ui.png) | ![表格预览](assets/screenshots/table-preview.png) |
 
-| AI Provider 设置 | 关于页面 |
+| AI Provider 设置 | Word 导出引导 |
 |---|---|
-| ![Provider](assets/screenshots/ai-provider-settings-v1.1.1.png) | ![关于](assets/screenshots/about-v1.1.1.png) |
-
-![段落模式](assets/screenshots/paragraph-modes-v1.1.1.png)
-
-![清洗结果](assets/screenshots/cleaning-result-v1.1.1.png)
+| ![Provider](assets/screenshots/ai-config.png) | ![Word 导出](assets/screenshots/word-export.png) |
 
 ## 核心功能
 
 - 清理 Markdown 标题、强调、链接、分隔线、Emoji、装饰符号与复制残留
 - 保护代码、表格、列表和标题结构，检测清洗残留
 - 三种换行模式：删除段落间换行、仅保留大分段、保留所有段落间换行
-- 离线清理文档首尾聊天式套话，默认关闭且不检查正文中间
+- 智能 Markdown 表格解析、结构化预览和真实 Word 表格导出
 - 导入 TXT、Markdown、DOCX，导出 UTF-8 TXT 和规范 DOCX
 - 跟随 Windows 系统主题，也可固定浅色或深色
 - 可选 BYOK AI：OpenAI、DeepSeek、Anthropic、OpenAI 兼容和本地兼容接口
 
-清洗示例：`✅ 当然可以！以下是整理后的内容：`、`#### 项目背景` 和碎片换行可以在不扩写事实的前提下整理为干净标题与正文。
+清洗示例：`#### 项目背景`、Markdown 表格和碎片换行可以在不扩写事实的前提下整理为干净的标题、正文与结构化表格。
 
 ## 本地模式与 BYOK
 
 基础清洗、TXT 和 Word 导出完全离线。AI 智能优化仅在用户配置自己的 API、查看发送范围并主动确认后调用第三方服务。API Key 保存至 Windows 凭据管理器或仅保留在当前会话，普通配置和导出文件不含密钥。项目不提供公共 API Key、不代付费用、不代理或转售模型服务。第三方数据处理取决于对应服务条款和隐私政策。
 
-Provider 切换会更新默认 Base URL 和推荐模型；模型始终允许手动输入。DeepSeek 默认地址为 `https://api.deepseek.com`，本地兼容接口默认 `http://localhost:11434/v1`。
+Provider 切换会更新默认 Base URL 和推荐模型；模型始终允许手动输入。DeepSeek 默认地址为 `https://api.deepseek.com`，推荐模型为 `deepseek-v4-flash`；本地兼容接口默认 `http://localhost:11434/v1`。
 
 ## 字体与视觉
 

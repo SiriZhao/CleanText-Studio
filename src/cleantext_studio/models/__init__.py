@@ -1,5 +1,5 @@
 from .config import CleanOptions, DocumentTemplate, ListMode, MergeLevel, ParagraphBreakMode
-from .core import CleanResult, CleanStats, ResidualWarning, TextBlock, TextBlockType
+from .core import CleanResult, CleanStats, ResidualWarning, TableData, TextBlock, TextBlockType
 from .session import DocumentSession
 
 __all__ = [
@@ -12,6 +12,7 @@ __all__ = [
     "CleanStats",
     "TextBlock",
     "TextBlockType",
+    "TableData",
     "ResidualWarning",
     "DocumentSession",
 ]

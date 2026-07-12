@@ -35,7 +35,7 @@ PRESETS = {
         ProviderType.DEEPSEEK,
         "https://api.deepseek.com",
         "openai_compatible",
-        ("deepseek-chat", "deepseek-reasoner"),
+        ("deepseek-v4-flash", "deepseek-reasoner"),
         help_url="https://api-docs.deepseek.com",
     ),
     "anthropic": ProviderPreset(
