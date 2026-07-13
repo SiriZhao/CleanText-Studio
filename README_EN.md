@@ -1,6 +1,17 @@
 # CleanText Studio
 
-CleanText Studio v1.2.2 is a local-first Windows desktop application for deterministic text cleanup, document structure normalization, Markdown table preview, and native TXT/DOCX export.
+CleanText Studio v1.3.0 is a local-first Windows desktop application for deterministic text cleanup, document structure normalization, math protection, and native TXT/DOCX export.
+
+## Math support in v1.3.0
+
+- Protects `$...$`, `$$...$$`, `\\(...\\)`, `\\[...\\]`, and common LaTeX environments before Markdown cleanup.
+- Recognizes Unicode math, plain equations, equation numbers, and formulas mixed with tables.
+- Exports a safe LaTeX subset as editable Word OMML; unsupported constructs safely remain original LaTeX.
+- Uses an offline lightweight preview with no CDN, remote renderer, TeX execution, or semantic rewriting.
+
+Complex macros, custom commands, and uncommon environments may remain as original LaTeX text.
+
+![Math cleaning and offline preview](assets/screenshots/math-preview-v1.3.0.png)
 
 Developer: **SiriZhao** · Repository: [github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 

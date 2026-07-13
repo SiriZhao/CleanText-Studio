@@ -23,9 +23,17 @@ if (-not $SkipChecks) {
 }
 $Version = & $Python -c "from cleantext_studio import __version__; print(__version__)"
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($Version)) { throw 'Unable to read package version.' }
+New-Item 'dist\logs' -ItemType Directory -Force | Out-Null
 Remove-Item build, 'dist\CleanText Studio' -Recurse -Force -ErrorAction SilentlyContinue
-& $Python -m PyInstaller --clean -y cleantext-studio.spec
-if ($LASTEXITCODE -ne 0) { throw 'PyInstaller build failed.' }
+$PyInstallerProcess = Start-Process $Python -ArgumentList @('-m', 'PyInstaller', '--clean', '-y', 'cleantext-studio.spec') -Wait -PassThru -NoNewWindow -RedirectStandardOutput 'dist\logs\pyinstaller.log' -RedirectStandardError 'dist\logs\pyinstaller-error.log'
+if ($PyInstallerProcess.ExitCode -ne 0) { throw 'PyInstaller build failed; see dist/logs/pyinstaller-error.log.' }
+$Executable = 'dist\CleanText Studio\CleanText Studio.exe'
+if (-not (Test-Path $Executable)) { throw 'Packaged executable is missing.' }
+$Process = Start-Process $Executable -PassThru
+Start-Sleep -Seconds 5
+if ($Process.HasExited) { throw 'Packaged application exited during smoke test.' }
+Stop-Process -Id $Process.Id
+"Packaged application started and remained responsive for 5 seconds." | Set-Content 'dist\logs\smoke-test.log'
 $Release = 'dist\release'
 if (Test-Path $Release) { Remove-Item $Release -Recurse -Force }
 New-Item $Release -ItemType Directory -Force | Out-Null
@@ -38,14 +46,16 @@ Copy-Item docs\USER_GUIDE.md "$Stage"
 $Zip = "dist\release\CleanText-Studio-v$Version-Windows-x64-Portable.zip"
 Remove-Item $Zip -Force -ErrorAction SilentlyContinue
 Compress-Archive "$Stage\*" $Zip
+"Created $Zip" | Set-Content 'dist\logs\portable-package.log'
 $Iscc = Get-Command iscc -ErrorAction SilentlyContinue
 if (-not $Iscc) {
   $LocalIscc = Join-Path $env:LOCALAPPDATA 'Programs\Inno Setup 6\ISCC.exe'
   if (Test-Path $LocalIscc) { $Iscc = $LocalIscc }
 }
 if ($Iscc) {
-  & $Iscc "/DAppVersion=$Version" installer.iss
-  if ($LASTEXITCODE -ne 0) { throw 'Inno Setup build failed.' }
+  $InnoProcess = Start-Process $Iscc -ArgumentList @("/DAppVersion=$Version", 'installer.iss') -Wait -PassThru -NoNewWindow -RedirectStandardOutput 'dist\logs\inno-setup.log' -RedirectStandardError 'dist\logs\inno-setup-error.log'
+  if ($InnoProcess.ExitCode -ne 0) { throw 'Inno Setup build failed; see dist/logs/inno-setup-error.log.' }
 }
 Get-ChildItem dist\release -File | Where-Object Name -ne 'SHA256SUMS.txt' | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } | Set-Content dist\release\SHA256SUMS.txt
+Get-Content dist\release\SHA256SUMS.txt | Set-Content 'dist\logs\checksum.log'
 Copy-Item CHANGELOG.md dist\release\release-notes.md -Force

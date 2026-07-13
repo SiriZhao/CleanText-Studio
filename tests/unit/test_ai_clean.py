@@ -109,6 +109,6 @@ def test_tutorial_url_is_preserved_by_default() -> None:
 
 
 def test_reference_definition_and_footnote_are_cleaned() -> None:
-    result = clean_text("正文（[来源名称][1]）\n\n[1]: https://example.com \"标题\"")
+    result = clean_text('正文（[来源名称][1]）\n\n[1]: https://example.com "标题"')
     assert "来源名称" in result.text
     assert "[1]:" not in result.text

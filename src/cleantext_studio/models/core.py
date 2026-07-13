@@ -18,6 +18,40 @@ class TextBlockType(StrEnum):
     ORDERED_LIST_ITEM = "ordered_list_item"
     HORIZONTAL_RULE = "horizontal_rule"
     RAW = "raw"
+    INLINE_MATH = "inline_math"
+    DISPLAY_MATH = "display_math"
+    EQUATION_GROUP = "equation_group"
+    EQUATION_NUMBER = "equation_number"
+    MATH_PARAGRAPH = "math_paragraph"
+
+
+class MathFormat(StrEnum):
+    LATEX = "latex"
+    MATHML = "mathml"
+    ASCIIMATH = "asciimath"
+    UNICODE_MATH = "unicode_math"
+    PLAIN_EQUATION = "plain_equation"
+    UNKNOWN = "unknown"
+
+
+class MathDisplayMode(StrEnum):
+    INLINE = "inline"
+    BLOCK = "block"
+
+
+@dataclass(slots=True)
+class MathBlockData:
+    source_text: str
+    normalized_text: str
+    math_format: MathFormat
+    display_mode: MathDisplayMode
+    equation_number: str | None = None
+    source_start: int = 0
+    source_end: int = 0
+    confidence: float = 1.0
+    warnings: list[str] = field(default_factory=list)
+    protected: bool = True
+    metadata: dict[str, object] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -59,6 +93,7 @@ class TextBlock:
     original_blank_lines_after: int = 0
     warnings: list[str] = field(default_factory=list)
     metadata: dict[str, object] = field(default_factory=dict)
+    math: MathBlockData | None = None
 
     @property
     def cleaned_text(self) -> str:
@@ -87,6 +122,15 @@ class CleanStats:
     tables_preserved: int = 0
     list_items_detected: int = 0
     links_processed: int = 0
+    formulas_detected: int = 0
+    inline_formulas_detected: int = 0
+    display_formulas_detected: int = 0
+    formulas_normalized: int = 0
+    formula_delimiters_fixed: int = 0
+    formula_warnings: int = 0
+    formulas_exported_as_omml: int = 0
+    formulas_exported_as_text: int = 0
+    formula_conversion_failures: int = 0
 
 
 @dataclass(slots=True, frozen=True)

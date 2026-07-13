@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.3.0 - 2026-07-13
+
+### Added
+
+- LaTeX inline, display, and common environment recognition and protection.
+- Unicode math, plain-equation confidence detection, equation numbers, warnings, and statistics.
+- Editable native Word OMML export for fractions, roots, scripts, Greek symbols, and simple matrices.
+- Offline lightweight math preview and table-cell formula export.
+
+### Fixed
+
+- Prevent Markdown cleanup from damaging formula asterisks, underscores, and LaTeX commands.
+- Preserve display-math boundaries across paragraph layout modes.
+- Avoid treating dollar prices as unclosed math.
+- Fall back to original LaTeX when conversion is unsupported instead of failing DOCX export.
+
+### Changed
+
+- Math regions are protected before Markdown, whitespace, and paragraph processing.
+- Document blocks now carry a unified MathBlockData payload.
+
 ## 1.2.2 - 2026-07-13
 
 ### Added

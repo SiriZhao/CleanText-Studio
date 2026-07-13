@@ -12,6 +12,9 @@ STRUCTURAL = {
     TextBlockType.QUOTE,
     TextBlockType.CODE,
     TextBlockType.TABLE,
+    TextBlockType.DISPLAY_MATH,
+    TextBlockType.MATH_PARAGRAPH,
+    TextBlockType.EQUATION_GROUP,
 }
 
 

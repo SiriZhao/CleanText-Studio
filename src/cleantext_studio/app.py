@@ -53,6 +53,8 @@ from cleantext_studio.models import (
     IndependentURLMode,
     LinkMode,
     ListMode,
+    MathExportMode,
+    MathOutputMode,
     MergeLevel,
     ParagraphBreakMode,
     TextBlock,
@@ -241,7 +243,9 @@ class MainWindow(QMainWindow):
         self.remove_markdown.setChecked(True)
         self.remove_emoji = QCheckBox("删除表情和装饰符号")
         self.remove_emoji.setChecked(True)
-        self.clean_instructional = QCheckBox("清理碎片化操作标签\n清理独立的填写、点击、等待等短标签")
+        self.clean_instructional = QCheckBox(
+            "清理碎片化操作标签\n清理独立的填写、点击、等待等短标签"
+        )
         self.clean_instructional.setChecked(False)
         self.link_mode = QComboBox()
         self.link_mode.addItems(["仅保留显示文字", "保留显示文字和 URL", "保持 Markdown 原样"])
@@ -256,6 +260,26 @@ class MainWindow(QMainWindow):
         self.list_mode.addItems(
             ["保留列表结构", "删除项目符号，保留逐行内容", "智能转换为自然段（实验性）"]
         )
+        self.detect_math = QCheckBox("自动识别数学公式")
+        self.detect_math.setChecked(True)
+        self.detect_math.setToolTip("识别 LaTeX、Unicode 和常见方程式，避免清洗过程破坏公式。")
+        self.protect_math = QCheckBox("保护公式结构")
+        self.protect_math.setChecked(True)
+        self.protect_math.setToolTip("在 Markdown 和空白清理之前保护公式定界符、下标和命令。")
+        self.normalize_math = QCheckBox("规范公式空格")
+        self.normalize_math.setChecked(True)
+        self.normalize_math.setToolTip("仅修复明显的 LaTeX 空格，不计算或改写数学含义。")
+        self.repair_math = QCheckBox("修复明显定界符问题")
+        self.repair_math.setChecked(True)
+        self.repair_math.setToolTip("仅在修复方式高度确定时调整公式定界符。")
+        self.preserve_equation_numbers = QCheckBox("保留公式编号")
+        self.preserve_equation_numbers.setChecked(True)
+        self.word_math_omml = QCheckBox("Word 导出为可编辑公式")
+        self.word_math_omml.setChecked(True)
+        self.word_math_omml.setToolTip("将支持的公式转换为 Word 原生公式，复杂公式会保留原始文本。")
+        self.math_output_mode = QComboBox()
+        self.math_output_mode.addItems(["保留原样", "统一为 LaTeX", "统一为 Unicode 可读格式"])
+        self.math_output_mode.setToolTip("选择清洗结果和 TXT 中的公式表示方式。")
         for widget in (
             QLabel("基础格式"),
             self.remove_markdown,
@@ -269,6 +293,15 @@ class MainWindow(QMainWindow):
             self.paragraph_mode,
             QLabel("标题与列表"),
             self.list_mode,
+            QLabel("数学公式"),
+            self.detect_math,
+            self.protect_math,
+            self.normalize_math,
+            self.repair_math,
+            self.preserve_equation_numbers,
+            self.word_math_omml,
+            QLabel("公式规范化输出"),
+            self.math_output_mode,
         ):
             rv.addWidget(widget)
         rv.addStretch()
@@ -354,12 +387,23 @@ class MainWindow(QMainWindow):
         self.output.textChanged.connect(self._result_changed)
         self.result_mode.currentIndexChanged.connect(self.result_stack.setCurrentIndex)
         self.preset.currentTextChanged.connect(self._preset_changed)
-        for control in (self.remove_markdown, self.remove_emoji, self.clean_instructional):
+        for control in (
+            self.remove_markdown,
+            self.remove_emoji,
+            self.clean_instructional,
+            self.detect_math,
+            self.protect_math,
+            self.normalize_math,
+            self.repair_math,
+            self.preserve_equation_numbers,
+            self.word_math_omml,
+        ):
             control.toggled.connect(self._customized)
         self.paragraph_mode.currentTextChanged.connect(self._customized)
         self.list_mode.currentTextChanged.connect(self._customized)
         self.link_mode.currentTextChanged.connect(self._customized)
         self.url_mode.currentTextChanged.connect(self._customized)
+        self.math_output_mode.currentTextChanged.connect(self._customized)
         self._set_result_actions(False)
 
     def _shortcuts(self) -> None:
@@ -400,6 +444,21 @@ class MainWindow(QMainWindow):
             clean_instructional_labels=self.clean_instructional.isChecked(),
             link_mode=link_modes[self.link_mode.currentIndex()],
             independent_url_mode=url_modes[self.url_mode.currentIndex()],
+            detect_math=self.detect_math.isChecked(),
+            protect_math=self.protect_math.isChecked(),
+            normalize_math_spacing=self.normalize_math.isChecked(),
+            repair_math_delimiters=self.repair_math.isChecked(),
+            preserve_equation_numbers=self.preserve_equation_numbers.isChecked(),
+            math_export_mode=(
+                MathExportMode.WORD_OMML
+                if self.word_math_omml.isChecked()
+                else MathExportMode.LATEX_TEXT
+            ),
+            math_output_mode={
+                0: MathOutputMode.PRESERVE,
+                1: MathOutputMode.LATEX,
+                2: MathOutputMode.UNICODE,
+            }[self.math_output_mode.currentIndex()],
         )
 
     def _source_changed(self) -> None:
@@ -525,6 +584,18 @@ class MainWindow(QMainWindow):
             elif getattr(block, "text", ""):
                 label = QLabel(block.text)
                 label.setWordWrap(True)
+                if block.math is not None:
+                    label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                    label.setObjectName("mathPreview")
+                    label.setText(
+                        block.math.normalized_text
+                        + (
+                            f"    {block.math.equation_number}"
+                            if block.math.equation_number
+                            else ""
+                        )
+                    )
+                    label.setToolTip("数学公式（离线轻量预览；Word 导出可转换为原生可编辑公式）")
                 self.preview_layout.insertWidget(self.preview_layout.count() - 1, label)
 
     def _failed(self, message: str) -> None:
@@ -617,7 +688,11 @@ class MainWindow(QMainWindow):
         )
         if name:
             try:
-                export_docx_blocks(export_blocks, Path(name))
+                export_docx_blocks(
+                    export_blocks,
+                    Path(name),
+                    math_export_mode=self.session.cleaning_options.math_export_mode,
+                )
                 self.result_notice.setText(
                     "导出成功 · 已保留标题结构、表格、列表和中文排版\n" + name
                 )

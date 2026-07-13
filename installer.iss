@@ -1,11 +1,11 @@
 #ifndef AppVersion
-  #define AppVersion "1.2.2"
+  #define AppVersion "1.3.0"
 #endif
 [Setup]
 AppId={{A8A01C8C-7B35-4F18-9C14-72CAEE75A811}
 AppName=CleanText Studio
 AppVersion={#AppVersion}
-AppPublisher=CleanText Studio contributors
+AppPublisher=SiriZhao
 DefaultDirName={localappdata}\Programs\CleanText Studio
 DefaultGroupName=CleanText Studio
 OutputDir=dist\release

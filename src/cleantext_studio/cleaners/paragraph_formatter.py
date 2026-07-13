@@ -5,8 +5,15 @@ from dataclasses import dataclass
 from cleantext_studio.models import TextBlock, TextBlockType
 
 STRUCTURAL = {
-    TextBlockType.TITLE, TextBlockType.HEADING_1, TextBlockType.HEADING_2,
-    TextBlockType.HEADING_3, TextBlockType.TABLE, TextBlockType.QUOTE,
+    TextBlockType.TITLE,
+    TextBlockType.HEADING_1,
+    TextBlockType.HEADING_2,
+    TextBlockType.HEADING_3,
+    TextBlockType.TABLE,
+    TextBlockType.QUOTE,
+    TextBlockType.DISPLAY_MATH,
+    TextBlockType.MATH_PARAGRAPH,
+    TextBlockType.EQUATION_GROUP,
 }
 
 
@@ -30,6 +37,8 @@ class ParagraphFormatter:
                     TextBlockType.ORDERED_LIST_ITEM,
                     TextBlockType.CODE,
                     TextBlockType.TABLE,
+                    TextBlockType.DISPLAY_MATH,
+                    TextBlockType.EQUATION_GROUP,
                 }
                 separator = "\n" if same_compact_structure else "\n\n"
                 output.append(separator)

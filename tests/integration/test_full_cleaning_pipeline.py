@@ -31,6 +31,9 @@ https://mp.weixin.qq.com
 """
     options = CleanOptions(clean_instructional_labels=True)
     result = clean_text(source, options)
-    assert all(value not in result.text for value in ("###", "---", "**", "填写:", "点击:", "等待:", "打开:"))
+    assert all(
+        value not in result.text
+        for value in ("###", "---", "**", "填写:", "点击:", "等待:", "打开:")
+    )
     assert "净文 v1.2.0" in result.text and "https://mp.weixin.qq.com" in result.text
     assert clean_text(result.text, options).text == result.text

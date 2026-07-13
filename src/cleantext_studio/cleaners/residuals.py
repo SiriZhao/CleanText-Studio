@@ -17,7 +17,9 @@ PATTERNS = (
     ("trailing_space", re.compile(r"[ \t]+$")),
     (
         "instructional_label",
-        re.compile(r"^\s*(?:填写|输入|点击|打开|进入|选择|上传|等待|确认|保存|提交|访问|登录)\s*[：:]\s*$"),
+        re.compile(
+            r"^\s*(?:填写|输入|点击|打开|进入|选择|上传|等待|确认|保存|提交|访问|登录)\s*[：:]\s*$"
+        ),
     ),
 )
 
@@ -57,7 +59,11 @@ def detect_block_residuals(blocks: list[TextBlock], rendered_text: str) -> list[
                     block_id=block.block_id,
                 )
             )
-        if not block.text or block.protected or block.type in {TextBlockType.CODE, TextBlockType.TABLE}:
+        if (
+            not block.text
+            or block.protected
+            or block.type in {TextBlockType.CODE, TextBlockType.TABLE}
+        ):
             continue
         for kind, pattern in PATTERNS:
             match = pattern.search(block.text)

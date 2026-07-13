@@ -25,7 +25,7 @@ path = "src/cleantext_studio/version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --cov=cleantext_studio.cleaners --cov-report=term-missing"
+addopts = "-q --cov=cleantext_studio.cleaners --cov=cleantext_studio.math --cov-report=term-missing --cov-fail-under=90"
 
 [tool.ruff]
 line-length = 100

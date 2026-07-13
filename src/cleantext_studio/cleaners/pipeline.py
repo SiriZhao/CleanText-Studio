@@ -9,6 +9,8 @@ import emoji
 import ftfy
 from bs4 import BeautifulSoup
 
+from cleantext_studio.math import MathDetector, MathNormalizer, detect_math_warnings
+from cleantext_studio.math.protector import MathProtector, ProtectedMath
 from cleantext_studio.models import (
     CleaningChange,
     CleanOptions,
@@ -16,6 +18,7 @@ from cleantext_studio.models import (
     CleanStats,
     LinkMode,
     MergeLevel,
+    ResidualWarning,
     TextBlock,
     TextBlockType,
 )
@@ -73,6 +76,9 @@ def _should_merge(previous: TextBlock, current: TextBlock, level: MergeLevel) ->
         TextBlockType.LIST_ITEM,
         TextBlockType.ORDERED_LIST_ITEM,
         TextBlockType.QUOTE,
+        TextBlockType.DISPLAY_MATH,
+        TextBlockType.MATH_PARAGRAPH,
+        TextBlockType.EQUATION_GROUP,
     }
     if previous.type in protected or current.type in protected:
         return False
@@ -105,43 +111,191 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
     options = options or CleanOptions()
     original = text
     text = _html_to_text(_normalize(text))
+    math_protector = MathProtector(options.normalize_math_spacing, options.math_output_mode)
+    math_detector = MathDetector()
     markdown_cleaner = MarkdownCleaner()
     blocks: list[TextBlock] = []
     direct_changes: list[CleaningChange] = []
     markdown_count = emoji_count = separator_count = heading_count = links_processed = 0
     in_code = False
-    for position, raw in enumerate(text.split("\n")):
+    raw_lines = text.split("\n")
+    position = 0
+    while position < len(raw_lines):
+        raw = raw_lines[position]
         line = raw.rstrip()
         if re.match(r"^\s*```", line):
             in_code = not in_code
             markdown_count += len(line.strip())
+            position += 1
             continue
         if in_code:
             blocks.append(
                 TextBlock(
-                    TextBlockType.CODE, raw, line, position, protected=True,
-                    block_id=f"b{position}", source_start=position, source_end=position,
+                    TextBlockType.CODE,
+                    raw,
+                    line,
+                    position,
+                    protected=True,
+                    block_id=f"b{position}",
+                    source_start=position,
+                    source_end=position,
                 )
             )
+            position += 1
             continue
+        if options.detect_math:
+            stripped = line.strip()
+            display_end: str | None = None
+            content_start = ""
+            environment = math_detector.environment_start(stripped)
+            if stripped.startswith("$$"):
+                display_end, content_start = "$$", stripped[2:]
+            elif stripped.startswith(r"\["):
+                display_end, content_start = r"\]", stripped[2:]
+            if display_end is not None or environment is not None:
+                collected = [raw]
+                if (
+                    display_end
+                    and content_start.endswith(display_end)
+                    and len(content_start) > len(display_end)
+                ):
+                    content = content_start[: -len(display_end)].strip()
+                else:
+                    cursor = position + 1
+                    while cursor < len(raw_lines) and cursor - position < 1000:
+                        collected.append(raw_lines[cursor])
+                        if (
+                            display_end
+                            and re.match(
+                                rf".*{re.escape(display_end)}(?:\s*[（(]\d+[)）])?\s*$",
+                                raw_lines[cursor],
+                            )
+                        ) or (
+                            environment
+                            and math_detector.environment_ended(raw_lines[cursor], environment)
+                        ):
+                            break
+                        cursor += 1
+                    position = cursor
+                    source = "\n".join(collected)
+                    if display_end:
+                        body = source.strip()[2:]
+                        content = re.sub(
+                            rf"{re.escape(display_end)}(?:\s*[（(]\d+[)）])?\s*$", "", body
+                        ).strip()
+                    else:
+                        content = source.strip()
+                source = "\n".join(collected)
+                equation_match = re.search(r"[（(]\d+[)）]\s*$", source)
+                equation_number = (
+                    equation_match.group()
+                    if equation_match and options.preserve_equation_numbers
+                    else None
+                )
+                if equation_number and display_end:
+                    content = re.sub(
+                        rf"{re.escape(display_end)}\s*{re.escape(equation_number)}\s*$", "", content
+                    ).strip()
+                data = math_protector.display_data(
+                    source, content, position - len(collected) + 1, position, equation_number
+                )
+                warnings = detect_math_warnings(source, f"b{position}", position + 1)
+                data.warnings.extend(w.warning_type for w in warnings)
+                if options.math_output_mode.value == "unicode":
+                    rendered_math = MathNormalizer().to_unicode(data.normalized_text)
+                elif source.strip().startswith("$$"):
+                    rendered_math = f"$$\n{data.normalized_text}\n$$"
+                elif source.strip().startswith(r"\["):
+                    rendered_math = f"\\[\n{data.normalized_text}\n\\]"
+                else:
+                    rendered_math = source
+                if data.equation_number:
+                    rendered_math += f" {data.equation_number}"
+                blocks.append(
+                    TextBlock(
+                        TextBlockType.DISPLAY_MATH,
+                        source,
+                        rendered_math,
+                        position,
+                        protected=True,
+                        block_id=f"b{position}",
+                        source_start=data.source_start,
+                        source_end=data.source_end,
+                        math=data,
+                        warnings=list(data.warnings),
+                    )
+                )
+                position += 1
+                continue
+            standalone = math_detector.detect_line(line)
+            if standalone and standalone.display_mode.value == "block":
+                normalized = (
+                    MathNormalizer().normalize(standalone.content)
+                    if options.normalize_math_spacing
+                    else standalone.content
+                )
+                from cleantext_studio.models import MathBlockData
+
+                data = MathBlockData(
+                    standalone.source,
+                    normalized,
+                    standalone.math_format,
+                    standalone.display_mode,
+                    standalone.equation_number,
+                    position,
+                    position,
+                    standalone.confidence,
+                )
+                blocks.append(
+                    TextBlock(
+                        TextBlockType.MATH_PARAGRAPH,
+                        raw,
+                        normalized,
+                        position,
+                        protected=True,
+                        block_id=f"b{position}",
+                        source_start=position,
+                        source_end=position,
+                        math=data,
+                    )
+                )
+                position += 1
+                continue
         if TABLE.match(line):
             blocks.append(
                 TextBlock(
-                    TextBlockType.TABLE, raw, line, position, protected=True,
-                    block_id=f"b{position}", source_start=position, source_end=position,
+                    TextBlockType.TABLE,
+                    raw,
+                    line,
+                    position,
+                    protected=True,
+                    block_id=f"b{position}",
+                    source_start=position,
+                    source_end=position,
                 )
             )
+            position += 1
             continue
         if markdown_cleaner.is_separator(line):
             separator_count += 1
             markdown_count += len(line.strip())
             direct_changes.append(
                 CleaningChange(
-                    "horizontal_rule", "remove", raw, "", (position, position),
-                    f"b{position}", 1, "删除独立 Markdown 分隔线",
+                    "horizontal_rule",
+                    "remove",
+                    raw,
+                    "",
+                    (position, position),
+                    f"b{position}",
+                    1,
+                    "删除独立 Markdown 分隔线",
                 )
             )
+            position += 1
             continue
+        inline_math: list[ProtectedMath] = []
+        if options.detect_math and options.protect_math:
+            line, inline_math = math_protector.protect_inline(line, position)
         markdown_level: int | None = None
         parsed_markdown = None
         if options.remove_markdown:
@@ -154,6 +308,7 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             markdown_level = parsed_markdown.heading_level
             markdown_count += parsed_markdown.removed
             links_processed += parsed_markdown.links_processed
+        line = math_protector.restore(line, inline_math)
         quote_level = 0
         quote = re.match(r"^\s*(>+)\s*", line)
         if quote:
@@ -193,11 +348,20 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             block_type = TextBlockType.PARAGRAPH
         blocks.append(
             TextBlock(
-                block_type, raw, line, position, markdown_level, list_level, raw != line,
-                block_id=f"b{position}", source_start=position, source_end=position,
+                block_type,
+                raw,
+                line,
+                position,
+                markdown_level,
+                list_level,
+                raw != line,
+                block_id=f"b{position}",
+                source_start=position,
+                source_end=position,
                 protected=block_type in {TextBlockType.CODE, TextBlockType.TABLE},
                 list_marker=parsed_markdown.list_marker if parsed_markdown else None,
                 ordered_index=parsed_markdown.ordered_index if parsed_markdown else None,
+                metadata={"inline_math": [item.data for item in inline_math]},
             )
         )
         if blocks[-1].modified:
@@ -207,6 +371,7 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
                 blocks[-1].reasons.append("markdown_marker")
             elif raw.rstrip() != line:
                 blocks[-1].reasons.append("whitespace_normalization")
+        position += 1
     blocks = consolidate_table_blocks(blocks)
     pending_blank = 0
     previous_nonblank: TextBlock | None = None
@@ -219,9 +384,7 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             previous_nonblank.original_blank_lines_after = pending_blank
         pending_blank = 0
         previous_nonblank = block
-    ai_pattern_count = (
-        AIPatternCleaner().clean(blocks) if options.clean_instructional_labels else 0
-    )
+    ai_pattern_count = AIPatternCleaner().clean(blocks) if options.clean_instructional_labels else 0
     ai_pattern_count += URLCleaner().clean(blocks, options.independent_url_mode)
     merged = 0
     if options.merge_fragments:
@@ -242,7 +405,31 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         result_text = layout.text
         merged += layout.removed_breaks
     residuals = detect_block_residuals(blocks, result_text)
+    math_warnings = []
+    for block in blocks:
+        if block.type not in {TextBlockType.CODE, TextBlockType.TABLE}:
+            math_warnings.extend(
+                detect_math_warnings(block.original_text, block.block_id, block.position + 1)
+            )
+    residuals.extend(
+        ResidualWarning(
+            line=warning.line_number,
+            kind=f"math:{warning.warning_type}",
+            excerpt=warning.snippet,
+            severity=warning.severity,
+            suggestion=warning.suggestion,
+            block_id=warning.block_id,
+        )
+        for warning in math_warnings
+    )
     table_count = sum(block.table is not None for block in blocks)
+    table_formula_count = sum(
+        len(math_detector.detect_inline(cell))
+        for block in blocks
+        if block.table is not None
+        for row in [block.table.headers, *block.table.rows]
+        for cell in row
+    )
     list_count = sum("list_item" in block.type.value for block in blocks)
     change_records = direct_changes + [
         CleaningChange(
@@ -275,6 +462,23 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         tables_preserved=table_count,
         list_items_detected=list_count,
         links_processed=links_processed,
+        formulas_detected=sum(bool(block.math) for block in blocks)
+        + sum(
+            len(value) if isinstance((value := block.metadata.get("inline_math")), list) else 0
+            for block in blocks
+        )
+        + table_formula_count,
+        inline_formulas_detected=sum(
+            len(value) if isinstance((value := block.metadata.get("inline_math")), list) else 0
+            for block in blocks
+        )
+        + table_formula_count,
+        display_formulas_detected=sum(block.math is not None for block in blocks),
+        formulas_normalized=sum(
+            bool(block.math and block.math.normalized_text != block.math.source_text)
+            for block in blocks
+        ),
+        formula_warnings=len(math_warnings),
     )
     changes = [
         f"删除 Markdown 标记 {markdown_count} 个",

@@ -1,8 +1,30 @@
 <p align="center"><img src="assets/icon.png" width="96" alt="CleanText Studio Logo"></p>
 
+> 当前版本：**v1.3.0**
+
+## v1.3.0 数学公式能力
+
+- 在 Markdown 清理前保护 `$...$`、`$$...$$`、`\\(...\\)`、`\\[...\\]` 与常用 LaTeX 环境。
+- 识别 Unicode 数学表达式、普通方程、公式编号，以及表格单元格中的行内公式。
+- Word 导出优先生成可编辑的原生 OMML；不支持的复杂公式安全保留原始 LaTeX。
+- 公式预览完全离线，不使用 CDN、不执行用户宏，也不计算、化简或改写数学含义。
+
+清洗前：`**公式：** $E = mc^2$`
+清洗后：`公式：$E = mc^2$`
+
+目前支持常用 LaTeX 子集。极复杂宏、自定义命令和特殊环境可能以原始 LaTeX 保留。
+
+| 公式清洗与设置 | 离线公式预览 |
+|---|---|
+| ![公式清洗](assets/screenshots/math-cleaning-v1.3.0.png) | ![公式预览](assets/screenshots/math-preview-v1.3.0.png) |
+
+| 公式问题提示 | Word 公式导出摘要 |
+|---|---|
+| ![公式警告](assets/screenshots/math-warning-v1.3.0.png) | ![Word 公式导出](assets/screenshots/math-word-export-v1.3.0.png) |
+
 # 净文排版 · CleanText Studio
 
-本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。当前版本：**v1.2.2**。
+本地优先的文本格式清洗、结构整理、数学公式保护与 Word/TXT 排版工具。当前版本：**v1.3.0**。
 
 开发者：**SiriZhao** · 项目主页：[github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 

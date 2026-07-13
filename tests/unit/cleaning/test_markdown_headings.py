@@ -3,7 +3,9 @@ import pytest
 from cleantext_studio.cleaners import clean_text
 
 
-@pytest.mark.parametrize("source", ["#标题", "## 标题", "＃＃ 标题", "####\t**标题**", "**#### 标题**"])
+@pytest.mark.parametrize(
+    "source", ["#标题", "## 标题", "＃＃ 标题", "####\t**标题**", "**#### 标题**"]
+)
 def test_heading_markers_removed_and_level_retained(source: str) -> None:
     result = clean_text(source)
     assert result.text == "标题"

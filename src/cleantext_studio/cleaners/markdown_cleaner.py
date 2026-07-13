@@ -70,11 +70,20 @@ class MarkdownCleaner:
             number = re.match(r"[（(]?(\d+)", marker)
             ordered_index = int(number.group(1)) if number else None
             line = (
-                f"• {content}" if list_mode == ListMode.KEEP and marker in "-+*•▪◦" else
-                f"{marker} {content}" if list_mode == ListMode.KEEP else content
+                f"• {content}"
+                if list_mode == ListMode.KEEP and marker in "-+*•▪◦"
+                else f"{marker} {content}"
+                if list_mode == ListMode.KEEP
+                else content
             )
         line = re.sub(r"[ \t]+", " ", line).strip()
         return MarkdownLine(
-            line, heading_level, list_level, list_match is not None,
-            max(0, len(original) - len(line)), links_processed, list_marker, ordered_index,
+            line,
+            heading_level,
+            list_level,
+            list_match is not None,
+            max(0, len(original) - len(line)),
+            links_processed,
+            list_marker,
+            ordered_index,
         )

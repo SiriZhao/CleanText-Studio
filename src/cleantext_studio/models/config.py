@@ -33,6 +33,18 @@ class IndependentURLMode(StrEnum):
     DELETE_TUTORIAL = "delete_tutorial"
 
 
+class MathOutputMode(StrEnum):
+    PRESERVE = "preserve"
+    LATEX = "latex"
+    UNICODE = "unicode"
+
+
+class MathExportMode(StrEnum):
+    WORD_OMML = "word_omml"
+    LATEX_TEXT = "latex_text"
+    UNICODE_TEXT = "unicode_text"
+
+
 class CleanOptions(BaseModel):
     remove_markdown: bool = True
     remove_emoji: bool = True
@@ -47,6 +59,14 @@ class CleanOptions(BaseModel):
     link_mode: LinkMode = LinkMode.TEXT_ONLY
     clean_instructional_labels: bool = False
     independent_url_mode: IndependentURLMode = IndependentURLMode.PRESERVE
+    detect_math: bool = True
+    protect_math: bool = True
+    normalize_math_spacing: bool = True
+    repair_math_delimiters: bool = True
+    preserve_equation_numbers: bool = True
+    math_output_mode: MathOutputMode = MathOutputMode.PRESERVE
+    math_export_mode: MathExportMode = MathExportMode.WORD_OMML
+    preserve_unconverted_math: bool = True
 
 
 class DocumentTemplate(BaseModel):

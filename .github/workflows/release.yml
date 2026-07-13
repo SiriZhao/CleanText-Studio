@@ -20,7 +20,7 @@ jobs:
       - run: choco install innosetup -y
       - run: ruff check .
       - run: mypy src
-      - run: pytest --cov=cleantext_studio.cleaners --cov-report=term
+      - run: pytest --cov=cleantext_studio.cleaners --cov=cleantext_studio.math --cov-report=term --cov-fail-under=90
         env: {QT_QPA_PLATFORM: offscreen}
       - shell: pwsh
         run: ./scripts/build_windows.ps1 -SkipChecks

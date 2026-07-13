@@ -9,7 +9,7 @@ FIELD_LABEL = re.compile(
     r"下载|安装|运行|设置|注意|提示|说明|示例|操作|步骤)\s*[：:]\s*$"
 )
 START_PREFIX = re.compile(r"^(?:以下内容|下面内容|我将|根据你的要求|好的|当然)\s*[：:，,!！。]*\s*")
-END_PHRASE = re.compile(r"^(?:希望|如果需要|欢迎|感谢阅读)(?:[：:].*)?[。.!！]?$" )
+END_PHRASE = re.compile(r"^(?:希望|如果需要|欢迎|感谢阅读)(?:[：:].*)?[。.!！]?$")
 
 
 class AIPatternCleaner:
@@ -21,7 +21,9 @@ class AIPatternCleaner:
         for offset, index in enumerate(meaningful):
             block = blocks[index]
             if FIELD_LABEL.fullmatch(block.text):
-                next_text = blocks[meaningful[offset + 1]].text if offset + 1 < len(meaningful) else ""
+                next_text = (
+                    blocks[meaningful[offset + 1]].text if offset + 1 < len(meaningful) else ""
+                )
                 if 0 < len(next_text) < 20 or next_text.startswith(("http://", "https://")):
                     block.text = ""
                     block.modified = True
