@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.3.2 - 2026-07-13
+
+### Fixed
+
+- Render inline LaTeX variables in Chinese paragraphs as native Word OMML.
+- Prevent supported `\lambda`, `\xi`, delimiters, and other formula source from reaching normal Word text.
+- Preserve the ordering and punctuation of mixed text and inline formulas.
+- Prevent contextual short titles from being formatted as list content.
+- Remove Markdown emphasis residue, empty decorative Emoji columns, and soft-line fragments in tables.
+- Export table-cell formulas as native OMML instead of plaintext.
+
+### Improved
+
+- Add structured paragraph inline runs shared by preview and Word export.
+- Add content-aware table width planning and empty-column statistics.
+- Add DOCX XML regression checks for inline formulas, tables, and source residue.
+
 ## 1.3.1 - 2026-07-13
 
 ### Added

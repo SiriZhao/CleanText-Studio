@@ -35,7 +35,9 @@ class MathDetector:
         for pattern in (_INLINE, _PAREN):
             for match in pattern.finditer(text):
                 content = match.group(1).strip()
-                if self._math_score(content) >= 0.55:
+                # Explicit, balanced LaTeX delimiters are intentional even for a
+                # single variable such as \(O\) or \(\lambda\).
+                if content and (pattern is _PAREN or self._math_score(content) >= 0.55):
                     regions.append(
                         MathRegion(
                             match.start(),

@@ -72,6 +72,8 @@ class FormulaParser:
 
     def parse(self, source: str) -> FormulaNode:
         source = source.strip()
+        if not source:
+            raise FormulaParseError("formula is empty")
         if len(source) > 20_000:
             raise FormulaParseError("formula exceeds the safe length limit")
         environment = ENVIRONMENT.fullmatch(source)

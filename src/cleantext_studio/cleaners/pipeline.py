@@ -16,6 +16,8 @@ from cleantext_studio.models import (
     CleanOptions,
     CleanResult,
     CleanStats,
+    InlineRun,
+    InlineRunType,
     LinkMode,
     MergeLevel,
     ResidualWarning,
@@ -47,7 +49,7 @@ def _normalize(text: str) -> str:
     text = html.unescape(text).replace("\r\n", "\n").replace("\r", "\n")
     text = ftfy.fix_text(text)
     text = unicodedata.normalize("NFKC", text)
-    text = re.sub(r"(?<=[\u4e00-\u9fff]),(?=(?:\n)?[\u4e00-\u9fff])", "，", text)
+    text = re.sub(r"(?<=[\u4e00-\u9fff]),(?=(?:\s|$|[\u4e00-\u9fff]))", "，", text)
     return re.sub(r"[\u00a0\u2000-\u200b\u202f\u205f\u3000]", " ", text)
 
 
@@ -103,6 +105,46 @@ def _join(a: str, b: str) -> str:
     if a[-1:].isascii() and b[:1].isascii() and a[-1:].isalnum() and b[:1].isalnum():
         return f"{a} {b}"
     return a + b
+
+
+def _inline_runs(text: str, formulas: list[ProtectedMath]) -> list[InlineRun]:
+    runs: list[InlineRun] = []
+    cursor = 0
+    for protected in formulas:
+        source = protected.data.source_text
+        index = text.find(source, cursor)
+        if index < 0:
+            continue
+        if index > cursor:
+            runs.append(InlineRun(InlineRunType.TEXT, text[cursor:index]))
+        runs.append(InlineRun(InlineRunType.INLINE_MATH, source, protected.data))
+        cursor = index + len(source)
+    if cursor < len(text):
+        runs.append(InlineRun(InlineRunType.TEXT, text[cursor:]))
+    return runs or [InlineRun(InlineRunType.TEXT, text)]
+
+
+def _promote_short_headings(blocks: list[TextBlock]) -> None:
+    """Use blank-line context before list handling can make a short title look like content."""
+    for index, block in enumerate(blocks):
+        if block.type != TextBlockType.PARAGRAPH or not block.text or len(block.text) > 24:
+            continue
+        if block.text.endswith(("。", "！", "？", "，", "、", "：", ".", "!", "?", ",", ":")):
+            continue
+        previous_blank = index == 0 or blocks[index - 1].type == TextBlockType.BLANK
+        next_index = index + 1
+        while next_index < len(blocks) and blocks[next_index].type == TextBlockType.BLANK:
+            next_index += 1
+        next_block = blocks[next_index] if next_index < len(blocks) else None
+        next_is_content = next_block is not None and next_block.type in {
+            TextBlockType.PARAGRAPH,
+            TextBlockType.DISPLAY_MATH,
+            TextBlockType.MATH_PARAGRAPH,
+            TextBlockType.TABLE,
+        }
+        if previous_blank and next_is_content:
+            block.type = TextBlockType.HEADING_1
+            block.reasons.append("contextual_short_heading")
 
 
 def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
@@ -357,6 +399,7 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
                 list_marker=parsed_markdown.list_marker if parsed_markdown else None,
                 ordered_index=parsed_markdown.ordered_index if parsed_markdown else None,
                 metadata={"inline_math": [item.data for item in inline_math]},
+                runs=_inline_runs(line, inline_math),
             )
         )
         if blocks[-1].modified:
@@ -367,6 +410,7 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
             elif raw.rstrip() != line:
                 blocks[-1].reasons.append("whitespace_normalization")
         position += 1
+    _promote_short_headings(blocks)
     blocks = consolidate_table_blocks(blocks)
     pending_blank = 0
     previous_nonblank: TextBlock | None = None
@@ -455,6 +499,13 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
         elapsed_ms=(time.perf_counter() - started) * 1000,
         tables_detected=table_count,
         tables_preserved=table_count,
+        empty_table_columns_removed=sum(
+            -item
+            for block in blocks
+            if block.table is not None
+            for item in block.table.malformed_rows
+            if item < 0
+        ),
         list_items_detected=list_count,
         links_processed=links_processed,
         formulas_detected=sum(bool(block.math) for block in blocks)

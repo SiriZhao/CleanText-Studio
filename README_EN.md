@@ -4,36 +4,36 @@
 
 A local-first Windows app for text cleanup, document structure, math typesetting, and TXT/DOCX export.
 
-[![Version](https://img.shields.io/badge/version-v1.3.1-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+[![Version](https://img.shields.io/badge/version-v1.3.2-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Windows download
 
-Download the x64 installer or portable package from the [v1.3.1 release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1). Current version: **v1.3.1**. Developer: **SiriZhao**.
+Download the x64 installer or portable package from the [v1.3.2 release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2). Current version: **v1.3.2**. Developer: **SiriZhao**.
 
-## What is new in v1.3.1
+## v1.3.2 stability fixes
 
-- Formula AST parsing and real offline rich-text preview instead of supported LaTeX source.
-- Editable native Word OMML for fractions, roots, scripts, n-ary operators, Greek letters, matrices, and cases.
-- Deep Markdown/HTML cleanup inside table cells while preserving inline formulas.
-- Integrity-checked conversion with readable, delimiter-free fallback for unsupported macros.
+- Native inline Word OMML for formulas mixed with Chinese body text.
+- No supported LaTeX delimiters or commands in normal Word text.
+- Empty decorative Emoji columns and soft-line fragments are removed from tables.
+- Preview and DOCX now use the same paragraph-run and table structure.
 
 ## Screenshots
 
-| Math cleanup | Formula preview |
+| Inline math | Block and inline math |
 |---|---|
-| ![Math cleanup](assets/screenshots/math-cleaning-v1.3.1.png) | ![Formula preview](assets/screenshots/math-preview-v1.3.1.png) |
+| ![Inline math](assets/screenshots/inline-math-v1.3.2.png) | ![Block and inline math](assets/screenshots/block-and-inline-math-v1.3.2.png) |
 
 ## Formula rendering
 
-![Math settings](assets/screenshots/math-settings-v1.3.1.png)
+![Table cleanup](assets/screenshots/table-clean-v1.3.2.png)
 
 ## Native Word equations
 
-![Word math export](assets/screenshots/math-word-export-v1.3.1.png)
+![Word table export](assets/screenshots/table-word-v1.3.2.png)
 
 ## Clean tables and formulas
 
-![Math with table](assets/screenshots/math-with-table-v1.3.1.png)
+![Export quality](assets/screenshots/export-quality-v1.3.2.png)
 
 ## Core features
 
