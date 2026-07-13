@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.3.1 - 2026-07-13
+
+### Added
+
+- Safe Formula AST with offline rich-text preview rendering and integrity validation.
+- Native OMML conversion for common fractions, roots, scripts, n-ary operators, Greek letters, matrices, cases, functions, and Chinese `text` nodes.
+- Deep Markdown and HTML cleanup for table cells while preserving inline formulas.
+
+### Fixed
+
+- Formula preview no longer exposes supported LaTeX commands or outer delimiters.
+- Word export no longer writes supported formulas as ordinary LaTeX text.
+- Formula fallback removes outer delimiters and preserves complete readable content.
+- Table headers and cells no longer retain Markdown emphasis or separator rows.
+
+### Changed
+
+- Preview and DOCX export now consume the same parsed formula expression stored on `MathBlockData`.
+- README sections are reordered around downloads, current release features, and real screenshots.
+
 ## 1.3.0 - 2026-07-13
 
 ### Added

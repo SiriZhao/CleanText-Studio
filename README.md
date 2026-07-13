@@ -1,122 +1,121 @@
 <p align="center"><img src="assets/icon.png" width="96" alt="CleanText Studio Logo"></p>
 
-> 当前版本：**v1.3.0**
-
-## v1.3.0 数学公式能力
-
-- 在 Markdown 清理前保护 `$...$`、`$$...$$`、`\\(...\\)`、`\\[...\\]` 与常用 LaTeX 环境。
-- 识别 Unicode 数学表达式、普通方程、公式编号，以及表格单元格中的行内公式。
-- Word 导出优先生成可编辑的原生 OMML；不支持的复杂公式安全保留原始 LaTeX。
-- 公式预览完全离线，不使用 CDN、不执行用户宏，也不计算、化简或改写数学含义。
-
-清洗前：`**公式：** $E = mc^2$`
-清洗后：`公式：$E = mc^2$`
-
-目前支持常用 LaTeX 子集。极复杂宏、自定义命令和特殊环境可能以原始 LaTeX 保留。
-
-| 公式清洗与设置 | 离线公式预览 |
-|---|---|
-| ![公式清洗](assets/screenshots/math-cleaning-v1.3.0.png) | ![公式预览](assets/screenshots/math-preview-v1.3.0.png) |
-
-| 公式问题提示 | Word 公式导出摘要 |
-|---|---|
-| ![公式警告](assets/screenshots/math-warning-v1.3.0.png) | ![Word 公式导出](assets/screenshots/math-word-export-v1.3.0.png) |
-
 # 净文排版 · CleanText Studio
 
-本地优先的文本格式清洗、结构整理、数学公式保护与 Word/TXT 排版工具。当前版本：**v1.3.0**。
+本地优先的文本格式清洗、结构整理、数学公式排版与 Word/TXT 导出工具。
 
-开发者：**SiriZhao** · 项目主页：[github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
+[![Version](https://img.shields.io/badge/version-v1.3.1-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
-> 本软件不提供规避 AI 检测、绕过查重或实施学术不端的功能。
+## Windows 下载
 
-## 下载
+从 [CleanText Studio v1.3.1 Release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1) 下载 Windows x64 安装版或便携版。安装版按当前用户安装；便携版解压后运行 `CleanText Studio.exe`。
 
-从 [GitHub Releases](https://github.com/SiriZhao/CleanText-Studio/releases) 下载 Windows x64 安装版或便携版。安装版按当前用户安装；便携版解压后运行 `CleanText Studio.exe`。
+当前版本：**v1.3.1**。开发者：**SiriZhao** · [项目主页](https://github.com/SiriZhao/CleanText-Studio)
 
-## 界面
+## v1.3.1 新版本特性
 
-| 浅色主界面 | 深色主界面 |
+- 公式通过安全 Formula AST 解析，预览不再显示受支持公式的 LaTeX 源码。
+- Word 导出使用原生可编辑 OMML，覆盖分式、根式、上下标、求和、积分、希腊字母、矩阵和分段函数。
+- 表格单元格深度清理 Markdown、HTML、Emoji 与异常换行，同时保留内联公式。
+- 公式转换执行完整性校验；不支持的复杂宏以无外层定界符的可读文本安全回退。
+
+## 新版界面和功能截图
+
+| 数学清洗与设置 | 离线公式预览 |
 |---|---|
-| ![浅色主界面](assets/screenshots/main-light-v1.2.2.png) | ![深色主界面](assets/screenshots/main-dark-v1.2.2.png) |
+| ![数学清洗](assets/screenshots/math-cleaning-v1.3.1.png) | ![公式预览](assets/screenshots/math-preview-v1.3.1.png) |
 
-| Markdown 表格预览 | 清洗前后对比 |
-|---|---|
-| ![表格预览](assets/screenshots/table-preview-v1.2.2.png) | ![清洗对比](assets/screenshots/cleaning-before-after-v1.2.2.png) |
+## 公式渲染展示
 
-| 残留提示 | Word 导出摘要 |
-|---|---|
-| ![残留提示](assets/screenshots/residual-warning-v1.2.2.png) | ![Word 摘要](assets/screenshots/word-export-summary-v1.2.2.png) |
+![数学设置](assets/screenshots/math-settings-v1.3.1.png)
 
-| AI Provider 设置 | 关于页面 |
-|---|---|
-| ![AI 设置](assets/screenshots/ai-config-v1.2.2.png) | ![关于](assets/screenshots/about-v1.2.2.png) |
+## Word 原生公式展示
+
+![Word 公式导出](assets/screenshots/math-word-export-v1.3.1.png)
+
+## 表格清洗与导出展示
+
+![公式与表格](assets/screenshots/math-with-table-v1.3.1.png)
 
 ## 核心功能
 
-- 清理 Markdown 标题、强调、链接、分隔线、Emoji、装饰符号与复制残留
-- 保护代码、表格、列表和标题结构，检测清洗残留
-- 三种换行模式：删除段落间换行、仅保留大分段、保留所有段落间换行
-- 智能 Markdown 表格解析、结构化预览和真实 Word 表格导出
-- 分阶段清理 Markdown、碎片化操作标签和教程结构，同时保护正文网址
-- 深度清洗可清理独立操作标签；独立 URL 默认保留，也可显式选择合并或删除教程链接
-- 块感知残留检测与 Word 导出结构摘要，结果预览和导出共享同一文档块
-- 导入 TXT、Markdown、DOCX，导出 UTF-8 TXT 和规范 DOCX
-- 跟随 Windows 系统主题，也可固定浅色或深色
+- 清理 Markdown 标题、强调、链接、分隔线、Emoji、装饰符号与复制残留。
+- 结构化识别标题、列表、引用、代码、表格与数学公式。
+- 三种段落模式；TXT、DOCX 导入和导出；浅色、深色与跟随系统主题。
+- 可选 BYOK AI：OpenAI、DeepSeek、Anthropic、OpenAI 兼容及本地兼容接口。
 
-## v1.2.2 清洗示例
+## 清洗前后示例
 
-清洗前：
+清洗前：`**公式：** \[S = k_B \ln \Omega\]`；清洗后预览为排版公式，Word 中为可编辑原生公式。普通 Markdown 示例 `### 测试账号` 与 `**无需登录**` 会清理为纯净标题和正文。
 
-```text
-### 测试账号
+## 支持格式
 
----
+导入 `.txt`、`.md`、`.markdown`、`.docx`；导出 UTF-8 TXT 与结构化 DOCX。
 
-**无需登录**
-```
+## 使用方法
 
-清洗后：
+粘贴或打开文本，选择清洗预设与段落模式，点击“开始清洗”，在文本/预览模式检查结果，再导出 TXT 或 Word。
 
-```text
-测试账号
+## AI API 配置
 
-无需登录
-```
-- 可选 BYOK AI：OpenAI、DeepSeek、Anthropic、OpenAI 兼容和本地兼容接口
+AI 优化默认关闭。用户自行配置 Provider、Base URL、模型和 API Key；密钥保存至 Windows 凭据管理器或仅保留在本次会话。项目不提供公共密钥、不代付费用、不代理模型服务。
 
-清洗示例：`#### 项目背景`、Markdown 表格和碎片换行可以在不扩写事实的前提下整理为干净的标题、正文与结构化表格。
+## 本地模式与隐私
 
-## 本地模式与 BYOK
+基础清洗、预览、TXT 和 Word 导出完全离线，不收集遥测，不上传用户文本。第三方 API 的数据处理受相应提供商政策约束。
 
-基础清洗、TXT 和 Word 导出完全离线。AI 智能优化仅在用户配置自己的 API、查看发送范围并主动确认后调用第三方服务。API Key 保存至 Windows 凭据管理器或仅保留在当前会话，普通配置和导出文件不含密钥。项目不提供公共 API Key、不代付费用、不代理或转售模型服务。第三方数据处理取决于对应服务条款和隐私政策。
+## Word 导出说明
 
-Provider 切换会更新默认 Base URL 和推荐模型；模型始终允许手动输入。DeepSeek 默认地址为 `https://api.deepseek.com`，推荐模型为 `deepseek-v4-flash`；本地兼容接口默认 `http://localhost:11434/v1`。
+标题、列表、表格和支持范围内公式使用 Word 原生结构。公式使用 Cambria Math/Word 默认数学字体，正文使用模板字体；自动目录域需在 Word 中更新。
 
-## 字体与视觉
+## 数学公式支持范围
 
-应用只使用系统已安装字体，不分发商业字体或下载未知字体。Windows 回退顺序：HarmonyOS Sans SC、HarmonyOS Sans、Microsoft YaHei UI、Microsoft YaHei、Segoe UI、系统默认字体；macOS 预留 PingFang SC、SF Pro Text、Helvetica Neue 回退。
+支持 `$...$`、`$$...$$`、`\(...\)`、`\[...\]`，常用 equation/align/matrix/cases 环境，上下标、分数、根号、求和、积分、关系符、函数、希腊字母及 `\text{...}`。程序不会计算、化简或改写数学含义。
 
-## 开发、测试与构建
+## 已知限制
+
+- 复杂自定义宏、特殊环境和超深嵌套可能回退为可读文本。
+- 轻量预览覆盖常用结构，不是完整 TeX 排版引擎。
+- DOCX 导入不保留图片与复杂原始样式；AI 差异仍以全文接受/放弃为主。
+
+## 安装与便携版
+
+Setup 版支持当前用户安装、开始菜单与可选桌面快捷方式；Portable 版不要求 Python，解压即可运行。
+
+## 开发环境
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\pip install -e ".[dev]"
 .\.venv\Scripts\python -m cleantext_studio.main
-.\.venv\Scripts\ruff check .
-.\.venv\Scripts\mypy src
-.\.venv\Scripts\pytest
-.\scripts\build_windows.ps1
 ```
 
-详细文档：[用户指南](docs/USER_GUIDE.md) · [API 配置](docs/API_CONFIGURATION.md) · [开发](docs/DEVELOPMENT.md) · [Windows 构建](docs/BUILD_WINDOWS.md) · [隐私](docs/PRIVACY.md)
+## 测试
 
-## 已知限制与路线图
+```powershell
+.\.venv\Scripts\ruff check .
+.\.venv\Scripts\mypy src/cleantext_studio
+.\.venv\Scripts\pytest
+```
 
-- AI 差异目前以全文接受/放弃为主，逐段精细确认仍待增强
-- DOCX 导入不保留复杂原始样式和图片；自动目录域需在 Word 中更新
-- 后续将增强模板管理、逐项差异恢复和无障碍支持
+## 构建
+
+运行 `.\scripts\build_windows.ps1` 生成 onedir、Portable ZIP、Inno Setup 安装包和 SHA256。详见 [Windows 构建文档](docs/BUILD_WINDOWS.md)。
+
+## 路线图
+
+继续改进复杂公式兼容、模板管理、逐项差异恢复和无障碍体验。
+
+## 贡献
+
+请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [开发文档](docs/DEVELOPMENT.md)。
+
+## 开发者
+
+SiriZhao · [github.com/SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio)
 
 ## 许可证
 
 MIT License。Copyright © 2026 SiriZhao. All rights reserved.
+
+> 本软件用于文本格式清理、结构整理和文档排版，不提供规避 AI 检测、绕过查重或实施学术不端的功能。

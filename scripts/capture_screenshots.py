@@ -59,11 +59,11 @@ def main() -> None:
     window.input.setPlainText(SAMPLE)
     window._cleaned(clean_text(SAMPLE, CleanOptions()))
     window.apply_theme(Theme.LIGHT)
-    save(window, "math-cleaning-v1.3.0.png", app)
-    save(window, "math-settings-v1.3.0.png", app)
+    save(window, "math-cleaning-v1.3.1.png", app)
+    save(window, "math-settings-v1.3.1.png", app)
     window.result_mode.setCurrentIndex(1)
-    save(window, "math-preview-v1.3.0.png", app)
-    save(window, "math-with-table-v1.3.0.png", app)
+    save(window, "math-preview-v1.3.1.png", app)
+    save(window, "math-with-table-v1.3.1.png", app)
 
     warning = QMessageBox(window)
     warning.setWindowTitle("数学公式问题")
@@ -72,7 +72,7 @@ def main() -> None:
         "未闭合的行内公式定界符\n建议检查 $ 公式边界，或保留原始公式后手动编辑。"
     )
     warning.setStandardButtons(QMessageBox.StandardButton.Close)
-    save(warning, "math-warning-v1.3.0.png", app)
+    save(warning, "math-warning-v1.3.1.png", app)
 
     summary = QMessageBox(window)
     summary.setWindowTitle("即将导出 Word")
@@ -80,7 +80,7 @@ def main() -> None:
     summary.setInformativeText("支持的公式将导出为 Word 原生可编辑公式；复杂公式保留原始 LaTeX。")
     summary.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
     summary.setWindowModality(Qt.WindowModality.NonModal)
-    save(summary, "math-word-export-v1.3.0.png", app)
+    save(summary, "math-word-export-v1.3.1.png", app)
     window.close()
 
 

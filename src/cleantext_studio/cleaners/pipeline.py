@@ -234,17 +234,12 @@ def clean_text(text: str, options: CleanOptions | None = None) -> CleanResult:
                     if options.normalize_math_spacing
                     else standalone.content
                 )
-                from cleantext_studio.models import MathBlockData
-
-                data = MathBlockData(
+                data = math_protector.display_data(
                     standalone.source,
                     normalized,
-                    standalone.math_format,
-                    standalone.display_mode,
+                    position,
+                    position,
                     standalone.equation_number,
-                    position,
-                    position,
-                    standalone.confidence,
                 )
                 blocks.append(
                     TextBlock(

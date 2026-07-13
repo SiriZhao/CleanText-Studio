@@ -4,8 +4,10 @@ from dataclasses import dataclass
 
 from cleantext_studio.models import MathBlockData, MathDisplayMode, MathFormat, MathOutputMode
 
+from .delimiters import strip_formula_delimiters
 from .detector import MathDetector
 from .normalizer import MathNormalizer
+from .parser import FormulaParseError, FormulaParser
 
 
 @dataclass(slots=True)
@@ -35,6 +37,11 @@ class MathProtector:
             normalized = (
                 self.normalizer.normalize(region.content) if self.normalize else region.content
             )
+            delimited = strip_formula_delimiters(region.source)
+            try:
+                ast = FormulaParser().parse(delimited.expression_source)
+            except FormulaParseError:
+                ast = None
             data = MathBlockData(
                 region.source,
                 normalized,
@@ -44,6 +51,11 @@ class MathProtector:
                 offset + region.start,
                 offset + region.end,
                 region.confidence,
+                metadata={"ast": ast},
+                raw_source=region.source,
+                expression_source=delimited.expression_source,
+                delimiter_type=delimited.delimiter_type,
+                normalized_latex=normalized,
             )
             output.extend((text[cursor : region.start], token))
             cursor = region.end
@@ -73,6 +85,12 @@ class MathProtector:
         self, source: str, content: str, start: int, end: int, equation_number: str | None = None
     ) -> MathBlockData:
         normalized = self.normalizer.normalize(content) if self.normalize else content.strip()
+        delimited = strip_formula_delimiters(source)
+        expression = content.strip()
+        try:
+            ast = FormulaParser().parse(expression)
+        except FormulaParseError:
+            ast = None
         return MathBlockData(
             source,
             normalized,
@@ -82,4 +100,9 @@ class MathProtector:
             start,
             end,
             1.0,
+            metadata={"ast": ast},
+            raw_source=source,
+            expression_source=expression,
+            delimiter_type=delimited.delimiter_type,
+            normalized_latex=normalized,
         )

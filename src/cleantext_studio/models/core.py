@@ -52,6 +52,11 @@ class MathBlockData:
     warnings: list[str] = field(default_factory=list)
     protected: bool = True
     metadata: dict[str, object] = field(default_factory=dict)
+    raw_source: str = ""
+    expression_source: str = ""
+    delimiter_type: str = "none"
+    normalized_latex: str = ""
+    conversion_status: str = "pending"
 
 
 @dataclass(slots=True)

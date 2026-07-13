@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import sys
 from contextlib import suppress
 from pathlib import Path
@@ -46,6 +47,8 @@ from cleantext_studio.llm.registry import create_provider
 from cleantext_studio.llm.retry import with_retry
 from cleantext_studio.llm.schemas import OptimizationResponse
 from cleantext_studio.llm.sensitive import redact_sensitive
+from cleantext_studio.math import FormulaParser, MathDetector, PreviewFormulaRenderer
+from cleantext_studio.math.ast import FormulaNode
 from cleantext_studio.models import (
     CleanOptions,
     CleanResult,
@@ -53,6 +56,7 @@ from cleantext_studio.models import (
     IndependentURLMode,
     LinkMode,
     ListMode,
+    MathBlockData,
     MathExportMode,
     MathOutputMode,
     MergeLevel,
@@ -575,7 +579,14 @@ class MainWindow(QMainWindow):
                 table.verticalHeader().hide()
                 for row, values in enumerate(data.rows):
                     for column, value in enumerate(values):
-                        table.setItem(row, column, QTableWidgetItem(value))
+                        if MathDetector().detect_inline(value):
+                            cell = QLabel(self._formula_rich_text(value))
+                            cell.setTextFormat(Qt.TextFormat.RichText)
+                            cell.setWordWrap(True)
+                            cell.setMargin(6)
+                            table.setCellWidget(row, column, cell)
+                        else:
+                            table.setItem(row, column, QTableWidgetItem(value))
                 table.resizeRowsToContents()
                 table.setMinimumHeight(
                     min(420, 70 + sum(table.rowHeight(i) for i in range(table.rowCount())))
@@ -587,16 +598,46 @@ class MainWindow(QMainWindow):
                 if block.math is not None:
                     label.setAlignment(Qt.AlignmentFlag.AlignCenter)
                     label.setObjectName("mathPreview")
-                    label.setText(
-                        block.math.normalized_text
-                        + (
-                            f"    {block.math.equation_number}"
-                            if block.math.equation_number
-                            else ""
-                        )
-                    )
-                    label.setToolTip("数学公式（离线轻量预览；Word 导出可转换为原生可编辑公式）")
+                    label.setTextFormat(Qt.TextFormat.RichText)
+                    label.setText(self._math_block_html(block.math))
+                    label.setToolTip("数学公式（离线排版预览；Word 导出为原生可编辑公式）")
+                else:
+                    formulas = cast(list[MathBlockData], block.metadata.get("inline_math", []))
+                    if formulas:
+                        label.setTextFormat(Qt.TextFormat.RichText)
+                        label.setText(self._formula_rich_text(block.text))
                 self.preview_layout.insertWidget(self.preview_layout.count() - 1, label)
+
+    @staticmethod
+    def _math_block_html(data: MathBlockData) -> str:
+        ast = data.metadata.get("ast")
+        if ast is None:
+            try:
+                ast = FormulaParser().parse(data.expression_source or data.normalized_text)
+            except ValueError:
+                return html.escape(data.expression_source or data.normalized_text)
+        rendered = PreviewFormulaRenderer().render(cast(FormulaNode, ast))
+        number = f"&nbsp;&nbsp;&nbsp;{html.escape(data.equation_number)}" if data.equation_number else ""
+        return rendered + number
+
+    @staticmethod
+    def _formula_rich_text(text: str) -> str:
+        regions = MathDetector().detect_inline(text)
+        if not regions:
+            return html.escape(text)
+        parts: list[str] = []
+        cursor = 0
+        renderer = PreviewFormulaRenderer()
+        parser = FormulaParser()
+        for region in regions:
+            parts.append(html.escape(text[cursor : region.start]))
+            try:
+                parts.append(renderer.render(parser.parse(region.content)))
+            except ValueError:
+                parts.append(html.escape(region.content))
+            cursor = region.end
+        parts.append(html.escape(text[cursor:]))
+        return "".join(parts)
 
     def _failed(self, message: str) -> None:
         self.session.processing_state = "idle"

@@ -119,15 +119,16 @@ class DocxRenderer:
         paragraph = doc.add_paragraph()
         paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         paragraph.paragraph_format.keep_together = True
-        result = self.math_converter.convert(block.math.normalized_text, display=True)
+        expression = block.math.expression_source or block.math.normalized_text
+        result = self.math_converter.convert(expression, display=True)
         if self.math_export_mode != MathExportMode.WORD_OMML:
             result.converted = False
         if result.converted and result.element is not None:
             paragraph._p.append(result.element)
             self.formulas_as_omml += 1
         else:
-            run = paragraph.add_run(block.math.source_text)
-            _font(run, self.template.body_font, self.template.body_size)
+            run = paragraph.add_run(result.fallback_text)
+            _font(run, "Cambria Math", self.template.body_size)
             self.formulas_as_text += 1
         if block.math.equation_number:
             paragraph.add_run(f"  {block.math.equation_number}")
@@ -142,15 +143,17 @@ class DocxRenderer:
             if index > cursor:
                 run = paragraph.add_run(text[cursor:index])  # type: ignore[attr-defined]
                 _font(run, self.template.body_font, self.template.body_size)
-            result = self.math_converter.convert(formula.normalized_text)
+            result = self.math_converter.convert(
+                formula.expression_source or formula.normalized_text
+            )
             if self.math_export_mode != MathExportMode.WORD_OMML:
                 result.converted = False
             if result.converted and result.element is not None:
                 paragraph._p.append(result.element)  # type: ignore[attr-defined]
                 self.formulas_as_omml += 1
             else:
-                run = paragraph.add_run(source)  # type: ignore[attr-defined]
-                _font(run, self.template.body_font, self.template.body_size)
+                run = paragraph.add_run(result.fallback_text)  # type: ignore[attr-defined]
+                _font(run, "Cambria Math", self.template.body_size)
                 self.formulas_as_text += 1
             cursor = index + len(source)
         if cursor < len(text):
@@ -191,8 +194,8 @@ class DocxRenderer:
                     paragraph._p.append(result.element)
                     self.formulas_as_omml += 1
                 else:
-                    run = paragraph.add_run(formula.source)
-                    _font(run, self.template.body_font, self.template.body_size, bold)
+                    run = paragraph.add_run(result.fallback_text)
+                    _font(run, "Cambria Math", self.template.body_size, bold)
                     self.formulas_as_text += 1
                 cursor = formula.end
             if cursor < len(text):
