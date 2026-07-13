@@ -32,7 +32,8 @@ class TableCellCleaningPipeline:
 
     def clean(self, value: str) -> str:
         value = html.unescape(value)
-        value = re.sub(r"<br\s*/?>", "\n", value, flags=re.IGNORECASE)
+        line_break = "CTSTABLEEXPLICITBREAKTOKEN"
+        value = re.sub(r"<br\s*/?>", line_break, value, flags=re.IGNORECASE)
         if re.search(r"</?[A-Za-z][^>]*>", value):
             value = BeautifulSoup(value, "html.parser").get_text(" ")
         protected, formulas = self.math.protect_inline(value)
@@ -43,8 +44,47 @@ class TableCellCleaningPipeline:
         ).text
         cleaned = emoji.replace_emoji(cleaned, replace="")
         cleaned = re.sub(r"[ \t]+", " ", cleaned)
-        cleaned = re.sub(r"\s*\n\s*", "\n", cleaned).strip()
+        cleaned = re.sub(r"\s*\n\s*", " ", cleaned).strip()
+        cleaned = cleaned.replace(line_break, "\n")
         return self.math.restore(cleaned, formulas)
+
+
+class TablePostProcessor:
+    """Remove presentation residue and columns made empty by configured cleanup."""
+
+    _decorative_headers = {"", "emoji", "图标", "符号", "icon"}
+
+    def process(self, data: TableData) -> int:
+        removable: list[int] = []
+        for column, header in enumerate(data.headers):
+            values = [row[column].strip() for row in data.rows]
+            if header.strip().casefold() in self._decorative_headers and not any(values):
+                removable.append(column)
+        for column in reversed(removable):
+            del data.headers[column]
+            del data.alignments[column]
+            for row in data.rows:
+                del row[column]
+        return len(removable)
+
+
+class TableWidthPlanner:
+    """Allocate more page width to descriptive columns than category columns."""
+
+    def proportions(self, data: TableData) -> list[float]:
+        if not data.headers:
+            return []
+        scores: list[float] = []
+        for column, header in enumerate(data.headers):
+            values = [header, *(row[column] for row in data.rows)]
+            average = sum(len(value.replace("\n", "")) for value in values) / len(values)
+            numeric = sum(value.replace(".", "").isdigit() for value in values) / len(values)
+            score = max(8.0, min(44.0, average))
+            if numeric > 0.7:
+                score *= 0.7
+            scores.append(score)
+        total = sum(scores)
+        return [score / total for score in scores]
 
 
 def parse_table(lines: list[str]) -> TableData | None:
@@ -78,7 +118,11 @@ def parse_table(lines: list[str]) -> TableData | None:
             malformed_rows.append(row_number)
         cells = (cells + [""] * len(header))[: len(header)]
         rows.append(cells)
-    return TableData(header, rows, alignments, "\n".join(lines), malformed_rows)
+    data = TableData(header, rows, alignments, "\n".join(lines), malformed_rows)
+    removed = TablePostProcessor().process(data)
+    if removed:
+        data.malformed_rows.append(-removed)
+    return data
 
 
 def consolidate_table_blocks(blocks: list[TextBlock]) -> list[TextBlock]:

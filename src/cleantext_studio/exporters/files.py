@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import os
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
 
 from docx import Document
 from docx.document import Document as DocumentType
@@ -13,14 +13,50 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
+from cleantext_studio.cleaners.tables import TableWidthPlanner
 from cleantext_studio.math import OMMLConverter
 from cleantext_studio.models import (
     DocumentTemplate,
-    MathBlockData,
+    InlineRun,
+    InlineRunType,
     MathExportMode,
     TextBlock,
     TextBlockType,
 )
+
+
+@dataclass(slots=True, frozen=True)
+class DocumentExportQuality:
+    level: str
+    native_formulas: int
+    fallback_formulas: int
+    tables: int
+    markdown_residuals: int
+    empty_columns_removed: int
+
+
+def evaluate_export_quality(blocks: list[TextBlock], renderer: DocxRenderer) -> DocumentExportQuality:
+    """Report real renderer outcomes instead of counting formula fallback as success."""
+    tables = sum(block.table is not None for block in blocks)
+    residuals = sum("markdown" in warning for block in blocks for warning in block.warnings)
+    removed = sum(
+        -item
+        for block in blocks
+        if block.table is not None
+        for item in block.table.malformed_rows
+        if item < 0
+    )
+    level = "优秀" if not renderer.formulas_as_text and not residuals else "良好"
+    if renderer.formulas_as_text and renderer.formulas_as_omml == 0:
+        level = "需要检查"
+    return DocumentExportQuality(
+        level,
+        renderer.formulas_as_omml,
+        renderer.formulas_as_text,
+        tables,
+        residuals,
+        removed,
+    )
 
 
 def export_txt(text: str, path: Path, encoding: str = "utf-8", newline: str = "\r\n") -> None:
@@ -91,9 +127,8 @@ class DocxRenderer:
             if block.type == TextBlockType.LIST_ITEM and block.text.startswith("• ")
             else block.text
         )
-        inline_math = cast(list[MathBlockData], block.metadata.get("inline_math", []))
-        if inline_math:
-            self._inline_math(paragraph, text, inline_math)
+        if block.runs and any(item.type == InlineRunType.INLINE_MATH for item in block.runs):
+            self._inline_runs(paragraph, block.runs)
             run = None
         else:
             run = paragraph.add_run(text)
@@ -133,32 +168,26 @@ class DocxRenderer:
         if block.math.equation_number:
             paragraph.add_run(f"  {block.math.equation_number}")
 
-    def _inline_math(self, paragraph: object, text: str, formulas: list[MathBlockData]) -> None:
-        cursor = 0
-        for formula in formulas:
-            source = formula.source_text
-            index = text.find(source, cursor)
-            if index < 0:
-                continue
-            if index > cursor:
-                run = paragraph.add_run(text[cursor:index])  # type: ignore[attr-defined]
+    def _inline_runs(self, paragraph: object, runs: list[InlineRun]) -> None:
+        for item in runs:
+            if item.type != InlineRunType.INLINE_MATH:
+                run = paragraph.add_run(item.text)  # type: ignore[attr-defined]
                 _font(run, self.template.body_font, self.template.body_size)
-            result = self.math_converter.convert(
-                formula.expression_source or formula.normalized_text
-            )
+                continue
+            formula = item.math
+            assert formula is not None
+            result = self.math_converter.convert(formula.expression_source or formula.normalized_text)
             if self.math_export_mode != MathExportMode.WORD_OMML:
                 result.converted = False
             if result.converted and result.element is not None:
                 paragraph._p.append(result.element)  # type: ignore[attr-defined]
                 self.formulas_as_omml += 1
+                formula.conversion_status = "native_omml"
             else:
                 run = paragraph.add_run(result.fallback_text)  # type: ignore[attr-defined]
                 _font(run, "Cambria Math", self.template.body_size)
                 self.formulas_as_text += 1
-            cursor = index + len(source)
-        if cursor < len(text):
-            run = paragraph.add_run(text[cursor:])  # type: ignore[attr-defined]
-            _font(run, self.template.body_font, self.template.body_size)
+                formula.conversion_status = "unicode_fallback"
 
     def _table(self, doc: DocumentType, block: TextBlock) -> None:
         assert block.table is not None
@@ -173,6 +202,15 @@ class DocxRenderer:
             cells = table.add_row().cells
             for column, value in enumerate(row_data):
                 self._cell(cells[column], value, False)
+        section = doc.sections[0]
+        page_width = section.page_width or Cm(21)
+        left_margin = section.left_margin or Cm(self.template.margin_cm)
+        right_margin = section.right_margin or Cm(self.template.margin_cm)
+        available_width = page_width - left_margin - right_margin
+        for column, ratio in enumerate(TableWidthPlanner().proportions(data)):
+            width = available_width * ratio
+            for row in table.rows:
+                row.cells[column].width = width
         table.rows[0]._tr.get_or_add_trPr().append(OxmlElement("w:tblHeader"))
 
     def _cell(self, cell: object, text: str, bold: bool) -> None:

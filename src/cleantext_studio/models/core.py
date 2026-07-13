@@ -39,6 +39,22 @@ class MathDisplayMode(StrEnum):
     BLOCK = "block"
 
 
+class InlineRunType(StrEnum):
+    TEXT = "text"
+    INLINE_MATH = "inline_math"
+    LINK = "link"
+    CODE = "code"
+    BOLD = "bold"
+    ITALIC = "italic"
+
+
+@dataclass(slots=True, frozen=True)
+class InlineRun:
+    type: InlineRunType
+    text: str
+    math: MathBlockData | None = None
+
+
 @dataclass(slots=True)
 class MathBlockData:
     source_text: str
@@ -99,6 +115,7 @@ class TextBlock:
     warnings: list[str] = field(default_factory=list)
     metadata: dict[str, object] = field(default_factory=dict)
     math: MathBlockData | None = None
+    runs: list[InlineRun] = field(default_factory=list)
 
     @property
     def cleaned_text(self) -> str:
@@ -125,6 +142,7 @@ class CleanStats:
     elapsed_ms: float = 0
     tables_detected: int = 0
     tables_preserved: int = 0
+    empty_table_columns_removed: int = 0
     list_items_detected: int = 0
     links_processed: int = 0
     formulas_detected: int = 0

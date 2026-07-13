@@ -36,6 +36,7 @@ from PySide6.QtWidgets import (
 from cleantext_studio.about_dialog import AboutDialog
 from cleantext_studio.ai_dialogs import AIDiffDialog, ProviderDialog, SendConfirmationDialog
 from cleantext_studio.cleaners import clean_text
+from cleantext_studio.cleaners.tables import TableWidthPlanner
 from cleantext_studio.exporters import export_docx_blocks, export_txt
 from cleantext_studio.font_manager import FontManager
 from cleantext_studio.importers import import_file
@@ -548,7 +549,7 @@ class MainWindow(QMainWindow):
             f"清洗完成 · 删除 {result.stats.removed_chars} 个字符 · 合并 {result.stats.merged_linebreaks} 处换行{warning}"
         )
         self.result_meta.setText(
-            f"本次清理：Markdown {result.stats.removed_markdown} · AI模板 {result.stats.removed_ai_patterns} · 空行 {result.stats.removed_blank_lines} · 表情 {result.stats.removed_emoji} · 标题 {result.stats.headings_detected} · {result.stats.elapsed_ms:.1f} ms"
+            f"本次清理：Markdown {result.stats.removed_markdown} · AI模板 {result.stats.removed_ai_patterns} · 空行 {result.stats.removed_blank_lines} · 表情 {result.stats.removed_emoji} · 标题 {result.stats.headings_detected} · 空表格列 {result.stats.empty_table_columns_removed} · {result.stats.elapsed_ms:.1f} ms"
         )
 
     def show_residuals(self) -> None:
@@ -575,7 +576,9 @@ class MainWindow(QMainWindow):
                 table.setHorizontalHeaderLabels(data.headers)
                 table.setWordWrap(True)
                 table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-                table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+                table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+                for column, ratio in enumerate(TableWidthPlanner().proportions(data)):
+                    table.setColumnWidth(column, max(120, int(430 * ratio)))
                 table.verticalHeader().hide()
                 for row, values in enumerate(data.rows):
                     for column, value in enumerate(values):

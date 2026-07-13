@@ -13,6 +13,8 @@ from .core import (
     CleaningChange,
     CleanResult,
     CleanStats,
+    InlineRun,
+    InlineRunType,
     MathBlockData,
     MathDisplayMode,
     MathFormat,
@@ -44,4 +46,6 @@ __all__ = [
     "MathBlockData",
     "MathDisplayMode",
     "MathFormat",
+    "InlineRun",
+    "InlineRunType",
 ]

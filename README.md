@@ -4,38 +4,38 @@
 
 本地优先的文本格式清洗、结构整理、数学公式排版与 Word/TXT 导出工具。
 
-[![Version](https://img.shields.io/badge/version-v1.3.1-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+[![Version](https://img.shields.io/badge/version-v1.3.2-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Windows 下载
 
-从 [CleanText Studio v1.3.1 Release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.1) 下载 Windows x64 安装版或便携版。安装版按当前用户安装；便携版解压后运行 `CleanText Studio.exe`。
+从 [CleanText Studio v1.3.2 Release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) 下载 Windows x64 安装版或便携版。安装版按当前用户安装；便携版解压后运行 `CleanText Studio.exe`。
 
-当前版本：**v1.3.1**。开发者：**SiriZhao** · [项目主页](https://github.com/SiriZhao/CleanText-Studio)
+当前版本：**v1.3.2**。开发者：**SiriZhao** · [项目主页](https://github.com/SiriZhao/CleanText-Studio)
 
-## v1.3.1 新版本特性
+## v1.3.2 稳定性修复
 
-- 公式通过安全 Formula AST 解析，预览不再显示受支持公式的 LaTeX 源码。
-- Word 导出使用原生可编辑 OMML，覆盖分式、根式、上下标、求和、积分、希腊字母、矩阵和分段函数。
-- 表格单元格深度清理 Markdown、HTML、Emoji 与异常换行，同时保留内联公式。
-- 公式转换执行完整性校验；不支持的复杂宏以无外层定界符的可读文本安全回退。
+- 修复中文正文中 `\( O \)`、`\( \lambda \)` 等行内公式的 Word 原生公式导出。
+- 清除 Word 正文中的公式定界符和支持范围内 LaTeX 命令残留。
+- 清理表格 Markdown、Emoji 空列和无意义单元格软换行，并按内容规划列宽。
+- 预览与 Word 共享段落 runs、公式和表格结构，导出前后更一致。
 
 ## 新版界面和功能截图
 
-| 数学清洗与设置 | 离线公式预览 |
+| 行内公式 | 块级与行内公式 |
 |---|---|
-| ![数学清洗](assets/screenshots/math-cleaning-v1.3.1.png) | ![公式预览](assets/screenshots/math-preview-v1.3.1.png) |
+| ![行内公式](assets/screenshots/inline-math-v1.3.2.png) | ![公式混排](assets/screenshots/block-and-inline-math-v1.3.2.png) |
 
 ## 公式渲染展示
 
-![数学设置](assets/screenshots/math-settings-v1.3.1.png)
+![表格清洗](assets/screenshots/table-clean-v1.3.2.png)
 
 ## Word 原生公式展示
 
-![Word 公式导出](assets/screenshots/math-word-export-v1.3.1.png)
+![Word 表格导出](assets/screenshots/table-word-v1.3.2.png)
 
 ## 表格清洗与导出展示
 
-![公式与表格](assets/screenshots/math-with-table-v1.3.1.png)
+![导出质量](assets/screenshots/export-quality-v1.3.2.png)
 
 ## 核心功能
 
