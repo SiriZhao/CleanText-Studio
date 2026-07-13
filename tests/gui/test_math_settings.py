@@ -18,7 +18,11 @@ def test_math_preview_is_structured(qtbot) -> None:
     qtbot.addWidget(window)
     window.input.setPlainText("$$\nx^2\n$$")
     window.start_clean()
-    qtbot.waitUntil(lambda: window.worker is None or not window.worker.isRunning(), timeout=5000)
     window.result_mode.setCurrentIndex(1)
-    labels = window.preview_container.findChildren(type(window.result_notice))
-    assert any(label.objectName() == "mathPreview" for label in labels)
+    qtbot.waitUntil(
+        lambda: any(
+            label.objectName() == "mathPreview"
+            for label in window.preview_container.findChildren(type(window.result_notice))
+        ),
+        timeout=5000,
+    )
