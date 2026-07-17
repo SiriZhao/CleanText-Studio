@@ -85,18 +85,27 @@ def stylesheet(theme: Theme) -> str:
     arrow = (root / "assets" / "icons" / "chevron-down.svg").as_posix()
     check = (root / "assets" / "icons" / "check.svg").as_posix()
     return f"""
-    QMainWindow, QDialog, QMessageBox, QWidget {{ background:{token.background}; color:{token.text_primary}; }}
+    QMainWindow, QDialog, QMessageBox {{ background:{token.background}; color:{token.text_primary}; }}
+    QWidget {{ color:{token.text_primary}; background:transparent; }}
+    QToolBar, QStatusBar, QSplitter#mainSplitter {{ background:{token.background}; border:0; }}
+    QStatusBar::item {{ border:0; }}
     QFrame#cardPanel {{ background:{token.surface}; border:1px solid {token.border}; border-radius:{token.radius_large}px; }}
+    QWidget#displayModeToolbar {{ background:transparent; border:none; }}
+    /* Qt scroll viewports do not composite transparent backgrounds reliably on Windows.
+       Match the owning CardPanel surface instead of exposing the app background. */
+    QScrollArea#settingsScrollView, QScrollArea#settingsScrollView::viewport, QWidget#settingsContent {{ background:{token.surface}; border:none; }}
     QLabel#panelTitle {{ background:transparent; padding:0 {token.xs}px; }}
     QLabel#ruleCount {{ background:{token.surface_alt}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:{token.sm}px; }}
     QPlainTextEdit, QTextEdit, QLineEdit, QSpinBox, QDoubleSpinBox {{ background:{token.surface}; color:{token.text_primary}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:8px; selection-background-color:{token.selection}; }}
-    QScrollArea {{ background:transparent; border:0; }} QScrollArea > QWidget > QWidget {{ background:transparent; }}
+    QScrollArea, QAbstractScrollArea {{ background:transparent; border:0; }}
+    QScrollArea::viewport, QAbstractScrollArea::viewport {{ background:transparent; border:0; }}
     QPlainTextEdit:focus, QLineEdit:focus, QComboBox:focus {{ border:1px solid {token.accent}; }}
     QPushButton, QToolButton {{ min-height:{token.control_height_medium}px; padding:2px 12px; border:1px solid {token.border}; border-radius:{token.radius_medium}px; background:{token.surface}; }}
     QPushButton:hover, QToolButton:hover {{ border-color:{token.border_hover}; background:{token.surface_alt}; }}
     QPushButton:pressed {{ background:{token.accent_pressed}; color:white; }} QPushButton:disabled {{ color:{token.text_disabled}; }}
     QPushButton#primary {{ color:white; background:{token.accent}; border:none; min-height:{token.control_height_large}px; font-weight:600; }} QPushButton#primary:hover {{ background:{token.accent_hover}; }}
-    QPushButton#danger {{ color:{token.error}; }} QLabel#muted {{ color:{token.text_secondary}; }}
+    QPushButton#danger {{ color:{token.error}; }} QLabel#muted {{ color:{token.text_secondary}; background:transparent; }}
+    QLabel, QCheckBox {{ background:transparent; }}
     QComboBox {{ min-height:{token.control_height_medium}px; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:0 32px 0 10px; background:{token.surface}; }}
     QComboBox::drop-down {{ width:28px; border:0; border-top-right-radius:{token.radius_medium}px; border-bottom-right-radius:{token.radius_medium}px; }} QComboBox::down-arrow {{ image:url({arrow}); width:12px; height:12px; }}
     QComboBox QAbstractItemView {{ background:{token.surface}; color:{token.text_primary}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:6px; selection-background-color:{token.selection}; outline:0; }}

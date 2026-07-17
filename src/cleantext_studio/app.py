@@ -24,6 +24,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSplitter,
     QStackedWidget,
     QTableWidget,
@@ -255,6 +256,7 @@ class MainWindow(QMainWindow):
         mv.addWidget(self.preset_label)
         mv.addWidget(self.preset)
         rules = QWidget()
+        rules.setObjectName("settingsContent")
         rv = QVBoxLayout(rules)
         self.remove_markdown = QCheckBox(self.tr("option.remove_markdown"))
         self.remove_markdown.setChecked(True)
@@ -303,7 +305,7 @@ class MainWindow(QMainWindow):
         self.group_list = QLabel(self.tr("group.list"))
         self.group_math = QLabel(self.tr("group.math"))
         self.group_math_output = QLabel(self.tr("group.math_output"))
-        for widget in (
+        settings_widgets = (
             self.group_basic,
             self.remove_markdown,
             self.remove_emoji,
@@ -325,12 +327,26 @@ class MainWindow(QMainWindow):
             self.word_math_omml,
             self.group_math_output,
             self.math_output_mode,
-        ):
+        )
+        rules.setMinimumWidth(0)
+        for widget in settings_widgets:
+            widget.setMinimumWidth(0)
+            if isinstance(widget, QCheckBox):
+                widget.setSizePolicy(
+                    QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred
+                )
+            elif isinstance(widget, QComboBox):
+                widget.setSizePolicy(
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+                )
             rv.addWidget(widget)
         rv.addStretch()
         scroll = QScrollArea()
+        scroll.setObjectName("settingsScrollView")
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.settings_scroll = scroll
         scroll.setWidget(rules)
         mv.addWidget(scroll)
         self.rule_count = QLabel(self.tr("status.rules", count=8))
@@ -344,6 +360,9 @@ class MainWindow(QMainWindow):
         mv.addWidget(self.clean_button)
         right, ov, self.result_heading = self._panel(self.tr("panel.result"))
         mode_row = QHBoxLayout()
+        mode_container = QWidget()
+        mode_container.setObjectName("displayModeToolbar")
+        mode_container.setLayout(mode_row)
         self.result_mode_label = QLabel(self.tr("result.mode"))
         mode_row.addWidget(self.result_mode_label)
         self.result_mode = QComboBox()
@@ -351,7 +370,7 @@ class MainWindow(QMainWindow):
         self.result_mode.addItem(self.tr("result.preview"), "preview")
         mode_row.addWidget(self.result_mode)
         mode_row.addStretch()
-        ov.addLayout(mode_row)
+        ov.addWidget(mode_container)
         result_buttons = self._buttons(
             ov,
             [
@@ -405,6 +424,7 @@ class MainWindow(QMainWindow):
         self.result_meta.setObjectName("muted")
         ov.addWidget(self.result_meta)
         self.splitter = QSplitter()
+        self.splitter.setObjectName("mainSplitter")
         self.splitter.addWidget(left)
         self.splitter.addWidget(middle)
         self.splitter.addWidget(right)
