@@ -170,7 +170,7 @@ All screenshots are captured from the real Qt application with public sample con
 
 ## Download for Windows
 
-CleanText Studio ships Windows x64 packages. Use the [GitHub Releases page](https://github.com/SiriZhao/CleanText-Studio/releases) as the source of truth for published installers, portable ZIP files, release notes, and SHA256 checksums.
+CleanText Studio ships Windows x64 packages. Use the [GitHub Releases page](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2) as the source of truth for published installers, portable ZIP files, release notes, and SHA256 checksums.
 
 | Package | Best for | Notes |
 | --- | --- | --- |
