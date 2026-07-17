@@ -1,0 +1,10 @@
+directory: assets/screenshots/v1.5.1
+hero:
+  en: hero-main-en.png
+  zh_cn: hero-main-zh-cn.png
+required:
+  - cleaning-before-after.png
+  - table-preview.png
+  - math-preview.png
+  - ai-settings.png
+  - rounded-ui-details.png

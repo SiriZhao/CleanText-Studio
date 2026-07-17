@@ -1,0 +1,12 @@
+required_topics:
+  - product positioning and language navigation
+  - Windows download and current version
+  - product screenshot and feature overview
+  - cleanup, structure, headings, links, paragraphs, tables, and equations
+  - preview and DOCX/TXT export
+  - localization, themes, and optional BYOK AI
+  - privacy, API key handling, system requirements, and architecture
+  - source run, tests, Windows build, checksums, and release artifacts
+  - translation contribution, roadmap, limitations, FAQ, contribution, and license
+minimum_headings: 45
+minimum_characters: 10000

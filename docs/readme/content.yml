@@ -1,6 +1,13 @@
 version: v1.5.1
-release: https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1
+repository: https://github.com/SiriZhao/CleanText-Studio
+release_page: https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1
 platform: Windows x64
-installer: CleanText-Studio-v1.5.1-Windows-x64-Setup.exe
-portable: CleanText-Studio-v1.5.1-Windows-x64-Portable.zip
-screenshots: assets/screenshots/v1.5.0
+artifacts:
+  installer: CleanText-Studio-v1.5.1-Windows-x64-Setup.exe
+  portable: CleanText-Studio-v1.5.1-Windows-x64-Portable.zip
+  checksums: SHA256SUMS.txt
+facts:
+  - Basic cleanup, preview, DOCX export, and TXT export are local-first.
+  - AI optimization is optional and uses a provider and API key configured by the user.
+  - Published release support is Windows x64 only.
+  - Complex custom LaTeX macros can require a readable fallback.
