@@ -59,9 +59,9 @@ CleanText Studio helps turn copied pages, notes, and AI-assisted drafts into edi
 
 ## ✨ Features
 
-### AI text cleanup — without “AI bypass” claims
+### AI text cleanup for document quality
 
-CleanText Studio is a writing-productivity and document-formatting tool. It removes unnecessary formatting residue from copied and AI-assisted text while preserving meaning. It is **not** an AI detector evasion, plagiarism evasion, or academic cheating tool.
+CleanText Studio is a writing-productivity and document-formatting tool. It removes unnecessary formatting residue from copied and AI-assisted text while preserving meaning. Its purpose is document quality, structure recovery, and export.
 
 - Remove Markdown markers, emphasis residue, horizontal rules, copied HTML fragments, decorative emoji, and fragmented instruction labels.
 - Restore natural paragraphs with compact, smart-section, or preserve-all line-break modes.
@@ -418,10 +418,13 @@ Use the language and theme controls in the desktop UI. Runtime switching retains
 
 Contributions are welcome: bug reports, focused fixes, tests, documentation, translations, and platform research. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request and [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 
+If CleanText Studio saves you time, a **Star** helps other developers discover it and supports continued maintenance. ⭐
+
 ## Showcase and launch material
 
 - [Why CleanText Studio?](docs/showcase.md)
-- [GitHub launch copy](launch/github-launch.md)
+- [GitHub launch copy](docs/launch/github-launch.md)
+- [Open-source launch kit](docs/launch/README.md)
 - [Translation glossary](docs/TRANSLATION_GLOSSARY.md)
 
 ## License

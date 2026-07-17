@@ -39,6 +39,12 @@ $env:PYTHONPATH = "src"
 4. Include screenshots for visible UI changes and keep them free of private paths or credentials.
 5. Do not change frozen cleanup baselines to conceal a regression.
 
+## Finding a contribution
+
+- Start with issues labeled [`good first issue`](https://github.com/SiriZhao/CleanText-Studio/labels/good%20first%20issue) for bounded, reviewed tasks.
+- Use [`help wanted`](https://github.com/SiriZhao/CleanText-Studio/labels/help%20wanted) for work where maintainers are actively seeking assistance.
+- Documentation, translation, test-fixture, accessibility, and packaging reviews are valuable contributions. See the recommended taxonomy in [.github/labels.md](.github/labels.md).
+
 ## Translations and documentation
 
 Read [docs/TRANSLATION_GLOSSARY.md](docs/TRANSLATION_GLOSSARY.md). Preserve product names, API names, URLs, and license names. Community review of documentation translations is welcome.

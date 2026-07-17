@@ -23,5 +23,5 @@ body:
     attributes:
       label: Scope acknowledgement
       options:
-        - label: "This request does not ask for AI-detection evasion, plagiarism evasion, or undisclosed cloud processing."
+        - label: "This request is compatible with the documented local-processing and privacy principles."
           required: true
