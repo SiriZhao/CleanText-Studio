@@ -1,16 +1,15 @@
-# CleanText Studio v1.5.0
+# CleanText Studio v1.5.1
 
-CleanText Studio v1.5.0 focuses on a consistent local desktop experience: the
-presentation layer now uses centralized localization, stable option values, a
-local help dialog, and shared rounded-card theme primitives.
+CleanText Studio v1.5.1 is a focused maintenance release for the localized
+About dialog. Product identity, developer information, licensing facts, and
+the project address are now rendered as immutable facts rather than natural
+language translations.
 
 ## Highlights
 
-- Twelve interface locales are packaged as local JSON resources.
-- Language changes are presentation-only: source text, cleaned results, stable
-  options, and local processing are not re-run or cleared.
-- Help, About, controls, placeholders, and dynamic status labels use the same
-  localization service.
+- Twelve interface locales keep CleanText Studio, SiriZhao, MIT License,
+  v1.5.1, and the GitHub URL unchanged.
+- The About dialog now displays the repository MIT LICENSE text directly.
 - Basic cleanup remains local. Optional AI optimization only uses a provider
   and key that you configure.
 
@@ -22,7 +21,7 @@ local help dialog, and shared rounded-card theme primitives.
 Verify a download with PowerShell:
 
 ```powershell
-Get-FileHash .\CleanText-Studio-v1.5.0-Windows-x64-Portable.zip -Algorithm SHA256
+Get-FileHash .\CleanText-Studio-v1.5.1-Windows-x64-Portable.zip -Algorithm SHA256
 ```
 
 ## Known limits

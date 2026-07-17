@@ -24,8 +24,8 @@ def main() -> int:
         content = path.read_text(encoding="utf-8")
         if len(content) < 1_500:
             errors.append(f"{name} is too short for a project landing page")
-        if "v1.5.0" not in content:
-            errors.append(f"{name} does not identify v1.5.0")
+        if "v1.5.1" not in content:
+            errors.append(f"{name} does not identify v1.5.1")
         if "README_EN.md" in content or "TODO" in content:
             errors.append(f"{name} contains obsolete documentation text")
         for marker in REQUIRED_MARKERS:

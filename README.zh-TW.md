@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## 下載 Windows 版
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## v1.5.0 中的新增內容
+## v1.5.1 中的新增內容
 
 - 完整的靜態語言環境目錄、本地幫助對話框以及表示層的原子語言環境驗證。
 - 將組合框標籤與穩定的清潔值分開，因此更改語言永遠不會改變預設或觸發清潔。
@@ -70,7 +70,7 @@ After:  Test account
 
 ## 輸入、輸出和系統需求
 
-輸入：「.txt」、「.md」、「.markdown」和「.docx」。輸出：UTF-8 `.txt` 和結構化的 `.docx`。 v1.5.0 是 Windows x64 桌面版本。 macOS、Linux 和 Android 未聲明為已發布平台。
+輸入：「.txt」、「.md」、「.markdown」和「.docx」。輸出：UTF-8 `.txt` 和結構化的 `.docx`。 v1.5.1 是 Windows x64 桌面版本。 macOS、Linux 和 Android 未聲明為已發布平台。
 
 ## 從源頭
 

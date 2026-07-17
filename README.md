@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Download for Windows
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## What is new in v1.5.0
+## What is new in v1.5.1
 
 - Complete static locale catalogs, a local Help dialog, and atomic locale validation for the presentation layer.
 - Kept combo-box labels separate from stable cleaning values, so changing language never changes a preset or triggers cleaning.
@@ -70,7 +70,7 @@ After:  Test account
 
 ## Input, output, and system requirements
 
-Input: `.txt`, `.md`, `.markdown`, and `.docx`. Output: UTF-8 `.txt` and structured `.docx`. v1.5.0 is a Windows x64 desktop release. macOS, Linux, and Android are not claimed as released platforms.
+Input: `.txt`, `.md`, `.markdown`, and `.docx`. Output: UTF-8 `.txt` and structured `.docx`. v1.5.1 is a Windows x64 desktop release. macOS, Linux, and Android are not claimed as released platforms.
 
 ## From source
 

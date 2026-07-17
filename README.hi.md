@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## विंडोज़ के लिए डाउनलोड करें
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## v1.5.0 में नया क्या है?
+## v1.5.1 में नया क्या है?
 
 - पूर्ण स्थैतिक लोकेल कैटलॉग, एक स्थानीय सहायता संवाद, और प्रस्तुति परत के लिए परमाणु लोकेल सत्यापन।
 - कॉम्बो-बॉक्स लेबल को स्थिर सफाई मूल्यों से अलग रखा जाता है, इसलिए भाषा बदलने से कभी भी प्रीसेट नहीं बदलता या सफाई शुरू नहीं होती।
@@ -70,7 +70,7 @@ After:  Test account
 
 ## इनपुट, आउटपुट और सिस्टम आवश्यकताएँ
 
-इनपुट: `.txt`, `.md`, `.markdown`, और `.docx`। आउटपुट: UTF-8 `.txt` और संरचित `.docx`। v1.5.0 एक विंडोज़ x64 डेस्कटॉप रिलीज़ है। macOS, Linux और Android को रिलीज़ किए गए प्लेटफ़ॉर्म के रूप में दावा नहीं किया गया है।
+इनपुट: `.txt`, `.md`, `.markdown`, और `.docx`। आउटपुट: UTF-8 `.txt` और संरचित `.docx`। v1.5.1 एक विंडोज़ x64 डेस्कटॉप रिलीज़ है। macOS, Linux और Android को रिलीज़ किए गए प्लेटफ़ॉर्म के रूप में दावा नहीं किया गया है।
 
 ## स्रोत से
 

@@ -1,4 +1,4 @@
-"""One-time catalog completion utility for v1.5.0.
+"""One-time catalog completion utility for v1.5.1.
 
 It writes static JSON resources only; the application has no translation
 service dependency and never contacts the network at runtime.

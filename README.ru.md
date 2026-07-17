@@ -11,7 +11,7 @@
 <!-- section:download -->
 ## Скачать для Windows
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
@@ -70,7 +70,7 @@ After:  Test account
 
 ## Входные, выходные и системные требования
 
-Ввод: `.txt`, `.md`, `.markdown` и `.docx`. Вывод: UTF-8 `.txt` и структурированный `.docx`. v1.5.0 — это версия Windows x64 для настольных компьютеров. macOS, Linux и Android не заявлены как выпущенные платформы.
+Ввод: `.txt`, `.md`, `.markdown` и `.docx`. Вывод: UTF-8 `.txt` и структурированный `.docx`. v1.5.1 — это версия Windows x64 для настольных компьютеров. macOS, Linux и Android не заявлены как выпущенные платформы.
 
 ## Из источника
 

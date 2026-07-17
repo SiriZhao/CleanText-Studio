@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Windows 用のダウンロード
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## v1.5.0の新機能
+## v1.5.1の新機能
 
 - 完全な静的ロケール カタログ、ローカル ヘルプ ダイアログ、およびプレゼンテーション レイヤーのアトミック ロケール検証。
 - コンボボックスのラベルを安定したクリーニング値から切り離すため、言語を変更してもプリセットが変更されたり、クリーニングがトリガーされたりすることはありません。
@@ -70,7 +70,7 @@ After:  Test account
 
 ## 入力、出力、およびシステム要件
 
-入力: `.txt`、`.md`、`.markdown`、および `.docx`。出力: UTF-8 `.txt` および構造化された `.docx`。 v1.5.0 は Windows x64 デスクトップ リリースです。 macOS、Linux、および Android は、リリースされたプラットフォームとして主張されていません。
+入力: `.txt`、`.md`、`.markdown`、および `.docx`。出力: UTF-8 `.txt` および構造化された `.docx`。 v1.5.1 は Windows x64 デスクトップ リリースです。 macOS、Linux、および Android は、リリースされたプラットフォームとして主張されていません。
 
 ## ソースから
 

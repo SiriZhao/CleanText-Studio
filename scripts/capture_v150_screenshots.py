@@ -1,4 +1,4 @@
-"""Capture privacy-safe product screenshots from the real v1.5.0 Qt UI."""
+"""Capture privacy-safe product screenshots from the real v1.5.1 Qt UI."""
 
 from __future__ import annotations
 

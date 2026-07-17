@@ -1,4 +1,4 @@
-"""Capture the real UI surfaces used to review the v1.5.0 background fix.
+"""Capture the real UI surfaces used to review the v1.5.1 background fix.
 
 The output stays in ``dist/verification`` so it is evidence for this change,
 not product documentation or a committed release asset.

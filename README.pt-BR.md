@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Baixar para Windows
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## O que há de novo na v1.5.0
+## O que há de novo na v1.5.1
 
 - Catálogos de localidade estáticos completos, uma caixa de diálogo de Ajuda local e validação de localidade atômica para a camada de apresentação.
 - Mantive os rótulos da caixa de combinação separados dos valores de limpeza estáveis, para que a alteração do idioma nunca altere uma predefinição ou acione a limpeza.
@@ -70,7 +70,7 @@ After:  Test account
 
 ## Requisitos de entrada, saída e sistema
 
-Entrada: `.txt`, `.md`, `.markdown` e `.docx`. Saída: UTF-8 `.txt` e `.docx` estruturado. v1.5.0 é uma versão para desktop do Windows x64. macOS, Linux e Android não são considerados plataformas lançadas.
+Entrada: `.txt`, `.md`, `.markdown` e `.docx`. Saída: UTF-8 `.txt` e `.docx` estruturado. v1.5.1 é uma versão para desktop do Windows x64. macOS, Linux e Android não são considerados plataformas lançadas.
 
 ## Da fonte
 

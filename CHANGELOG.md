@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.1 - 2026-07-17
+
+### Fixed
+
+- Keep CleanText Studio, SiriZhao, MIT License, the version, copyright subject,
+  and the GitHub URL immutable in every localized About dialog.
+- Show the repository MIT LICENSE text directly instead of a translated legal summary.
+
+### Compatibility
+
+- Cleaning, table, formula, DOCX, and TXT output behavior remains unchanged.
+
 ## 1.5.0 - 2026-07-17
 
 ### Added

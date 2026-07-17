@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Windows용 다운로드
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## v1.5.0의 새로운 기능
+## v1.5.1의 새로운 기능
 
 - 프리젠테이션 계층에 대한 완전한 정적 로케일 카탈로그, 로컬 도움말 대화 상자 및 원자 로케일 유효성 검증.
 - 안정적인 청소 값과 별도로 콤보 상자 라벨을 유지하므로 언어를 변경해도 사전 설정이 변경되거나 청소가 실행되지 않습니다.
@@ -70,7 +70,7 @@ After:  Test account
 
 ## 입력, 출력 및 시스템 요구 사항
 
-입력: `.txt`, `.md`, `.markdown` 및 `.docx`. 출력: UTF-8 `.txt` 및 구조화된 `.docx`. v1.5.0은 Windows x64 데스크톱 릴리스입니다. macOS, Linux 및 Android는 출시된 플랫폼으로 주장되지 않습니다.
+입력: `.txt`, `.md`, `.markdown` 및 `.docx`. 출력: UTF-8 `.txt` 및 구조화된 `.docx`. v1.5.1은 Windows x64 데스크톱 릴리스입니다. macOS, Linux 및 Android는 출시된 플랫폼으로 주장되지 않습니다.
 
 ## 소스에서
 

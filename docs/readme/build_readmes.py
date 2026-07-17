@@ -1,4 +1,4 @@
-"""Generate localized README pages from the English v1.5.0 factual master.
+"""Generate localized README pages from the English v1.5.1 factual master.
 
 Generated files remain ordinary Markdown.  This script is a maintenance aid,
 not an application dependency.

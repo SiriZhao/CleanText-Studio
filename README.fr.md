@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Télécharger pour Windows
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## Quoi de neuf dans la v1.5.0
+## Quoi de neuf dans la v1.5.1
 
 - Catalogues de paramètres régionaux statiques complets, boîte de dialogue d'aide locale et validation atomique des paramètres régionaux pour la couche de présentation.
 - Les étiquettes de la zone de liste déroulante sont conservées séparément des valeurs de nettoyage stables, de sorte que le changement de langue ne modifie jamais un préréglage ni ne déclenche le nettoyage.
@@ -70,7 +70,7 @@ After:  Test account
 
 ## Configuration requise pour les entrées, les sorties et le système
 
-Entrée : `.txt`, `.md`, `.markdown` et `.docx`. Sortie : UTF-8 `.txt` et `.docx` structuré. v1.5.0 est une version de bureau Windows x64. macOS, Linux et Android ne sont pas revendiqués comme plates-formes publiées.
+Entrée : `.txt`, `.md`, `.markdown` et `.docx`. Sortie : UTF-8 `.txt` et `.docx` structuré. v1.5.1 est une version de bureau Windows x64. macOS, Linux et Android ne sont pas revendiqués comme plates-formes publiées.
 
 ## De la source
 

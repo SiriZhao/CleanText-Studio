@@ -13,12 +13,12 @@
 <!-- section:download -->
 ## تحميل لنظام التشغيل Windows
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## ما هو الجديد في v1.5.0
+## ما هو الجديد في v1.5.1
 
 - استكمال كتالوجات اللغة الثابتة ومربع حوار التعليمات المحلي والتحقق من صحة اللغة الذرية لطبقة العرض التقديمي.
 - تم الاحتفاظ بتسميات مربع التحرير والسرد منفصلة عن قيم التنظيف الثابتة، لذا فإن تغيير اللغة لا يؤدي أبدًا إلى تغيير الإعداد المسبق أو تشغيل التنظيف.

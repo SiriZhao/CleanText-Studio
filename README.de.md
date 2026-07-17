@@ -11,12 +11,12 @@
 <!-- section:download -->
 ## Für Windows herunterladen
 
-Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
+Current version: **v1.5.1**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
 ![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## Was ist neu in v1.5.0?
+## Was ist neu in v1.5.1?
 
 - Vollständige statische Gebietsschemakataloge, ein lokales Hilfedialogfeld und eine atomare Gebietsschemavalidierung für die Präsentationsebene.
 - Die Bezeichnungen der Kombinationsfelder wurden von den stabilen Reinigungswerten getrennt gehalten, sodass durch eine Änderung der Sprache nie eine Voreinstellung geändert oder eine Reinigung ausgelöst wird.
@@ -70,7 +70,7 @@ After:  Test account
 
 ## Eingabe-, Ausgabe- und Systemanforderungen
 
-Eingabe: „.txt“, „.md“, „.markdown“ und „.docx“. Ausgabe: UTF-8 „.txt“ und strukturiertes „.docx“. v1.5.0 ist eine Windows x64-Desktopversion. macOS, Linux und Android werden nicht als veröffentlichte Plattformen beansprucht.
+Eingabe: „.txt“, „.md“, „.markdown“ und „.docx“. Ausgabe: UTF-8 „.txt“ und strukturiertes „.docx“. v1.5.1 ist eine Windows x64-Desktopversion. macOS, Linux und Android werden nicht als veröffentlichte Plattformen beansprucht.
 
 ## Aus der Quelle
 

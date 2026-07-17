@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
 METHODS = {"setText", "setWindowTitle", "setPlaceholderText", "setToolTip", "addItem", "addAction"}
-ALLOW = {"UTF-8", "TXT", "Word", "Markdown", "LaTeX", "API", "Base URL", "Temperature"}
+ALLOW = {"UTF-8", "TXT", "Word", "Markdown", "LaTeX", "API", "Base URL", "Temperature", "MIT License"}
 
 
 def _audit(path: Path) -> list[str]:
