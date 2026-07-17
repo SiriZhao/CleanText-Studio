@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a reproducible problem in CleanText Studio.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Please remove API keys, private paths, and confidential text before submitting."
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "v1.5.2"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Cleanup, Formula/Word export, Table export, UI/i18n, AI configuration, Packaging, Documentation]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include safe sample text, steps, expected behavior, and actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Windows version, package type, display scale, locale"

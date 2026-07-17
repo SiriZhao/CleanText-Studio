@@ -14,15 +14,17 @@ README_FILES = (
 VERSION = "v1.5.2"
 RELEASE = "https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"
 REQUIRED_IMAGES = {
-    "hero-main-en.png", "cleaning-before-after.png", "table-preview.png",
-    "math-preview.png", "ai-settings.png", "rounded-ui-details.png",
+    "01-main-light.png", "02-main-dark.png", "03-settings.png",
+    "04-about.png", "05-word-export.png", "06-formula-rendering.png",
+    "cleaning-before-after.png", "table-preview.png", "math-preview.png",
+    "ai-settings.png", "rounded-ui-details.png",
 }
 FORBIDDEN = (
     "README_EN.md", "screenshots/v1.4", "screenshots/v1.5.0", "TODO",
     "ai-detector-bypass", "undetectable-ai", "plagiarism-bypass",
     "C:\\Users\\", "/Users/", "api_key=",
 )
-IMAGE_RE = re.compile(r"!?\[[^]]*]\((assets/screenshots/v1\.5\.2/[^)]+)\)")
+IMAGE_RE = re.compile(r"assets/screenshots/(?:v1\.5\.2/)?[^\s\"')>]+\.png")
 
 
 def main() -> int:
@@ -41,7 +43,7 @@ def main() -> int:
             errors.append(f"{name} is too short ({len(content)} characters)")
         if headings < 45:
             errors.append(f"{name} has too few sections ({headings})")
-        if VERSION not in content or RELEASE not in content:
+        if VERSION not in content or "https://github.com/SiriZhao/CleanText-Studio/releases" not in content:
             errors.append(f"{name} does not identify the current release")
         if "CleanText Studio" not in content or "README.zh-CN.md" not in content:
             errors.append(f"{name} has no complete language/project navigation")
@@ -54,19 +56,27 @@ def main() -> int:
         images = set(IMAGE_RE.findall(content))
         all_images.update(images)
         if not images:
-            errors.append(f"{name} has no v1.5.2 screenshots")
+            errors.append(f"{name} has no current screenshots")
         for image in images:
             image_path = ROOT / image
             if not image_path.exists() or image_path.stat().st_size == 0:
                 errors.append(f"{name} references missing image: {image}")
+    # The flagship English page uses unversioned, carefully curated showcase
+    # assets; the localized pages retain the locale-specific v1.5.2 captures.
     missing = REQUIRED_IMAGES - {Path(image).name for image in all_images}
+    if (ROOT / "README.md").exists():
+        main = (ROOT / "README.md").read_text(encoding="utf-8")
+        showcase = {"01-main-light.png", "02-main-dark.png", "03-settings.png", "04-about.png", "05-word-export.png", "06-formula-rendering.png"}
+        missing_showcase = {name for name in showcase if f"assets/screenshots/{name}" not in main}
+        if missing_showcase:
+            errors.append(f"README.md misses showcase assets: {sorted(missing_showcase)}")
     if missing:
         errors.append(f"flagship images are not referenced: {sorted(missing)}")
     if max(heading_counts.values(), default=0) - min(heading_counts.values(), default=0) > 8:
         errors.append(f"README section parity is too uneven: {heading_counts}")
     if errors:
         raise SystemExit("README quality check failed:\n- " + "\n- ".join(errors))
-    print(f"README quality OK: {len(README_FILES)} pages, {len(all_images)} referenced v1.5.2 images")
+    print(f"README quality OK: {len(README_FILES)} pages, {len(all_images)} current images")
     return 0
 
 

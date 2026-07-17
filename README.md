@@ -4,122 +4,224 @@
 
 <h1 align="center">CleanText Studio</h1>
 
-<p align="center"><strong>Local-first text cleanup, document structure recovery, formula-aware preview, and polished DOCX/TXT export for copied and AI-generated text.</strong></p>
+<p align="center"><strong>Transform messy AI-generated and copied text into clean, structured, professional documents.</strong></p>
 
 <p align="center">
-  <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.zh-TW.md">繁體中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.ru.md">Русский</a> · <a href="README.ar.md">العربية</a> · <a href="README.hi.md">हिन्दी</a>
+  A privacy-first, local-first AI text cleanup and document formatting application for Windows.
 </p>
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="README.md"><strong>English</strong></a> ·
+  <a href="README.zh-CN.md">简体中文</a> ·
+  <a href="README.zh-TW.md">繁體中文</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.ko.md">한국어</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.pt-BR.md">Português</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="README.ar.md">العربية</a> ·
+  <a href="README.hi.md">हिन्दी</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases"><img src="https://img.shields.io/github/v/tag/SiriZhao/CleanText-Studio?label=release&sort=semver" alt="Latest tag"></a>
   <a href="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml"><img src="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.12-3776AB" alt="Python 3.12">
   <img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/open%20source-community%20welcome-8250df" alt="Open source">
 </p>
-
-> **Current release: v1.5.2 · Windows x64 · local-first by default**
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe"><strong>Download installer</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip"><strong>Download portable ZIP</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 checksums</a>
+  <a href="#download-for-windows"><strong>Download for Windows</strong></a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#contributing">Contribute</a>
 </p>
 
-![CleanText Studio English interface](assets/screenshots/v1.5.2/hero-main-en.png)
+<div align="center">
+  <img src="assets/screenshots/01-main-light.png" alt="CleanText Studio showing source text, cleanup controls, and a structured result" width="100%">
+</div>
 
-CleanText Studio turns messy copied text into a readable, editable document without treating useful structure as noise. It removes redundant Markdown and decoration, recovers headings, lists, tables and common mathematical notation, then gives you a text view, a structured preview, and DOCX or TXT export. Basic cleanup is performed on the device; optional AI optimization uses only an API provider that you configure yourself.
+> **Current source tag:** v1.5.2 · **Published desktop platform:** Windows x64 · **Basic cleanup:** local-first
 
-**Why it is useful**
+CleanText Studio helps turn copied pages, notes, and AI-assisted drafts into editable documents without flattening their useful structure. It cleans presentation residue, recovers headings, lists, tables, and supported mathematical expressions, then exports polished DOCX or UTF-8 TXT files.
 
-- Keep the meaning while removing visual residue from web pages, chats, notes, and generated drafts.
-- Preserve a document model so headings, tables, links, and formulas do not silently flatten before export.
-- Review the result before writing a native Word table, editable equation, or UTF-8 text file.
-- Switch the interface language and theme at runtime without changing the source, result, or cleanup settings.
+- **Keep structure:** recover headings, quotations, lists, tables, links, and paragraphs instead of treating the document as a character stream.
+- **Keep formulas editable:** detect supported LaTeX, normalize it safely, and emit native Word OMML equations.
+- **Keep control local:** basic cleanup, preview, and export work on-device; optional AI refinement is explicitly user initiated.
+- **Keep review in the loop:** inspect Text mode or Preview mode before exporting.
 
-## Download for Windows
+<div align="center">
+  <img src="assets/demo.gif" alt="CleanText Studio workflow: source, cleanup, result, and export" width="900">
+</div>
 
-CleanText Studio v1.5.2 is released for **Windows x64**. Choose the installer for a normal per-user installation, or choose the portable ZIP when you prefer to run from an extracted folder. Neither package requires a separate Python installation.
+## ✨ Features
 
-| Package | Intended use | Download |
-| --- | --- | --- |
-| Setup | Install, Start-menu entry, and uninstall support | [CleanText-Studio-v1.5.2-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe) |
-| Portable | Run after extracting the ZIP; no installation | [CleanText-Studio-v1.5.2-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip) |
-| Verification | Check the downloaded package | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt) |
+### AI text cleanup — without “AI bypass” claims
 
-The release page is the source of truth for available files: [CleanText Studio v1.5.2](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2).
+CleanText Studio is a writing-productivity and document-formatting tool. It removes unnecessary formatting residue from copied and AI-assisted text while preserving meaning. It is **not** an AI detector evasion, plagiarism evasion, or academic cheating tool.
 
-## What CleanText Studio does
+- Remove Markdown markers, emphasis residue, horizontal rules, copied HTML fragments, decorative emoji, and fragmented instruction labels.
+- Restore natural paragraphs with compact, smart-section, or preserve-all line-break modes.
+- Choose how display text, links, and standalone URLs should be kept.
 
-### Built for practical document cleanup
+### Markdown cleanup
 
-Copied content often arrives with headings written as markers, repeated separators, decorative emoji, broken line wraps, tutorial labels, pasted links, or tables that are only visually tabular. CleanText Studio makes those choices explicit instead of applying a hidden one-size-fits-all rewrite. Pick a preset, inspect the result, and export only after the structure looks right.
+Remove presentation-only Markdown while retaining the content that a document needs: headings, emphasis meaning, links, code, and tables can be handled independently instead of by a destructive global replacement.
 
-### Typical scenarios
+### Paragraph refinement
 
-- Normalize research notes, meeting notes, knowledge-base extracts, and web-page copy.
-- Prepare AI-assisted drafts for editing and professional document delivery.
-- Recover a Markdown table before sending it as a native Word table.
-- Preserve simple inline and block mathematics while removing surrounding formatting noise.
-- Create a clean TXT handoff when a Word layout is unnecessary.
-
-## Core capabilities
-
-### Markdown and formatting cleanup
-
-The cleanup pipeline can remove Markdown heading markers, emphasis markers, inline-code markers, image syntax, horizontal rules, copied HTML residue, decorative symbols, emoji, and fragmented instructional labels. It preserves ordinary text and makes cleanup options visible in the settings panel.
+Choose whether short source wraps should become compact prose, remain separated at meaningful boundaries, or retain every paragraph break for editorial review.
 
 ### Document structure recovery
 
-Headings, lists, quotations, code blocks, paragraphs, tables, links, and mathematical blocks are represented as document structure rather than being blindly collapsed into a character stream. This is why preview and export can make the same structural decisions.
+The cleaning pipeline keeps a document-block model so the same structure can be reviewed and exported.
+
+- Headings and hierarchy
+- Ordered and unordered lists
+- Quotes and code blocks
+- Markdown tables and cleaned cells
+- Paragraphs, links, and source-aware inline runs
 
 ### Headings and lists
 
-Choose whether to preserve markers, naturalize a structure, or remove markers where appropriate. The tool is designed to retain useful hierarchy and list semantics; it is not a generic rewriter that invents a new outline.
+Use preservation or naturalization modes to keep useful hierarchy without carrying accidental Markdown markers into a professional document.
 
-### Paragraphs and line breaks
+### Tables and quotations
 
-Three modes cover common source material:
+Markdown table cells receive the same cleanup protection as normal prose, and quotations/code blocks remain distinct blocks rather than being merged into surrounding text.
 
-| Mode | Use it when |
+### Advanced formula support
+
+Formula handling is deliberately structural rather than a collection of display-text replacements.
+
+- Detect `$...$`, `$$...$$`, `\(...\)`, `\[...]`, and bounded bare formula candidates in prose, lists, and table cells.
+- Parse a safe LaTeX subset into one AST shared by Preview and DOCX export.
+- Support fractions, indexed roots, scripts, delimiters, accents, common styles, Greek symbols, functions, integrals, sums, products, limits, and supported matrices.
+- Export supported formulas as editable Word OMML instead of visible LaTeX source.
+
+**Detection boundaries.**
+
+Formula candidates are protected before ordinary cleanup. The detector rejects obvious URLs, Windows paths, code-like text, and currency-like dollar values to avoid turning normal text into equations.
+
+**Formula normalization.**
+
+Spacing and obvious delimiter problems can be normalized within the protected formula run. The source text around an inline formula stays ordinary text and keeps its punctuation.
+
+**Word OMML.**
+
+Supported formulas become native Office Math elements such as fractions, roots, scripts, accents, delimiters, matrices, and n-ary operators. They are intended to remain editable in Word.
+
+### Export and review
+
+| Capability | What you get |
 | --- | --- |
-| Compact | You want ordinary wrapped source lines joined into compact paragraphs. |
-| Smart sections | You want natural paragraph spacing while retaining meaningful section breaks. |
-| Preserve all | You need the source paragraph boundaries kept as closely as possible. |
+| **DOCX export** | Native Word headings, lists, tables, and supported editable equations. |
+| **TXT export** | A clean UTF-8 text handoff without rich document objects. |
+| **Markdown input** | Clean Markdown/MD source while preserving meaningful structure. |
+| **Text and Preview modes** | Review normalized text or a document-oriented preview before exporting. |
 
-### Links and standalone URLs
+### DOCX export
 
-Link handling can keep Markdown, keep display text only, or preserve display text together with its URL. Standalone URLs can be retained, merged with the preceding paragraph, or removed when they are only tutorial residue. URLs are handled deliberately rather than disappearing as a side effect of Markdown cleanup.
+Use DOCX when a recipient needs an editable document with headings, lists, native tables, and supported equations. The exporter reports structural limitations rather than silently flattening a recognized object.
 
-## Tables, equations, and preview
+### TXT export
 
-### Markdown tables and Word tables
+Use TXT for a portable UTF-8 handoff. It retains normalized text semantics but intentionally cannot encode native Word tables or OMML objects.
 
-Markdown tables are parsed into structured table blocks. Preview mode displays the table as a table, and DOCX export creates a native Word table with a header row, readable cell content, borders, and widths chosen from content rather than a fixed equal split. Markdown separator rows, residual emphasis markers, meaningless empty columns, and accidental soft line breaks are cleaned before export when the active cleanup settings allow it.
+**Preview before delivery.**
 
-![Structured table preview](assets/screenshots/v1.5.2/table-preview.png)
+Preview mode renders the same block and formula model used by export. It is a review surface, not a separate rewrite engine.
 
-### Math formulas and editable Word equations
+### Privacy first
 
-Common inline and display LaTeX delimiters, Unicode mathematical expressions, and simple equations are protected while surrounding text is cleaned. Supported formulas are emitted as Word OMML native equations, so common variables and expressions remain editable in Word. Formula spacing, obvious delimiter issues, and formula numbering can be normalized according to the selected options.
+- Basic cleanup, preview, and DOCX/TXT export are performed locally.
+- Text is not uploaded merely because it is pasted, cleaned, previewed, or exported.
+- AI enhancement is optional and uses a provider, endpoint, model, and API key chosen by you.
+- API keys are never included in exported document configuration.
 
-Complex custom macros are not silently discarded. When a formula is outside the supported conversion range, the application keeps a readable fallback and reports it in the export quality information.
+**Local processing.**
 
-![Formula-aware preview](assets/screenshots/v1.5.2/math-preview.png)
+Local cleanup does not require an account. The application has no shared public key and does not upload a document as part of ordinary paste, preview, cleaning, or export.
 
-### Text mode and preview mode
+**User-owned AI access.**
 
-Text mode is useful for reviewing the normalized plain result. Preview mode shows headings, lists, tables, links, and formulas in a document-oriented form. Switching display mode does not rerun cleanup or change your result.
+When AI refinement is used, the selected provider receives only the material required by that user-initiated request. Provider terms and your organization’s sharing policy still apply.
 
-## Before and after
+## Screenshots
 
-The following compact example shows the kind of residue the application is designed to clean while preserving useful content.
+<div align="center">
+  <img src="assets/screenshots/02-main-dark.png" alt="CleanText Studio dark theme" width="48%">
+  <img src="assets/screenshots/03-settings.png" alt="CleanText Studio cleaning settings" width="48%">
+</div>
 
-**Source**
+<div align="center">
+  <img src="assets/screenshots/06-formula-rendering.png" alt="Formula-aware document preview" width="48%">
+  <img src="assets/screenshots/05-word-export.png" alt="Word export confirmation in CleanText Studio" width="48%">
+</div>
+
+<div align="center">
+  <img src="assets/screenshots/04-about.png" alt="About CleanText Studio dialog" width="48%">
+</div>
+
+All screenshots are captured from the real Qt application with public sample content. They contain no API key, private path, browser window, or generated mockup.
+
+## Download for Windows
+
+CleanText Studio ships Windows x64 packages. Use the [GitHub Releases page](https://github.com/SiriZhao/CleanText-Studio/releases) as the source of truth for published installers, portable ZIP files, release notes, and SHA256 checksums.
+
+| Package | Best for | Notes |
+| --- | --- | --- |
+| **Windows Installer** | Everyday use | Per-user install, Start-menu entry, and uninstall support. |
+| **Portable ZIP** | A self-contained folder | Extract first, then run the executable; no separate Python install. |
+| **SHA256SUMS.txt** | Download verification | Compare your downloaded package before installation. |
+
+> The v1.5.2 source tag is available. The release page states which package assets are currently published; this README intentionally does not fabricate direct download links for draft or incomplete releases.
+
+### Installer
+
+Choose the installer when you want normal Windows integration, a Start-menu entry, and uninstallation through Windows.
+
+### Portable version
+
+Choose the portable ZIP when you want a self-contained folder. Extract it to a writable location and keep the extracted files together.
+
+### Verify a download
+
+```powershell
+Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Setup.exe -Algorithm SHA256
+Get-Content .\SHA256SUMS.txt
+```
+
+## Quick start
+
+1. **Paste or open text.** Add copied text, Markdown, TXT, or a supported document.
+2. **Choose cleanup rules.** Select a preset, then adjust Markdown, links, paragraphs, headings/lists, tables, and formula options.
+3. **Process and review.** Click **Clean**, switch between Text and Preview modes, and inspect the result.
+4. **Export.** Choose Word for recovered document structure or TXT for a portable normalized text file.
+
+### Import text
+
+Paste directly into the source panel or open supported text/document input. Keep the original source when working with archival, contractual, or publication material.
+
+### Select rules
+
+Start with a preset, then change only the settings needed for the current document. Cleaning selections are stable values rather than translated labels.
+
+### Review output
+
+Use Text mode to inspect normalized text and Preview mode to inspect headings, lists, tables, and formulas before committing to an export.
+
+## A short before-and-after example
+
+**Input**
 
 ```markdown
-### **Project notes** ✨
+### **Research notes** ✨
 ---
+
 Read the **draft** first.
 
 - Keep the main conclusion
@@ -132,116 +234,77 @@ Read the **draft** first.
 https://example.com/reference
 ```
 
-**Result concept**
+**Result**
 
 ```text
-Project notes
+Research notes
 
 Read the draft first.
 
 • Keep the main conclusion
 • Remove decorative labels
 
-The table and E = mc² formula remain structured in Preview and DOCX export.
+The table and supported formula remain structured in Preview and DOCX export.
 ```
 
-![Source and cleaned result](assets/screenshots/v1.5.2/cleaning-before-after.png)
+## Tables, formulas, and Word export
 
-## Export formats
+Markdown tables become structured table blocks. Preview mode displays a table, and DOCX export writes a native Word table with a header row and content-aware widths.
 
-### Export Word
+For formulas, CleanText Studio protects supported math while surrounding prose is cleaned. v1.5.2 specifically improves bare LaTeX expressions embedded in prose, lists, and table cells. Its verification index exported 15 native OMath elements with no supported LaTeX command residue in `word/document.xml`.
 
-Choose Word export when the destination needs headings, lists, tables, and supported formulas as editable document elements. The exporter produces a `.docx` file; it does not automate a locally installed Word application. Before export, the app can show a structure and quality summary so that recoverable formula/table limitations are visible.
+<div align="center">
+  <img src="assets/screenshots/06-formula-rendering.png" alt="Formula preview in CleanText Studio" width="72%">
+</div>
 
-### Export TXT
+### Table workflow
 
-Choose TXT for a portable UTF-8 plain-text result. TXT export preserves the normalized textual content, but cannot represent Word-native tables or editable OMML equations as rich document objects.
+Review table headers, cells, and layout in Preview mode. The DOCX result is a native table rather than a pasted Markdown separator grid.
 
-| Input | Output |
-| --- | --- |
-| TXT, Markdown, MD, DOCX | UTF-8 TXT and structured DOCX |
+### Formula workflow
 
-## Languages, themes, and accessibility
+Keep formulas in their textual context. For supported syntax, export Word equations as OMML; for unknown macros, review the whole-formula fallback warning before delivery.
 
-The desktop interface offers Simplified Chinese, Traditional Chinese, English, Japanese, Korean, Spanish, French, German, Brazilian Portuguese, Russian, Arabic, and Hindi. Language changes are applied at runtime and retain text, results, current selections, and undo history. Arabic uses a right-to-left interface while technical values such as URLs, API keys, and code remain readable left-to-right.
+## Optional AI refinement (BYOK)
 
-Light and dark themes share the same panel, control, focus, and rounded-surface system. The application uses legal system-font fallbacks where available; it does **not** bundle Apple PingFang files.
+AI refinement is optional. Local cleanup does not require an account, a network connection, or an API key. When you deliberately use AI refinement, you supply your own provider configuration and API key. DeepSeek and other providers exposed by the installed configuration are presented in the AI settings dialog; review the selected provider’s data terms before sending sensitive material.
 
-![Dark theme and rounded surfaces](assets/screenshots/v1.5.2/rounded-ui-details.png)
+### Provider configuration
 
-## Optional AI optimization (BYOK)
+Provider, endpoint, model, API style, and key storage are configured in the application. Technical IDs remain independent from localized display labels.
 
-AI optimization is optional. Basic cleanup, preview, TXT export, and DOCX export are available without a network connection. When you deliberately enable AI optimization, you choose a supported provider, endpoint, model, and your own API key. The application does not provide a shared free API key or proxy your provider account.
+### Data flow
 
-DeepSeek and other providers exposed by the installed application configuration can be selected through the AI settings dialog. Provider and model identifiers remain separate from translated display labels. Review the provider’s own data terms before sending sensitive material.
+The app does not operate a shared proxy API. A request travels only to the provider endpoint you configure when you explicitly request AI refinement.
 
-![AI configuration](assets/screenshots/v1.5.2/ai-settings.png)
+## Localization and themes
 
-## Quick start
+The desktop UI supports Simplified Chinese, Traditional Chinese, English, Japanese, Korean, Spanish, French, German, Brazilian Portuguese, Russian, Arabic, and Hindi. Language changes occur at runtime and retain the source, result, selections, and undo state. Arabic uses RTL layout while URLs, code, and technical values remain readable.
 
-1. Launch CleanText Studio and paste text, or open a supported file.
-2. Choose a cleaning preset and adjust only the options needed for this document.
-3. Click **Clean**, then inspect Text mode or Preview mode.
-4. Export to Word for structured delivery, or TXT for a normalized plain-text file.
-5. If needed, configure your own AI provider and consciously choose when to send text to it.
+Light and dark themes share a rounded component system. The project does not redistribute Apple PingFang fonts.
 
-### Installer or portable version
+### Languages
 
-- **Installer:** run the Setup executable, follow the installer, and launch CleanText Studio from the Start menu. Use Windows Apps settings or the uninstaller to remove it.
-- **Portable:** extract the ZIP to a writable folder and start the executable inside it. Keep the extracted files together; do not run it directly from a compressed archive.
+Twelve official UI catalogs are checked for key completeness and runtime text consistency. Community review of translations is welcome.
 
-### Complete workflow
+### Themes
 
-1. Put source text in the left panel.
-2. Use the center panel to decide how Markdown, links, paragraphs, lists, and formulas are handled.
-3. Review the cleaned result at right and use Preview for tables and equations.
-4. Use the result toolbar to copy, undo, restore the most recent result, clear, export TXT, or export Word.
-5. Keep a copy of the original source whenever the document has legal, archival, or publication significance.
-
-## Privacy, security, and data flow
-
-### Local-first basic processing
-
-Basic cleanup runs locally. The application has no account system, advertising service, telemetry service, or shared public API key. Your text is not uploaded merely because it is pasted, previewed, cleaned, or exported locally.
-
-### AI requests are opt-in
-
-Only an explicit AI optimization action uses the third-party provider you configure. The provider receives the material needed for that request under its own terms. Do not use a provider request for material you are not entitled to share.
-
-### API key handling
-
-API keys are user-provided and are not written into exported document configuration. On Windows, the application uses its configured credential-storage mechanism when available; if secure credential storage is unavailable, it falls back safely rather than silently exporting a plaintext key. Treat your operating-system account and provider credentials as security boundaries.
+The light and dark palettes use the same card, focus, checkbox, and scroll-surface rules so visual hierarchy remains consistent.
 
 ## System requirements
 
-- Windows x64.
-- A current supported Windows desktop environment.
-- No separately installed Python runtime for release packages.
-- Internet access is optional and only needed for GitHub downloads, optional AI use, or links opened by the user.
+- Windows x64
+- A current supported Windows desktop environment
+- No separate Python runtime for release packages
+- Internet only for GitHub downloads, external links, or an AI request you explicitly make
 
-Windows SmartScreen can show a reputation warning for a new unsigned or low-reputation build. Download only from the repository release page, verify the SHA256 checksum, and follow your organization’s software-installation policy.
+Windows SmartScreen can warn about a new unsigned or low-reputation build. Download from the repository Releases page, verify the SHA256 checksum, and follow your organization’s installation policy.
 
-## Technical stack and project architecture
+### Offline use
 
-CleanText Studio is a Python desktop application using PySide6 for the interface, python-docx for DOCX writing, PyInstaller for portable packaging, Inno Setup for the Windows installer, and pytest/Ruff/mypy for quality checks. The cleanup and document-block model sit below the presentation layer, allowing text, preview, and export to consume the same normalized structure.
-
-```text
-src/cleantext_studio/
-├── app.py                 # desktop window and presentation wiring
-├── cleaners/              # stable text-cleaning pipeline
-├── math/                  # detection, parsing, preview, and OMML support
-├── exporters/             # DOCX and TXT exporters
-├── i18n/                  # locale catalogs and runtime translation service
-├── ui/                    # cards, controls, and theme components
-└── llm/                   # optional provider configuration and requests
-assets/                    # icon, screenshots, and packaged resources
-scripts/                   # validation, screenshot, and Windows-build helpers
-tests/                     # unit, GUI, integration, and regression checks
-```
+No network connection is needed for local cleanup, preview, or DOCX/TXT export after installation.
 
 ## Run from source
-
-The following commands match the repository’s development layout on PowerShell.
 
 ```powershell
 git clone https://github.com/SiriZhao/CleanText-Studio.git
@@ -252,6 +315,10 @@ $env:PYTHONPATH = "src"
 .\.venv\Scripts\python -m cleantext_studio.main
 ```
 
+### Development environment
+
+Use Python 3.12 and the development extras. The project’s Windows tooling is exercised by CI on a Windows runner.
+
 ## Test and build
 
 ```powershell
@@ -260,101 +327,103 @@ $env:PYTHONPATH = "src"
 .\.venv\Scripts\mypy src/cleantext_studio
 .\.venv\Scripts\python -m pytest -q
 .\.venv\Scripts\python scripts/check_translations.py
-.\.venv\Scripts\python scripts/check_readme_quality.py
-.\.venv\Scripts\python scripts/check_screenshot_quality.py
 .\.venv\Scripts\python scripts/verify_cleaning_freeze.py
 .\scripts\build_windows.ps1
 ```
 
-The Windows build writes its current artifacts, checksums, and release notes to `dist/`. Build output is intentionally not committed to the repository.
+The build writes portable and installer artifacts, checksums, and release notes to `dist/`. Build output is intentionally not committed.
 
-## Release artifacts and SHA256 verification
+### Quality gates
 
-Each release provides the Setup executable, Portable ZIP, `SHA256SUMS.txt`, and release notes when available. In PowerShell, compare a downloaded artifact with the published checksum:
+Ruff, mypy, pytest, translation checks, screenshot checks, and the cleaning freeze guard run locally and in CI. A change that affects stable cleanup output must explain and test that compatibility impact.
 
-```powershell
-Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Setup.exe -Algorithm SHA256
-Get-Content .\SHA256SUMS.txt
+## Project architecture
+
+```text
+src/cleantext_studio/
+├── cleaners/    stable cleanup pipeline and document blocks
+├── math/        detection, parsing, preview, and Word OMML rendering
+├── exporters/   DOCX and TXT export
+├── i18n/        runtime locale service and catalogs
+├── ui/          themes, cards, and desktop widgets
+└── llm/         optional user-configured AI providers
 ```
 
-## Internationalization and translation contributions
+### Presentation layer
 
-The official locale catalogs are `zh_CN`, `zh_TW`, `en_US`, `ja_JP`, `ko_KR`, `es_ES`, `fr_FR`, `de_DE`, `pt_BR`, `ru_RU`, `ar`, and `hi_IN`. See [docs/TRANSLATION_GLOSSARY.md](docs/TRANSLATION_GLOSSARY.md) and [docs/README_TRANSLATION_STATUS.md](docs/README_TRANSLATION_STATUS.md) before proposing terminology changes. Community translation review is welcome; this repository does not claim that every documentation translation has received native-speaker review.
+The desktop UI, theme system, and i18n service render stable data and message IDs. Switching language or theme should not re-run cleanup or change the document state.
+
+### Core layer
+
+Cleaners, formula parsing, table handling, and exporters consume structured document blocks. This separation keeps UI work from silently changing content semantics.
 
 ## Roadmap
 
-The current public release is Windows x64. Future platform work, richer import fidelity, and broader formula coverage are roadmap topics rather than current shipping claims. Feature requests and issue reports are welcome, but a roadmap item is not a commitment or release announcement.
+### v1.5 — completed
+
+- Runtime multilingual UI
+- Formula detection and Word OMML export
+- Native Word tables, DOCX export, and Windows packaging
+
+### Future exploration
+
+- Linux support
+- macOS support
+- Plugin system
+- More optional AI providers
+
+Roadmap items are not promises or currently released platforms.
+
+### Community priorities
+
+High-quality bug reports, translation review, documentation improvements, and reproducible export fixtures are particularly useful contributions.
 
 ## Known limitations
 
-- Complex custom LaTeX macros can require a readable fallback instead of native Word equation conversion.
-- DOCX import cannot preserve every original style, embedded object, or layout feature from arbitrary Word files.
-- TXT cannot encode rich Word-native tables or editable equations.
-- Optional AI output is produced by the third-party provider you select and requires human review.
-- Windows packaging is the only published platform stated here; macOS, Linux, Android, and iOS are not currently advertised as released builds.
+- Unknown custom LaTeX macros can require a readable whole-formula fallback instead of native Word equations.
+- DOCX import cannot preserve every original Word layout, embedded object, or style.
+- TXT cannot carry native Word tables or editable equations.
+- Markdown is supported as input; the current release exports DOCX and TXT, not a separate Markdown-output format.
+- macOS, Linux, Android, and iOS packages are not currently published.
 
 ## FAQ
 
-### Must I be online?
+**Do I need to be online?** No. Local cleanup, preview, and local export work offline. Networking is needed only for actions you choose, such as AI refinement or opening external links.
 
-No. Local cleanup, preview, and local export work without a network connection. Network access is only needed for actions such as downloading releases, opening an external link, or an AI request you choose to make.
+### Is my text uploaded automatically?
 
-### Will the application upload my text?
+**Will my document be uploaded?** Not for normal local processing. A third-party request occurs only when you explicitly invoke AI refinement with your own provider.
 
-Not for basic local processing. A third-party request occurs only when you explicitly use AI optimization with your own configured provider.
+### Is an API key required?
 
-### Must I configure an API key?
+**Do I need an API key?** No. A key is only needed for optional AI refinement.
 
-No. An API key is needed only for optional AI optimization.
+### Which documents are supported?
 
-### Which files can I use?
+**Why is Word export recommended?** DOCX preserves recovered hierarchy, native tables, and supported editable equations more faithfully than TXT.
 
-The application accepts TXT, Markdown/MD, and DOCX input and can export UTF-8 TXT or structured DOCX.
+### Are equations editable?
 
-### What is the difference between Word and TXT export?
+**Are formulas editable?** Supported formulas are exported as Word OMML equations. Check unknown custom macros before publishing a document.
 
-Word can retain rich structure such as headings, native tables, and supported editable equations. TXT is a clean UTF-8 text handoff without rich document objects.
+### How do I switch language or theme?
 
-### Why is Word export recommended for some documents?
+Use the language and theme controls in the desktop UI. Runtime switching retains the current document and cleanup choices.
 
-It is the format that can carry the recovered document structure most faithfully, especially tables and supported formulas.
+### How can I contribute?
 
-### Are formulas editable?
-
-Supported formulas are exported as Word OMML native equations. Complex unsupported macros may use a readable fallback and should be checked before publishing.
-
-### Are tables exported as Word tables?
-
-Structured Markdown tables are exported as native Word tables when Word export is selected.
-
-### How do I change language or theme?
-
-Use the language and theme controls in the application toolbar/settings. The runtime switch preserves the active document and cleanup selections.
-
-### Where is my API key stored?
-
-The app uses its configured Windows credential-storage path when available and does not include the key in exported configuration. Review the installed build’s settings and your system security policy.
-
-### Installer or portable ZIP?
-
-Choose the installer for normal Windows integration and uninstall support. Choose portable when you want an extracted, self-contained folder.
-
-### How do I report a problem or contribute a translation?
-
-Open an issue or pull request in [SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio), including a non-sensitive sample and expected result where possible.
+**How can I report an issue?** Use the issue templates and include a minimal, non-sensitive sample plus the expected result.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Keep changes focused, add tests when behavior changes, avoid committing build output or credentials, and preserve the project’s local-first privacy posture.
+Contributions are welcome: bug reports, focused fixes, tests, documentation, translations, and platform research. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request and [SECURITY.md](SECURITY.md) before reporting a vulnerability.
 
-## Developer
+## Showcase and launch material
 
-Maintained by [SiriZhao](https://github.com/SiriZhao). Project home: [SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio).
-
-## Third-party licenses
-
-See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for distributed and runtime dependency notices. CleanText Studio does not package Apple PingFang font files.
+- [Why CleanText Studio?](docs/showcase.md)
+- [GitHub launch copy](launch/github-launch.md)
+- [Translation glossary](docs/TRANSLATION_GLOSSARY.md)
 
 ## License
 
-CleanText Studio is available under the [MIT License](LICENSE).
+CleanText Studio is available under the [MIT License](LICENSE). See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for dependency and font notices.
