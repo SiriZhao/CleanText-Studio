@@ -11,22 +11,22 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
   <a href="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml"><img src="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.12-3776AB" alt="Python 3.12">
   <img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
 
-> **Current release: v1.5.1 · Windows x64 · local-first by default**
+> **Current release: v1.5.2 · Windows x64 · local-first by default**
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe"><strong>Download installer</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip"><strong>Download portable ZIP</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt">SHA256 checksums</a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe"><strong>Download installer</strong></a> ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip"><strong>Download portable ZIP</strong></a> ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 checksums</a>
 </p>
 
-![CleanText Studio English interface](assets/screenshots/v1.5.1/hero-main-en.png)
+![CleanText Studio English interface](assets/screenshots/v1.5.2/hero-main-en.png)
 
 CleanText Studio turns messy copied text into a readable, editable document without treating useful structure as noise. It removes redundant Markdown and decoration, recovers headings, lists, tables and common mathematical notation, then gives you a text view, a structured preview, and DOCX or TXT export. Basic cleanup is performed on the device; optional AI optimization uses only an API provider that you configure yourself.
 
@@ -39,15 +39,15 @@ CleanText Studio turns messy copied text into a readable, editable document with
 
 ## Download for Windows
 
-CleanText Studio v1.5.1 is released for **Windows x64**. Choose the installer for a normal per-user installation, or choose the portable ZIP when you prefer to run from an extracted folder. Neither package requires a separate Python installation.
+CleanText Studio v1.5.2 is released for **Windows x64**. Choose the installer for a normal per-user installation, or choose the portable ZIP when you prefer to run from an extracted folder. Neither package requires a separate Python installation.
 
 | Package | Intended use | Download |
 | --- | --- | --- |
-| Setup | Install, Start-menu entry, and uninstall support | [CleanText-Studio-v1.5.1-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe) |
-| Portable | Run after extracting the ZIP; no installation | [CleanText-Studio-v1.5.1-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip) |
-| Verification | Check the downloaded package | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt) |
+| Setup | Install, Start-menu entry, and uninstall support | [CleanText-Studio-v1.5.2-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe) |
+| Portable | Run after extracting the ZIP; no installation | [CleanText-Studio-v1.5.2-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip) |
+| Verification | Check the downloaded package | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt) |
 
-The release page is the source of truth for available files: [CleanText Studio v1.5.1](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1).
+The release page is the source of truth for available files: [CleanText Studio v1.5.2](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2).
 
 ## What CleanText Studio does
 
@@ -97,7 +97,7 @@ Link handling can keep Markdown, keep display text only, or preserve display tex
 
 Markdown tables are parsed into structured table blocks. Preview mode displays the table as a table, and DOCX export creates a native Word table with a header row, readable cell content, borders, and widths chosen from content rather than a fixed equal split. Markdown separator rows, residual emphasis markers, meaningless empty columns, and accidental soft line breaks are cleaned before export when the active cleanup settings allow it.
 
-![Structured table preview](assets/screenshots/v1.5.1/table-preview.png)
+![Structured table preview](assets/screenshots/v1.5.2/table-preview.png)
 
 ### Math formulas and editable Word equations
 
@@ -105,7 +105,7 @@ Common inline and display LaTeX delimiters, Unicode mathematical expressions, an
 
 Complex custom macros are not silently discarded. When a formula is outside the supported conversion range, the application keeps a readable fallback and reports it in the export quality information.
 
-![Formula-aware preview](assets/screenshots/v1.5.1/math-preview.png)
+![Formula-aware preview](assets/screenshots/v1.5.2/math-preview.png)
 
 ### Text mode and preview mode
 
@@ -145,7 +145,7 @@ Read the draft first.
 The table and E = mc² formula remain structured in Preview and DOCX export.
 ```
 
-![Source and cleaned result](assets/screenshots/v1.5.1/cleaning-before-after.png)
+![Source and cleaned result](assets/screenshots/v1.5.2/cleaning-before-after.png)
 
 ## Export formats
 
@@ -167,7 +167,7 @@ The desktop interface offers Simplified Chinese, Traditional Chinese, English, J
 
 Light and dark themes share the same panel, control, focus, and rounded-surface system. The application uses legal system-font fallbacks where available; it does **not** bundle Apple PingFang files.
 
-![Dark theme and rounded surfaces](assets/screenshots/v1.5.1/rounded-ui-details.png)
+![Dark theme and rounded surfaces](assets/screenshots/v1.5.2/rounded-ui-details.png)
 
 ## Optional AI optimization (BYOK)
 
@@ -175,7 +175,7 @@ AI optimization is optional. Basic cleanup, preview, TXT export, and DOCX export
 
 DeepSeek and other providers exposed by the installed application configuration can be selected through the AI settings dialog. Provider and model identifiers remain separate from translated display labels. Review the provider’s own data terms before sending sensitive material.
 
-![AI configuration](assets/screenshots/v1.5.1/ai-settings.png)
+![AI configuration](assets/screenshots/v1.5.2/ai-settings.png)
 
 ## Quick start
 
@@ -273,7 +273,7 @@ The Windows build writes its current artifacts, checksums, and release notes to 
 Each release provides the Setup executable, Portable ZIP, `SHA256SUMS.txt`, and release notes when available. In PowerShell, compare a downloaded artifact with the published checksum:
 
 ```powershell
-Get-FileHash .\CleanText-Studio-v1.5.1-Windows-x64-Setup.exe -Algorithm SHA256
+Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Setup.exe -Algorithm SHA256
 Get-Content .\SHA256SUMS.txt
 ```
 

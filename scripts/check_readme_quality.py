@@ -1,4 +1,4 @@
-"""Quality gate for the committed v1.5.1 multilingual project homepages."""
+"""Quality gate for the committed v1.5.2 multilingual project homepages."""
 
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ README_FILES = (
     "README.ko.md", "README.es.md", "README.fr.md", "README.de.md",
     "README.pt-BR.md", "README.ru.md", "README.ar.md", "README.hi.md",
 )
-VERSION = "v1.5.1"
-RELEASE = "https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1"
+VERSION = "v1.5.2"
+RELEASE = "https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"
 REQUIRED_IMAGES = {
     "hero-main-en.png", "cleaning-before-after.png", "table-preview.png",
     "math-preview.png", "ai-settings.png", "rounded-ui-details.png",
@@ -22,7 +22,7 @@ FORBIDDEN = (
     "ai-detector-bypass", "undetectable-ai", "plagiarism-bypass",
     "C:\\Users\\", "/Users/", "api_key=",
 )
-IMAGE_RE = re.compile(r"!?\[[^]]*]\((assets/screenshots/v1\.5\.1/[^)]+)\)")
+IMAGE_RE = re.compile(r"!?\[[^]]*]\((assets/screenshots/v1\.5\.2/[^)]+)\)")
 
 
 def main() -> int:
@@ -54,7 +54,7 @@ def main() -> int:
         images = set(IMAGE_RE.findall(content))
         all_images.update(images)
         if not images:
-            errors.append(f"{name} has no v1.5.1 screenshots")
+            errors.append(f"{name} has no v1.5.2 screenshots")
         for image in images:
             image_path = ROOT / image
             if not image_path.exists() or image_path.stat().st_size == 0:
@@ -66,7 +66,7 @@ def main() -> int:
         errors.append(f"README section parity is too uneven: {heading_counts}")
     if errors:
         raise SystemExit("README quality check failed:\n- " + "\n- ".join(errors))
-    print(f"README quality OK: {len(README_FILES)} pages, {len(all_images)} referenced v1.5.1 images")
+    print(f"README quality OK: {len(README_FILES)} pages, {len(all_images)} referenced v1.5.2 images")
     return 0
 
 

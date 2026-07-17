@@ -1,10 +1,10 @@
-version: v1.5.1
+version: v1.5.2
 repository: https://github.com/SiriZhao/CleanText-Studio
-release_page: https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1
+release_page: https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2
 platform: Windows x64
 artifacts:
-  installer: CleanText-Studio-v1.5.1-Windows-x64-Setup.exe
-  portable: CleanText-Studio-v1.5.1-Windows-x64-Portable.zip
+  installer: CleanText-Studio-v1.5.2-Windows-x64-Setup.exe
+  portable: CleanText-Studio-v1.5.2-Windows-x64-Portable.zip
   checksums: SHA256SUMS.txt
 facts:
   - Basic cleanup, preview, DOCX export, and TXT export are local-first.

@@ -70,4 +70,4 @@ if ($Iscc) {
 }
 Get-ChildItem dist\release -File | Where-Object Name -ne 'SHA256SUMS.txt' | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } | Set-Content dist\release\SHA256SUMS.txt
 Get-Content dist\release\SHA256SUMS.txt | Set-Content 'dist\logs\checksum.log'
-Copy-Item CHANGELOG.md dist\release\release-notes.md -Force
+Copy-Item release-notes.md dist\release\release-notes.md -Force

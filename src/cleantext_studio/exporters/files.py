@@ -127,8 +127,16 @@ class DocxRenderer:
             if block.type == TextBlockType.LIST_ITEM and block.text.startswith("• ")
             else block.text
         )
-        if block.runs and any(item.type == InlineRunType.INLINE_MATH for item in block.runs):
-            self._inline_runs(paragraph, block.runs)
+        runs = block.runs
+        if block.type == TextBlockType.ORDERED_LIST_ITEM and block.list_marker:
+            # Word owns ordered-list markers. Keeping the Markdown marker in
+            # the run text creates duplicate labels such as "1. 1.".
+            marker = block.list_marker
+            if text.startswith(marker):
+                text = text[len(marker) :].lstrip()
+                runs = self._strip_run_prefix(runs, marker)
+        if runs and any(item.type == InlineRunType.INLINE_MATH for item in runs):
+            self._inline_runs(paragraph, runs)
             run = None
         else:
             run = paragraph.add_run(text)
@@ -148,6 +156,20 @@ class DocxRenderer:
             paragraph.paragraph_format.first_line_indent = Pt(
                 self.template.body_size * self.template.first_line_chars
             )
+
+    @staticmethod
+    def _strip_run_prefix(runs: list[InlineRun], marker: str) -> list[InlineRun]:
+        remaining = marker
+        output: list[InlineRun] = []
+        for item in runs:
+            if remaining and item.type == InlineRunType.TEXT and item.text.startswith(remaining):
+                text = item.text[len(remaining) :].lstrip()
+                remaining = ""
+                if text:
+                    output.append(InlineRun(item.type, text, item.math))
+            else:
+                output.append(item)
+        return output
 
     def _math_paragraph(self, doc: DocumentType, block: TextBlock) -> None:
         assert block.math is not None

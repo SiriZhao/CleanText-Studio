@@ -8,6 +8,30 @@ class FormulaNode:
 
 
 @dataclass(slots=True)
+class MathAccent(FormulaNode):
+    kind: str
+    content: FormulaNode
+
+
+@dataclass(slots=True)
+class MathDelimiter(FormulaNode):
+    begin: str
+    content: FormulaNode
+    end: str
+
+
+@dataclass(slots=True)
+class MathStyled(FormulaNode):
+    style: str
+    content: FormulaNode
+
+
+@dataclass(slots=True)
+class MathUnknown(FormulaNode):
+    source: str
+
+
+@dataclass(slots=True)
 class Identifier(FormulaNode):
     value: str
 

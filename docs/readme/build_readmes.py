@@ -106,8 +106,8 @@ def translate_document(target: str, text: str) -> str:
         flags=re.DOTALL,
     )
     result = result.replace(
-        "assets/screenshots/v1.5.1/hero-main-en.png",
-        f"assets/screenshots/v1.5.1/{HERO_BY_LOCALE[target]}",
+        "assets/screenshots/v1.5.2/hero-main-en.png",
+        f"assets/screenshots/v1.5.2/{HERO_BY_LOCALE[target]}",
         1,
     )
     if target == "ar":

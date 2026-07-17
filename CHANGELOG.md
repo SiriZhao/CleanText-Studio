@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.5.2 - 2026-07-17
+
+### Fixed
+
+- Detect un-delimited mathematical expressions following Chinese or English
+  prose, including list items and table cells.
+- Convert complete complex formula runs instead of leaving supported LaTeX
+  commands as ordinary Word text.
+- Keep `\mathbf`, `\mathcal`, `\text`, `\hat`, roots, delimiters, n-ary
+  operators, Greek symbols, and related scripts in editable OMML.
+- Remove duplicate Markdown markers when Word applies native ordered-list
+  numbering.
+
+### Improved
+
+- Share the formula AST between preview and DOCX rendering.
+- Add a complex-formula index, DOCX XML audit, and verification report with
+  native/fallback counts.
+
+### Compatibility
+
+- Non-math cleaning output remains frozen against the v1.4.2 baseline.
+
 ## 1.5.1 - 2026-07-17
 
 ### Fixed

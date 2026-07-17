@@ -14,6 +14,9 @@ from .ast import (
     GreekLetter,
     Group,
     Identifier,
+    MathAccent,
+    MathDelimiter,
+    MathStyled,
     Matrix,
     Nary,
     Number,
@@ -40,6 +43,13 @@ class UnicodeFormulaRenderer:
             return "".join(self.render(child) for child in node.children)
         if isinstance(node, Group):
             return self.render(node.content)
+        if isinstance(node, MathStyled):
+            return self.render(node.content)
+        if isinstance(node, MathAccent):
+            marks = {"hat": "ˆ", "bar": "¯", "vec": "⃗", "dot": "˙", "tilde": "˜"}
+            return f"{marks[node.kind]}({self.render(node.content)})"
+        if isinstance(node, MathDelimiter):
+            return f"{node.begin}{self.render(node.content)}{node.end}"
         if isinstance(node, Superscript):
             return f"{self.render(node.base)}^({self.render(node.exponent)})"
         if isinstance(node, Subscript):
@@ -82,6 +92,20 @@ class PreviewFormulaRenderer:
             return "".join(self._node(child) for child in node.children)
         if isinstance(node, Group):
             return self._node(node.content)
+        if isinstance(node, MathStyled):
+            styles = {
+                "bold": "font-weight:bold",
+                "italic": "font-style:italic",
+                "roman": "font-style:normal",
+                "script": "font-family:'Cambria Math',serif",
+                "double-struck": "font-family:'Cambria Math',serif",
+            }
+            return f'<span style="{styles[node.style]}">{self._node(node.content)}</span>'
+        if isinstance(node, MathAccent):
+            marks = {"hat": "ˆ", "bar": "¯", "vec": "⃗", "dot": "˙", "tilde": "˜"}
+            return f'<span style="text-decoration:overline">{html.escape(marks[node.kind])}{self._node(node.content)}</span>'
+        if isinstance(node, MathDelimiter):
+            return html.escape(node.begin) + self._node(node.content) + html.escape(node.end)
         if isinstance(node, Superscript):
             return f"{self._node(node.base)}<sup>{self._node(node.exponent)}</sup>"
         if isinstance(node, Subscript):
@@ -142,6 +166,12 @@ class WordOMMLRenderer:
                 self._append(parent, child)
         elif isinstance(node, Group):
             self._append(parent, node.content)
+        elif isinstance(node, MathStyled):
+            self._styled(parent, node)
+        elif isinstance(node, MathAccent):
+            self._accent(parent, node)
+        elif isinstance(node, MathDelimiter):
+            self._delimiter(parent, node)
         elif isinstance(node, Fraction):
             fraction = OxmlElement("m:f")
             numerator = OxmlElement("m:num")
@@ -213,6 +243,44 @@ class WordOMMLRenderer:
             matrix.append(row)
         parent.append(matrix)
 
+    def _styled(self, parent: Any, node: MathStyled) -> None:
+        # Office Math applies character styling on m:r.  Complex styled content
+        # remains structurally native; leaf runs receive the requested style.
+        if isinstance(node.content, Sequence):
+            for child in node.content.children:
+                self._styled(parent, MathStyled(node.style, child))
+            return
+        if isinstance(node.content, (Identifier, Number, Operator, Relation, Text, GreekLetter, Function)):
+            value = node.content.name if isinstance(node.content, Function) else node.content.value
+            self._run(parent, value, node.style)
+            return
+        self._append(parent, node.content)
+
+    def _accent(self, parent: Any, node: MathAccent) -> None:
+        accent = OxmlElement("m:acc")
+        props = OxmlElement("m:accPr")
+        char = OxmlElement("m:chr")
+        char.set(qn("m:val"), {"hat": "ˆ", "bar": "¯", "vec": "⃗", "dot": "˙", "tilde": "˜"}[node.kind])
+        props.append(char)
+        content = OxmlElement("m:e")
+        self._append(content, node.content)
+        accent.extend((props, content))
+        parent.append(accent)
+
+    def _delimiter(self, parent: Any, node: MathDelimiter) -> None:
+        delimiter = OxmlElement("m:d")
+        props = OxmlElement("m:dPr")
+        for tag, value in (("m:begChr", node.begin), ("m:endChr", node.end)):
+            if value:
+                char = OxmlElement(tag)
+                char.set(qn("m:val"), value)
+                props.append(char)
+        delimiter.append(props)
+        content = OxmlElement("m:e")
+        self._append(content, node.content)
+        delimiter.append(content)
+        parent.append(delimiter)
+
     def _nary(
         self,
         parent: Any,
@@ -239,10 +307,29 @@ class WordOMMLRenderer:
         parent.append(node)
 
     @staticmethod
-    def _run(parent: Any, value: str) -> None:
+    def _run(parent: Any, value: str, style: str | None = None) -> None:
         if not value:
             return
         run = OxmlElement("m:r")
+        if style:
+            props = OxmlElement("m:rPr")
+            if style == "bold":
+                element = OxmlElement("m:sty")
+                element.set(qn("m:val"), "b")
+                props.append(element)
+            elif style == "italic":
+                element = OxmlElement("m:sty")
+                element.set(qn("m:val"), "i")
+                props.append(element)
+            elif style == "roman":
+                element = OxmlElement("m:sty")
+                element.set(qn("m:val"), "p")
+                props.append(element)
+            elif style in {"script", "double-struck"}:
+                element = OxmlElement("m:scr")
+                element.set(qn("m:val"), "script" if style == "script" else "double-struck")
+                props.append(element)
+            run.append(props)
         text = OxmlElement("m:t")
         text.set(qn("xml:space"), "preserve")
         text.text = value

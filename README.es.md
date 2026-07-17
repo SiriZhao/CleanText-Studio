@@ -11,22 +11,22 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
   <a href="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml"><img src="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.12-3776AB" alt="Python 3.12">
   <img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
 
-> **Versión actual: v1.5.1 · Windows x64 · primero local de forma predeterminada**
+> **Versión actual: v1.5.2 · Windows x64 · primero local de forma predeterminada**
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe"><strong>Descargar instalador</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip"><strong>Descargar ZIP portátil</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt">SHA256 sumas de comprobación</a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe"><strong>Descargar instalador</strong></a> ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip"><strong>Descargar ZIP portátil</strong></a> ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 sumas de comprobación</a>
 </p>
 
-![CleanText Studio interfaz en inglés](assets/screenshots/v1.5.1/main-es.png)
+![CleanText Studio interfaz en inglés](assets/screenshots/v1.5.2/main-es.png)
 
 CleanText Studio convierte el texto copiado desordenado en un documento legible y editable sin tratar la estructura útil como ruido. Elimina Markdown y decoración redundantes, recupera encabezados, listas, tablas y notación matemática común, luego le brinda una vista de texto, una vista previa estructurada y exportación DOCX o TXT. La limpieza básica se realiza en el dispositivo; La optimización de IA opcional utiliza solo un proveedor API que usted mismo configura.
 
@@ -39,15 +39,15 @@ CleanText Studio convierte el texto copiado desordenado en un documento legible 
 
 ## Descargar para Windows
 
-CleanText Studio v1.5.1 se lanzó para **Windows x64**. Elija el instalador para una instalación normal por usuario, o elija el ZIP portátil cuando prefiera ejecutar desde una carpeta extraída. Ninguno de los paquetes requiere una instalación Python por separado.
+CleanText Studio v1.5.2 se lanzó para **Windows x64**. Elija el instalador para una instalación normal por usuario, o elija el ZIP portátil cuando prefiera ejecutar desde una carpeta extraída. Ninguno de los paquetes requiere una instalación Python por separado.
 
 | Paquete | Uso previsto | Descargar |
 | --- | --- | --- |
-| Configuración | Soporte para instalación, entrada en el menú Inicio y desinstalación | [CleanText-Studio-v1.5.1-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe) |
-| Portátil | Ejecutar después de extraer el ZIP; sin instalación | [CleanText-Studio-v1.5.1-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip) |
-| Verificación | Verifique el paquete descargado | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt) |
+| Configuración | Soporte para instalación, entrada en el menú Inicio y desinstalación | [CleanText-Studio-v1.5.2-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe) |
+| Portátil | Ejecutar después de extraer el ZIP; sin instalación | [CleanText-Studio-v1.5.2-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip) |
+| Verificación | Verifique el paquete descargado | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt) |
 
-La página de publicación es la fuente veraz de los archivos disponibles: [CleanText Studio v1.5.1](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1).
+La página de publicación es la fuente veraz de los archivos disponibles: [CleanText Studio v1.5.2](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2).
 
 ## ¿Qué hace CleanText Studio?
 
@@ -95,7 +95,7 @@ El manejo de enlaces puede mantener Markdown, mantener solo el texto para mostra
 
 Las tablas Markdown se analizan en bloques de tablas estructuradas. El modo de vista previa muestra la tabla como una tabla y la exportación DOCX crea una tabla Word nativa con una fila de encabezado, contenido de celda legible, bordes y anchos elegidos del contenido en lugar de una división igual fija. Markdown las filas de separación, los marcadores de énfasis residuales, las columnas vacías sin sentido y los saltos de línea suaves accidentales se limpian antes de la exportación cuando la configuración de limpieza activa lo permite.
 
-![Vista previa de la tabla estructurada](assets/screenshots/v1.5.1/table-preview.png)
+![Vista previa de la tabla estructurada](assets/screenshots/v1.5.2/table-preview.png)
 
 ### Fórmulas matemáticas y ecuaciones Word editables
 
@@ -103,7 +103,7 @@ Los delimitadores comunes en línea y en pantalla LaTeX, las expresiones matemá
 
 Las macros personalizadas complejas no se descartan silenciosamente. Cuando una fórmula está fuera del rango de conversión admitido, la aplicación mantiene un respaldo legible y lo informa en la información de calidad de exportación.
 
-![Vista previa con reconocimiento de fórmulas](assets/screenshots/v1.5.1/math-preview.png)
+![Vista previa con reconocimiento de fórmulas](assets/screenshots/v1.5.2/math-preview.png)
 
 ### Modo texto y modo vista previa
 
@@ -133,7 +133,7 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![Fuente y resultado limpio](assets/screenshots/v1.5.1/cleaning-before-after.png)
+```![Fuente y resultado limpio](assets/screenshots/v1.5.2/cleaning-before-after.png)
 
 ## Formatos de exportación
 
@@ -155,7 +155,7 @@ La interfaz de escritorio ofrece chino simplificado, chino tradicional, inglés,
 
 Los temas claros y oscuros comparten el mismo panel, control, enfoque y sistema de superficie redondeada. La aplicación utiliza fuentes alternativas del sistema legal cuando estén disponibles; **no** incluye archivos Apple PingFang.
 
-![Tema oscuro y superficies redondeadas](assets/screenshots/v1.5.1/rounded-ui-details.png)
+![Tema oscuro y superficies redondeadas](assets/screenshots/v1.5.2/rounded-ui-details.png)
 
 ## Optimización de IA opcional (BYOK)
 
@@ -163,7 +163,7 @@ La optimización de la IA es opcional. La limpieza básica, la vista previa, la 
 
 DeepSeek y otros proveedores expuestos por la configuración de la aplicación instalada se pueden seleccionar a través del cuadro de diálogo de configuración de AI. Los identificadores de proveedor y modelo permanecen separados de las etiquetas de visualización traducidas. Revise los términos de datos del propio proveedor antes de enviar material confidencial.
 
-![Configuración de IA](assets/screenshots/v1.5.1/ai-settings.png)
+![Configuración de IA](assets/screenshots/v1.5.2/ai-settings.png)
 
 ## Inicio rápido
 
@@ -245,7 +245,7 @@ $env:PYTHONPATH = "src"
 ## Liberación de artefactos y verificación SHA256
 
 Cada versión proporciona el ejecutable de configuración, ZIP portátil, `SHA256SUMS.txt` y notas de la versión cuando estén disponibles. En PowerShell, compare un artefacto descargado con la suma de comprobación publicada:```powershell
-Get-FileHash .\CleanText-Studio-v1.5.1-Windows-x64-Setup.exe -Algorithm SHA256
+Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Setup.exe -Algorithm SHA256
 Get-Content .\SHA256SUMS.txt
 ```## Internacionalización y aportaciones de traducción
 

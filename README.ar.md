@@ -13,22 +13,22 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"><img src="https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver" alt="Latest release"></a>
   <a href="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml"><img src="https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.12-3776AB" alt="Python 3.12">
   <img src="https://img.shields.io/badge/Windows-x64-0078D4" alt="Windows x64">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
 </p>
 
-> **الإصدار الحالي: v1.5.1 · Windows x64 · محلي أولاً افتراضيًا**
+> **الإصدار الحالي: v1.5.2 · Windows x64 · محلي أولاً افتراضيًا**
 
 <p align="center">
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe"><strong>تحميل المثبت</strong></a> ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip"><strong>تنزيل ملف ZIP</strong></a> المحمول ·
-  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt">SHA256 المجموع الاختباري</a>
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe"><strong>تحميل المثبت</strong></a> ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip"><strong>تنزيل ملف ZIP</strong></a> المحمول ·
+  <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 المجموع الاختباري</a>
 </p>
 
-![CleanText Studio الواجهة الإنجليزية](assets/screenshots/v1.5.1/main-ar-rtl.png)
+![CleanText Studio الواجهة الإنجليزية](assets/screenshots/v1.5.2/main-ar-rtl.png)
 
 CleanText Studio يحول النص المنسوخ الفوضوي إلى مستند قابل للقراءة والتحرير دون التعامل مع البنية المفيدة على أنها ضوضاء. فهو يزيل Markdown والزخارف الزائدة عن الحاجة، ويستعيد العناوين والقوائم والجداول والرموز الرياضية الشائعة، ثم يمنحك عرضًا نصيًا ومعاينة منظمة وتصدير DOCX أو TXT. يتم إجراء التنظيف الأساسي على الجهاز؛ يستخدم تحسين الذكاء الاصطناعي الاختياري فقط موفر API الذي تقوم بتكوينه بنفسك.
 
@@ -41,15 +41,15 @@ CleanText Studio يحول النص المنسوخ الفوضوي إلى مستن
 
 ## تنزيل لـ Windows
 
-تم إصدار CleanText Studio v1.5.1 لـ **Windows x64**. اختر برنامج التثبيت للتثبيت العادي لكل مستخدم، أو اختر ملف ZIP المحمول عندما تفضل التشغيل من مجلد مستخرج. لا تتطلب أي من الحزمتين تثبيت Python منفصلاً.
+تم إصدار CleanText Studio v1.5.2 لـ **Windows x64**. اختر برنامج التثبيت للتثبيت العادي لكل مستخدم، أو اختر ملف ZIP المحمول عندما تفضل التشغيل من مجلد مستخرج. لا تتطلب أي من الحزمتين تثبيت Python منفصلاً.
 
 | الحزمة | الاستخدام المقصود | تحميل |
 | --- | --- | --- |
-| الإعداد | التثبيت وإدخال قائمة ابدأ وإلغاء الدعم | [CleanText-Studio-v1.5.1-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Setup.exe) |
-| محمول | قم بالتشغيل بعد استخراج الملف المضغوط. لا يوجد تثبيت | [CleanText-Studio-v1.5.1-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/CleanText-Studio-v1.5.1-Windows-x64-Portable.zip) |
-| التحقق | تحقق من الحزمة التي تم تنزيلها | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.1/SHA256SUMS.txt) |
+| الإعداد | التثبيت وإدخال قائمة ابدأ وإلغاء الدعم | [CleanText-Studio-v1.5.2-Windows-x64-Setup.exe](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Setup.exe) |
+| محمول | قم بالتشغيل بعد استخراج الملف المضغوط. لا يوجد تثبيت | [CleanText-Studio-v1.5.2-Windows-x64-Portable.zip](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/CleanText-Studio-v1.5.2-Windows-x64-Portable.zip) |
+| التحقق | تحقق من الحزمة التي تم تنزيلها | [SHA256SUMS.txt](https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt) |
 
-صفحة الإصدار هي مصدر الحقيقة للملفات المتاحة: [CleanText Studio v1.5.1](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.1).
+صفحة الإصدار هي مصدر الحقيقة للملفات المتاحة: [CleanText Studio v1.5.2](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2).
 
 ## ما يفعله CleanText Studio
 
@@ -97,7 +97,7 @@ CleanText Studio يحول النص المنسوخ الفوضوي إلى مستن
 
 يتم تحليل جداول Markdown إلى كتل جدول منظمة. يعرض وضع المعاينة الجدول كجدول، ويقوم تصدير DOCX بإنشاء جدول Word أصلي مع صف رأس ومحتوى خلية قابل للقراءة وحدود وعروض مختارة من المحتوى بدلاً من تقسيم متساوي ثابت. Markdown يتم تنظيف الصفوف الفاصلة وعلامات التركيز المتبقية والأعمدة الفارغة التي لا معنى لها وفواصل الأسطر الناعمة غير المقصودة قبل التصدير عندما تسمح إعدادات التنظيف النشطة بذلك.
 
-![معاينة الجدول المنظم](assets/screenshots/v1.5.1/table-preview.png)
+![معاينة الجدول المنظم](assets/screenshots/v1.5.2/table-preview.png)
 
 ### صيغ الرياضيات ومعادلات Word القابلة للتحرير
 
@@ -105,7 +105,7 @@ CleanText Studio يحول النص المنسوخ الفوضوي إلى مستن
 
 لا يتم تجاهل وحدات الماكرو المخصصة المعقدة بصمت. عندما تكون الصيغة خارج نطاق التحويل المدعوم، يحتفظ التطبيق بنسخة احتياطية قابلة للقراءة ويبلغ عنها في معلومات جودة التصدير.
 
-![معاينة مع مراعاة الصيغة](assets/screenshots/v1.5.1/math-preview.png)
+![معاينة مع مراعاة الصيغة](assets/screenshots/v1.5.2/math-preview.png)
 
 ### وضع النص ووضع المعاينة
 
@@ -135,7 +135,7 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![المصدر والنتيجة المنظفة](assets/screenshots/v1.5.1/cleaning-before-after.png)
+```![المصدر والنتيجة المنظفة](assets/screenshots/v1.5.2/cleaning-before-after.png)
 
 ## تنسيقات التصدير
 
@@ -157,7 +157,7 @@ The table and E = mc² formula remain structured in Preview and DOCX export.
 
 تشترك السمات الفاتحة والداكنة في نفس اللوحة والتحكم والتركيز ونظام السطح المستدير. يستخدم التطبيق النسخ الاحتياطية لخط النظام القانوني حيثما كان ذلك متاحًا؛ فهو لا يجمع ملفات Apple PingFang.
 
-![مظهر داكن وأسطح مستديرة](assets/screenshots/v1.5.1/rounded-ui-details.png)
+![مظهر داكن وأسطح مستديرة](assets/screenshots/v1.5.2/rounded-ui-details.png)
 
 ## تحسين اختياري للذكاء الاصطناعي (BYOK)
 
@@ -165,7 +165,7 @@ The table and E = mc² formula remain structured in Preview and DOCX export.
 
 يمكن تحديد DeepSeek والموفرين الآخرين الذين تم الكشف عنهم بواسطة تكوين التطبيق المثبت من خلال مربع حوار إعدادات الذكاء الاصطناعي. تظل معرفات الموفر والطراز منفصلة عن تسميات العرض المترجمة. قم بمراجعة شروط البيانات الخاصة بموفر الخدمة قبل إرسال المواد الحساسة.
 
-![تكوين الذكاء الاصطناعي](assets/screenshots/v1.5.1/ai-settings.png)
+![تكوين الذكاء الاصطناعي](assets/screenshots/v1.5.2/ai-settings.png)
 
 ## بداية سريعة
 
@@ -247,7 +247,7 @@ $env:PYTHONPATH = "src"
 ## تحرير العناصر والتحقق من SHA256
 
 يوفر كل إصدار ملف الإعداد القابل للتنفيذ، وملف ZIP المحمول، `SHA256SUMS.txt`، وملاحظات الإصدار عند توفرها. في PowerShell، قارن بين العناصر التي تم تنزيلها والمجموع الاختباري المنشور:```powershell
-Get-FileHash .\CleanText-Studio-v1.5.1-Windows-x64-Setup.exe -Algorithm SHA256
+Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Setup.exe -Algorithm SHA256
 Get-Content .\SHA256SUMS.txt
 ```##مساهمات التدويل والترجمة
 

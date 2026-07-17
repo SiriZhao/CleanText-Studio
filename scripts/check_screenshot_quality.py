@@ -6,7 +6,7 @@ import struct
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-SCREENSHOTS = ROOT / "assets" / "screenshots" / "v1.5.1"
+SCREENSHOTS = ROOT / "assets" / "screenshots" / "v1.5.2"
 MIN_BYTES = 20_000
 MIN_WIDTH = 700
 EXPECTED = {
@@ -50,7 +50,7 @@ def main() -> int:
             errors.append(f"{name}: insufficient dimensions ({width}x{height})")
     if errors:
         raise SystemExit("Screenshot quality check failed:\n- " + "\n- ".join(errors))
-    print(f"Screenshot quality OK: {len(EXPECTED)} v1.5.1 PNG files")
+    print(f"Screenshot quality OK: {len(EXPECTED)} v1.5.2 PNG files")
     return 0
 
 

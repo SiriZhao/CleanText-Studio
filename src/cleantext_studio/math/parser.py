@@ -10,6 +10,9 @@ from .ast import (
     GreekLetter,
     Group,
     Identifier,
+    MathAccent,
+    MathDelimiter,
+    MathStyled,
     Matrix,
     Nary,
     Number,
@@ -30,6 +33,8 @@ GREEK = {
     "delta": "\u03b4",
     "Delta": "\u0394",
     "epsilon": "\u03b5",
+    "varepsilon": "\u03f5",
+    "eta": "\u03b7",
     "lambda": "\u03bb",
     "mu": "\u03bc",
     "pi": "\u03c0",
@@ -39,6 +44,9 @@ GREEK = {
     "omega": "\u03c9",
     "Omega": "\u03a9",
     "theta": "\u03b8",
+    "tau": "\u03c4",
+    "nabla": "\u2207",
+    "hbar": "\u210f",
     "infty": "\u221e",
 }
 OPERATORS = {
@@ -47,6 +55,12 @@ OPERATORS = {
     "cdot": "\u00b7",
     "pm": "\u00b1",
     "mid": "|",
+    "cap": "\u2229",
+    "cup": "\u222a",
+    "sim": "\u223c",
+    "top": "\u22a4",
+    "quad": " ",
+    "qquad": "  ",
     ",": " ",
 }
 RELATIONS = {
@@ -60,6 +74,24 @@ RELATIONS = {
     "propto": "\u221d",
 }
 FUNCTIONS = {"ln", "log", "exp", "sin", "cos", "tan", "lim", "max", "min"}
+FUNCTIONS.update({"softmax"})
+STYLES = {
+    "mathbf": "bold",
+    "boldsymbol": "bold",
+    "mathcal": "script",
+    "mathrm": "roman",
+    "mathit": "italic",
+    "mathbb": "double-struck",
+}
+ACCENTS = {"hat": "hat", "bar": "bar", "vec": "vec", "dot": "dot", "tilde": "tilde"}
+DELIMITER_COMMANDS = {
+    ".": "",
+    "lbrace": "{",
+    "rbrace": "}",
+    "langle": "\u27e8",
+    "rangle": "\u27e9",
+    "vert": "|",
+}
 ENVIRONMENT = re.compile(r"^\\begin\{([^}]+)\}([\s\S]*)\\end\{\1\}$")
 
 
@@ -86,11 +118,13 @@ class FormulaParser:
             raise FormulaParseError(f"unexpected formula input at {self.position}")
         return node
 
-    def _sequence(self, stop: str | None = None) -> FormulaNode:
+    def _sequence(self, stop: str | None = None, stop_command: str | None = None) -> FormulaNode:
         children: list[FormulaNode] = []
         while self.position < len(self.source):
             char = self.source[self.position]
             if stop and char == stop:
+                break
+            if stop_command and self.source.startswith(f"\\{stop_command}", self.position):
                 break
             if char.isspace():
                 self.position += 1
@@ -175,9 +209,21 @@ class FormulaParser:
         if name == "frac":
             return Fraction(self._required_group(), self._required_group())
         if name == "sqrt":
-            return Root(self._required_group())
-        if name == "text":
+            degree = None
+            self._skip_spaces()
+            if self.position < len(self.source) and self.source[self.position] == "[":
+                self.position += 1
+                degree = self._sequence("]")
+                if self.position >= len(self.source) or self.source[self.position] != "]":
+                    raise FormulaParseError("unclosed root degree")
+                self.position += 1
+            return Root(self._required_group(), degree)
+        if name in {"text", "operatorname"}:
             return Text(self._raw_group())
+        if name in STYLES:
+            return MathStyled(STYLES[name], self._required_group())
+        if name in ACCENTS:
+            return MathAccent(ACCENTS[name], self._required_group())
         if name in GREEK:
             return GreekLetter(name, GREEK[name])
         if name in OPERATORS:
@@ -186,12 +232,38 @@ class FormulaParser:
             return Relation(RELATIONS[name])
         if name in FUNCTIONS:
             return Function(name)
-        if name in {"sum", "int"}:
-            symbol = "\u2211" if name == "sum" else "\u222b"
+        if name in {"sum", "int", "prod", "lim"}:
+            symbol = {"sum": "\u2211", "int": "\u222b", "prod": "\u220f", "lim": "lim"}[name]
             return Nary(symbol, Sequence([]))
-        if name in {"left", "right"}:
-            return Text("")
+        if name == "left":
+            begin = self._delimiter()
+            content = self._sequence(stop_command="right")
+            if not self.source.startswith("\\right", self.position):
+                raise FormulaParseError("unclosed \\left delimiter")
+            self.position += len("\\right")
+            end = self._delimiter()
+            return MathDelimiter(begin, content, end)
+        if name == "right":
+            raise FormulaParseError("unpaired \\right delimiter")
         raise FormulaParseError(f"unsupported command: {name}")
+
+    def _delimiter(self) -> str:
+        self._skip_spaces()
+        if self.position >= len(self.source):
+            raise FormulaParseError("missing delimiter")
+        if self.source[self.position] != "\\":
+            value = self.source[self.position]
+            self.position += 1
+            return value
+        self.position += 1
+        match = re.match(r"[A-Za-z]+", self.source[self.position :])
+        if not match:
+            value = self.source[self.position]
+            self.position += 1
+            return value
+        name = match.group()
+        self.position += len(name)
+        return DELIMITER_COMMANDS.get(name, name)
 
     def _raw_group(self) -> str:
         self._skip_spaces()
