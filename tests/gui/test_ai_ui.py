@@ -6,7 +6,7 @@ def test_ai_button_exists_without_provider(qtbot, monkeypatch) -> None:
     qtbot.addWidget(window)
     window.output.setPlainText("本地结果")
     monkeypatch.setattr(window.provider_store, "load", lambda: [])
-    assert window.ai_button.text() == "AI 智能优化"
+    assert window.ai_button.text() == window.tr("action.ai")
     assert window.output.toPlainText() == "本地结果"
 
 

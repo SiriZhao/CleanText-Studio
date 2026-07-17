@@ -206,6 +206,7 @@ class MainWindow(QMainWindow):
         panel.setObjectName("panel")
         layout = QVBoxLayout(panel)
         heading = QLabel(title)
+        heading.setObjectName("panelTitle")
         heading.setStyleSheet("font-size:16px;font-weight:600")
         layout.addWidget(heading)
         return panel, layout, heading
@@ -275,25 +276,25 @@ class MainWindow(QMainWindow):
             self.list_mode.addItem(self.tr(key), value)
         self.detect_math = QCheckBox(self.tr("option.detect_math"))
         self.detect_math.setChecked(True)
-        self.detect_math.setToolTip("识别 LaTeX、Unicode 和常见方程式，避免清洗过程破坏公式。")
+        self.detect_math.setToolTip(self.tr("tip.detect_math"))
         self.protect_math = QCheckBox(self.tr("option.protect_math"))
         self.protect_math.setChecked(True)
-        self.protect_math.setToolTip("在 Markdown 和空白清理之前保护公式定界符、下标和命令。")
+        self.protect_math.setToolTip(self.tr("tip.protect_math"))
         self.normalize_math = QCheckBox(self.tr("option.normalize_math"))
         self.normalize_math.setChecked(True)
-        self.normalize_math.setToolTip("仅修复明显的 LaTeX 空格，不计算或改写数学含义。")
+        self.normalize_math.setToolTip(self.tr("tip.normalize_math"))
         self.repair_math = QCheckBox(self.tr("option.repair_math"))
         self.repair_math.setChecked(True)
-        self.repair_math.setToolTip("仅在修复方式高度确定时调整公式定界符。")
+        self.repair_math.setToolTip(self.tr("tip.repair_math"))
         self.preserve_equation_numbers = QCheckBox(self.tr("option.equation_numbers"))
         self.preserve_equation_numbers.setChecked(True)
         self.word_math_omml = QCheckBox(self.tr("option.word_omml"))
         self.word_math_omml.setChecked(True)
-        self.word_math_omml.setToolTip("将支持的公式转换为 Word 原生公式，复杂公式会保留原始文本。")
+        self.word_math_omml.setToolTip(self.tr("tip.word_omml"))
         self.math_output_mode = QComboBox()
         for key, value in (("math.preserve", MathOutputMode.PRESERVE), ("math.latex", MathOutputMode.LATEX), ("math.unicode", MathOutputMode.UNICODE)):
             self.math_output_mode.addItem(self.tr(key), value)
-        self.math_output_mode.setToolTip("选择清洗结果和 TXT 中的公式表示方式。")
+        self.math_output_mode.setToolTip(self.tr("tip.math_output"))
         self.group_basic = QLabel(self.tr("group.basic"))
         self.group_links = QLabel(self.tr("group.links"))
         self.group_url = QLabel(self.tr("group.url"))
@@ -332,6 +333,7 @@ class MainWindow(QMainWindow):
         scroll.setWidget(rules)
         mv.addWidget(scroll)
         self.rule_count = QLabel(self.tr("status.rules", count=8))
+        self.rule_count.setObjectName("ruleCount")
         self.rule_count.setAlignment(Qt.AlignmentFlag.AlignCenter)
         mv.addWidget(self.rule_count)
         self.clean_button = QPushButton(self.tr("action.clean"))
@@ -360,7 +362,14 @@ class MainWindow(QMainWindow):
                 (self.tr("action.clear"), self.clear_result, self.tr("tip.clear")),
             ],
         )
-        self.word_button, self.copy_button, self.txt_button = result_buttons[:3]
+        (
+            self.word_button,
+            self.copy_button,
+            self.txt_button,
+            self.undo_button,
+            self.restore_button,
+            self.clear_result_button,
+        ) = result_buttons
         self.word_tip = QLabel(self.tr("result.word_tip"))
         self.word_tip.setObjectName("muted")
         ov.addWidget(self.word_tip)
@@ -830,7 +839,7 @@ class MainWindow(QMainWindow):
         self.about_action.setText(self.tr("toolbar.about"))
         for button, key in zip(self.source_buttons, ("action.new", "action.open", "action.paste", "action.sample", "action.clear"), strict=True):
             button.setText(self.tr(key))
-        for button, key in zip((self.word_button, self.copy_button, self.txt_button), ("action.export_word", "action.copy", "action.export_txt"), strict=True):
+        for button, key in zip((self.word_button, self.copy_button, self.txt_button, self.undo_button, self.restore_button, self.clear_result_button), ("action.export_word", "action.copy", "action.export_txt", "action.undo", "action.restore", "action.clear"), strict=True):
             button.setText(self.tr(key))
         self.ai_button.setText(self.tr("action.ai"))
         self.clean_button.setText(self.tr("action.clean"))
@@ -854,6 +863,12 @@ class MainWindow(QMainWindow):
         self.repair_math.setText(self.tr("option.repair_math"))
         self.preserve_equation_numbers.setText(self.tr("option.equation_numbers"))
         self.word_math_omml.setText(self.tr("option.word_omml"))
+        self.detect_math.setToolTip(self.tr("tip.detect_math"))
+        self.protect_math.setToolTip(self.tr("tip.protect_math"))
+        self.normalize_math.setToolTip(self.tr("tip.normalize_math"))
+        self.repair_math.setToolTip(self.tr("tip.repair_math"))
+        self.word_math_omml.setToolTip(self.tr("tip.word_omml"))
+        self.math_output_mode.setToolTip(self.tr("tip.math_output"))
         self.word_tip.setText(self.tr("result.word_tip"))
         self.residual_button.setText(self.tr("action.view_residuals"))
         self.open_folder_button.setText(self.tr("action.open_folder"))
@@ -866,6 +881,9 @@ class MainWindow(QMainWindow):
             )
         )
         self.result_meta.setText(self.tr("status.result_meta", count=len(self.output.toPlainText())))
+        self.rule_count.setText(self.tr("status.rules", count=8))
+        self.statusBar().showMessage(self.tr("status.ready"))
+        self._retranslate_combo(self.result_mode, (("result.text", "text"), ("result.preview", "preview")))
         self._retranslate_combo(self.preset, (("preset.light", "light"), ("preset.standard", "standard"), ("preset.deep", "deep"), ("preset.markdown", "markdown"), ("preset.linebreak", "linebreak"), ("preset.custom", "custom")))
         self._retranslate_combo(self.paragraph_mode, (("paragraph.compact", ParagraphBreakMode.COMPACT), ("paragraph.smart", ParagraphBreakMode.SMART_SECTIONS), ("paragraph.preserve", ParagraphBreakMode.PRESERVE_ALL)))
         self._retranslate_combo(self.list_mode, (("list.keep", ListMode.KEEP), ("list.remove", ListMode.REMOVE_MARKERS), ("list.natural", ListMode.NATURAL_PARAGRAPH)))

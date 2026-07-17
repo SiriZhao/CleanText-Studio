@@ -9,5 +9,12 @@ __pycache__/
 *.py[cod]
 *.log
 *.autosave
+*.tmp
+*.bak
+*.old
+*.exe
+*.zip
+htmlcov/
+assets/screenshots/_temporary/
 .idea/
 .vscode/

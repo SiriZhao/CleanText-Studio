@@ -10,6 +10,9 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: mypy src
+      - run: python scripts/check_translations.py
+      - run: python scripts/check_ui_language_consistency.py
+      - run: python scripts/verify_cleaning_freeze.py
       - run: pytest --junitxml=test-results.xml --cov=cleantext_studio.cleaners --cov=cleantext_studio.math --cov-report=term --cov-fail-under=90
         env: {QT_QPA_PLATFORM: offscreen}
       - name: Verify DOCX structure export

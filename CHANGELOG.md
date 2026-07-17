@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.2 - 2026-07-17
+
+### Fixed
+
+- Refresh result-mode choices, result actions, rule-count feedback, math tooltips, and the status bar when the interface language changes.
+- Keep translated combo-box labels separate from their stable cleaning-option values.
+- Correct the legal font fallback order: no Apple or unverified HarmonyOS font is bundled or assumed available.
+- Harmonize panel-title, rule-summary, combo-box, checkbox, focus, and button rounding through shared design tokens.
+
+### Changed
+
+- Rebuild the English and Chinese project landing documentation for v1.4.2 and add README validation tooling.
+- Localization, fonts, style, documentation, and packaging only: cleaning and document-export results remain frozen.
+
 ## 1.4.1 - 2026-07-17
 
 ### Fixed

@@ -37,9 +37,8 @@ def test_styles_cover_modern_controls() -> None:
 
 
 def test_font_fallback_order() -> None:
-    assert (
-        FontManager({"HarmonyOS Sans SC", "Microsoft YaHei UI"}).ui_family() == "HarmonyOS Sans SC"
-    )
+    # HarmonyOS Sans is not bundled or assumed licensed for redistribution.
+    assert FontManager({"HarmonyOS Sans SC", "Microsoft YaHei UI"}, "zh_CN").ui_family() == "Microsoft YaHei UI"
     assert FontManager({"Microsoft YaHei UI"}).ui_family() == "Microsoft YaHei UI"
     assert FontManager(set()).ui_family()
 

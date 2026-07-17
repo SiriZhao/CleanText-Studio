@@ -10,19 +10,18 @@ class FontManager:
 
     def ui_family(self) -> str:
         locale_candidates = {
-            "zh_CN": ["HarmonyOS Sans SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC"],
-            "zh_TW": ["Microsoft JhengHei UI", "Microsoft JhengHei", "Noto Sans CJK TC"],
-            "ja_JP": ["Yu Gothic UI", "Meiryo UI", "Noto Sans CJK JP"],
-            "ko_KR": ["Malgun Gothic", "Noto Sans CJK KR"],
-            "ar": ["Segoe UI", "Noto Sans Arabic", "Arial"],
-            "hi_IN": ["Nirmala UI", "Noto Sans Devanagari"],
+            "zh_CN": ["Noto Sans CJK SC", "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI"],
+            "zh_TW": ["Noto Sans CJK TC", "Microsoft JhengHei UI", "Microsoft JhengHei", "Segoe UI"],
+            "ja_JP": ["Noto Sans CJK JP", "Yu Gothic UI", "Meiryo UI", "Segoe UI"],
+            "ko_KR": ["Noto Sans CJK KR", "Malgun Gothic", "Segoe UI"],
+            "ar": ["Noto Sans Arabic", "Segoe UI", "Arial"],
+            "hi_IN": ["Noto Sans Devanagari", "Nirmala UI", "Segoe UI"],
         }
         candidates = locale_candidates.get(self.locale, (
             ["PingFang SC", "SF Pro Text", "Helvetica Neue"]
             if platform.system() == "Darwin"
             else [
-                "HarmonyOS Sans SC",
-                "HarmonyOS Sans",
+                "Noto Sans",
                 "Microsoft YaHei UI",
                 "Microsoft YaHei",
                 "Segoe UI",

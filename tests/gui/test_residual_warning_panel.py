@@ -10,4 +10,4 @@ def test_residual_button_visibility(qtbot) -> None:
     assert (
         window.residual_button.isVisible() is False
     )  # parent window is not shown in headless test
-    assert window.residual_button.text() == "查看残留"
+    assert window.residual_button.text() == window.tr("action.view_residuals")

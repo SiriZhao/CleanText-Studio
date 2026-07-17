@@ -26,6 +26,36 @@ LANGUAGES: tuple[Language, ...] = (
     Language("ru_RU", "Русский"), Language("ar", "العربية", True), Language("hi_IN", "हिन्दी"),
 )
 
+# These late-added keys remain in the localization layer rather than in widget
+# code.  Catalog contributors can move them into every JSON resource without
+# changing the public key names.
+RUNTIME_LABELS: dict[str, dict[str, str]] = {
+    "en_US": {
+        "tip.detect_math": "Detect LaTeX, Unicode, and common equations before text cleaning.",
+        "tip.protect_math": "Protect delimiters, subscripts, and commands before Markdown cleaning.",
+        "tip.normalize_math": "Fix only clear formula spacing; never calculate or rewrite math.",
+        "tip.repair_math": "Repair a formula delimiter only when the correction is unambiguous.",
+        "tip.word_omml": "Convert supported formulas to native Word equations; complex formulas use a safe fallback.",
+        "tip.math_output": "Choose how formulas are represented in cleaned text and TXT output.",
+    },
+    "zh_CN": {
+        "tip.detect_math": "在文本清洗前识别 LaTeX、Unicode 和常见方程式。",
+        "tip.protect_math": "在 Markdown 清理前保护公式定界符、下标和命令。",
+        "tip.normalize_math": "仅修复明确的公式空格，不计算或改写数学含义。",
+        "tip.repair_math": "仅在修复结果明确时调整公式定界符。",
+        "tip.word_omml": "将支持的公式转换为 Word 原生公式；复杂公式使用安全回退。",
+        "tip.math_output": "选择清洗结果和 TXT 中的公式表示方式。",
+    },
+    "es_ES": {
+        "tip.detect_math": "Detecta LaTeX, Unicode y ecuaciones comunes antes de limpiar el texto.",
+        "tip.protect_math": "Protege delimitadores, subíndices y comandos antes de limpiar Markdown.",
+        "tip.normalize_math": "Corrige solo espacios claros; no calcula ni reescribe matemáticas.",
+        "tip.repair_math": "Repara un delimitador solo cuando la corrección es inequívoca.",
+        "tip.word_omml": "Convierte fórmulas compatibles en ecuaciones nativas de Word.",
+        "tip.math_output": "Elige cómo se representan las fórmulas en el texto y TXT.",
+    },
+}
+
 
 class LocaleFormatter:
     """Formats UI-only quantities without changing user text."""
@@ -98,7 +128,7 @@ class I18nManager(QObject):
 
     def tr(self, key: str, /, **values: Any) -> str:  # type: ignore[override]
         fallback = self._catalogs["en_US"]
-        catalog = self._catalogs.get(self._active, {})
+        catalog = self._catalogs.get(self._active, fallback)
         value = str(catalog.get(key, fallback.get(key, key)))
         if "count" in values:
             plural_key = f"{key}.one" if int(values["count"]) == 1 else f"{key}.other"
@@ -118,8 +148,11 @@ class I18nManager(QObject):
         }
         if "en_US" not in catalogs:
             raise RuntimeError("The English translation catalog is required")
+        for code, labels in RUNTIME_LABELS.items():
+            catalogs.setdefault(code, {}).update(labels)
         baseline = catalogs["en_US"]
         for code, catalog in tuple(catalogs.items()):
-            if code != "en_US":
-                catalogs[code] = {**baseline, **catalog}
+            if code == "en_US":
+                continue
+            catalogs[code] = {**baseline, **catalog}
         return catalogs
