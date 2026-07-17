@@ -40,7 +40,8 @@ from cleantext_studio.cleaners import clean_text
 from cleantext_studio.cleaners.tables import TableWidthPlanner
 from cleantext_studio.exporters import export_docx_blocks, export_txt
 from cleantext_studio.font_manager import FontManager
-from cleantext_studio.i18n import I18nManager
+from cleantext_studio.help_dialog import HelpDialog
+from cleantext_studio.i18n import I18nService
 from cleantext_studio.importers import import_file
 from cleantext_studio.llm.base import LLMProvider
 from cleantext_studio.llm.config_store import ProviderConfigStore
@@ -68,6 +69,7 @@ from cleantext_studio.models import (
 )
 from cleantext_studio.system_theme import SystemThemeWatcher
 from cleantext_studio.theme import Theme, stylesheet
+from cleantext_studio.ui.card_panel import CardPanel
 
 SAMPLE = """## 一、项目背景
 
@@ -131,7 +133,7 @@ class MainWindow(QMainWindow):
         self.worker: CleanWorker | None = None
         self.ai_worker: AIWorker | None = None
         self.settings_store = QSettings("CleanText Studio", "CleanText Studio")
-        self.i18n = I18nManager(self.settings_store)
+        self.i18n = I18nService(self.settings_store)
         self.i18n.language_changed.connect(self._language_changed)
         self.theme_preference = Theme(str(self.settings_store.value("theme", Theme.SYSTEM.value)))
         self.theme_watcher = SystemThemeWatcher()
@@ -202,9 +204,8 @@ class MainWindow(QMainWindow):
         self.about_action = bar.addAction(self.tr("toolbar.about"), self.about)
 
     def _panel(self, title: str) -> tuple[QFrame, QVBoxLayout, QLabel]:
-        panel = QFrame()
-        panel.setObjectName("panel")
-        layout = QVBoxLayout(panel)
+        panel = CardPanel()
+        layout = panel.content_layout
         heading = QLabel(title)
         heading.setObjectName("panelTitle")
         heading.setStyleSheet("font-size:16px;font-weight:600")
@@ -418,7 +419,7 @@ class MainWindow(QMainWindow):
         self.input.textChanged.connect(self._source_changed)
         self.output.textChanged.connect(self._result_changed)
         self.result_mode.currentIndexChanged.connect(self.result_stack.setCurrentIndex)
-        self.preset.currentTextChanged.connect(self._preset_changed)
+        self.preset.currentIndexChanged.connect(lambda _index: self._preset_changed())
         for control in (
             self.remove_markdown,
             self.remove_emoji,
@@ -431,11 +432,11 @@ class MainWindow(QMainWindow):
             self.word_math_omml,
         ):
             control.toggled.connect(self._customized)
-        self.paragraph_mode.currentTextChanged.connect(self._customized)
-        self.list_mode.currentTextChanged.connect(self._customized)
-        self.link_mode.currentTextChanged.connect(self._customized)
-        self.url_mode.currentTextChanged.connect(self._customized)
-        self.math_output_mode.currentTextChanged.connect(self._customized)
+        self.paragraph_mode.currentIndexChanged.connect(self._customized)
+        self.list_mode.currentIndexChanged.connect(self._customized)
+        self.link_mode.currentIndexChanged.connect(self._customized)
+        self.url_mode.currentIndexChanged.connect(self._customized)
+        self.math_output_mode.currentIndexChanged.connect(self._customized)
         self._set_result_actions(False)
 
     def _shortcuts(self) -> None:
@@ -515,7 +516,7 @@ class MainWindow(QMainWindow):
             self.preset.setCurrentIndex(self.preset.findData("custom"))
             self.preset.blockSignals(False)
 
-    def _preset_changed(self, _name: str) -> None:
+    def _preset_changed(self) -> None:
         name = cast(str, self.preset.currentData())
         if name == "custom":
             return
@@ -531,10 +532,10 @@ class MainWindow(QMainWindow):
             return
         if self.worker and self.worker.isRunning():
             self.worker.requestInterruption()
-            self.clean_button.setText("正在取消…")
+            self.clean_button.setText(self.tr("action.cancelling"))
             return
         self.session.processing_state = "processing"
-        self.clean_button.setText("取消清洗")
+        self.clean_button.setText(self.tr("action.cancel_clean"))
         self.clean_button.setEnabled(True)
         self.session.cleaning_options = self._options()
         self.worker = CleanWorker(self.input.toPlainText(), self.session.cleaning_options)
@@ -557,16 +558,21 @@ class MainWindow(QMainWindow):
         self._render_preview(result.blocks)
         if any(block.table for block in result.blocks):
             self.result_mode.setCurrentIndex(1)
-        self.clean_button.setText("开始清洗")
+        self.clean_button.setText(self.tr("action.clean"))
         self.clean_button.setEnabled(True)
         self._set_result_actions(bool(result.text))
-        warning = f" · 检测到 {len(result.residuals)} 项残留" if result.residuals else ""
+        warning = self.tr("status.residual_count", count=len(result.residuals)) if result.residuals else ""
         self.residual_button.setVisible(bool(result.residuals))
         self.result_notice.setText(
-            f"清洗完成 · 删除 {result.stats.removed_chars} 个字符 · 合并 {result.stats.merged_linebreaks} 处换行{warning}"
+            self.tr("status.cleaned", count=result.stats.removed_chars,
+                    merged=result.stats.merged_linebreaks) + warning
         )
         self.result_meta.setText(
-            f"本次清理：Markdown {result.stats.removed_markdown} · AI模板 {result.stats.removed_ai_patterns} · 空行 {result.stats.removed_blank_lines} · 表情 {result.stats.removed_emoji} · 标题 {result.stats.headings_detected} · 空表格列 {result.stats.empty_table_columns_removed} · {result.stats.elapsed_ms:.1f} ms"
+            self.tr("statistics.summary", markdown=result.stats.removed_markdown,
+                    ai=result.stats.removed_ai_patterns, blank=result.stats.removed_blank_lines,
+                    emoji=result.stats.removed_emoji, headings=result.stats.headings_detected,
+                    columns=result.stats.empty_table_columns_removed,
+                    elapsed=result.stats.elapsed_ms)
         )
 
     def show_residuals(self) -> None:
@@ -620,7 +626,7 @@ class MainWindow(QMainWindow):
                     label.setObjectName("mathPreview")
                     label.setTextFormat(Qt.TextFormat.RichText)
                     label.setText(self._math_block_html(block.math))
-                    label.setToolTip("数学公式（离线排版预览；Word 导出为原生可编辑公式）")
+                    label.setToolTip(self.tr("tip.word_omml"))
                 else:
                     formulas = cast(list[MathBlockData], block.metadata.get("inline_math", []))
                     if formulas:
@@ -661,8 +667,8 @@ class MainWindow(QMainWindow):
 
     def _failed(self, message: str) -> None:
         self.session.processing_state = "idle"
-        self.clean_button.setText("开始清洗")
-        QMessageBox.critical(self, "处理失败", message)
+        self.clean_button.setText(self.tr("action.clean"))
+        QMessageBox.critical(self, self.tr("dialog.processing_failed"), message)
 
     def new(self) -> None:
         if (
@@ -674,7 +680,7 @@ class MainWindow(QMainWindow):
         self.input.clear()
         self.output.clear()
         self.session = DocumentSession()
-        self.file_label.setText("未命名")
+        self.file_label.setText(self.tr("file.untitled"))
 
     def open(self) -> None:
         name, _ = QFileDialog.getOpenFileName(
@@ -732,7 +738,7 @@ class MainWindow(QMainWindow):
         counts = self._word_structure_counts(export_blocks)
         if any(counts.values()) or residuals:
             box = QMessageBox(self)
-            box.setWindowTitle("即将导出 Word")
+            box.setWindowTitle(self.tr("dialog.export_word_title"))
             box.setText(
                 "已识别：\n"
                 + "\n".join(f"✓ {count} 个{name}" for name, count in counts.items() if count)
@@ -937,7 +943,7 @@ class MainWindow(QMainWindow):
         if self.ai_worker and self.ai_worker.isRunning():
             self.ai_worker.requestInterruption()
             self.ai_worker.provider.cancel()
-            self.ai_button.setText("正在取消…")
+            self.ai_button.setText(self.tr("action.cancelling"))
             return
         if not self.output.toPlainText():
             QMessageBox.information(self, "AI 智能优化", "请先完成本地清洗。")
@@ -958,14 +964,14 @@ class MainWindow(QMainWindow):
         )
         if dialog.exec() != dialog.DialogCode.Accepted:
             return
-        self.ai_button.setText("取消 AI 优化")
+        self.ai_button.setText(self.tr("action.cancel_clean"))
         self.ai_worker = AIWorker(provider, redacted.text, dialog.selected_mode())
         self.ai_worker.completed.connect(self._ai_completed)
         self.ai_worker.failed.connect(self._ai_failed)
         self.ai_worker.start()
 
     def _ai_completed(self, response: OptimizationResponse) -> None:
-        self.ai_button.setText("AI 智能优化")
+        self.ai_button.setText(self.tr("action.ai"))
         suggested = "\n".join(block.text for block in response.blocks)
         metadata = response.metadata
         risky = metadata.facts_added or metadata.facts_removed or metadata.references_changed
@@ -974,14 +980,14 @@ class MainWindow(QMainWindow):
             self.output.setPlainText(suggested)
 
     def _ai_failed(self, message: str) -> None:
-        self.ai_button.setText("AI 智能优化")
+        self.ai_button.setText(self.tr("action.ai"))
         QMessageBox.critical(self, "AI 优化失败", f"{message}\n本地清洗结果未被覆盖。")
 
     def show_help(self) -> None:
-        QMessageBox.information(self, "帮助", "粘贴或打开文本，选择清洗规则，然后点击开始清洗。")
+        HelpDialog(self.i18n, self).exec()
 
     def about(self) -> None:
-        AboutDialog(self).exec()
+        AboutDialog(self.i18n, self).exec()
 
     def closeEvent(self, event: QCloseEvent) -> None:
         self.settings_store.setValue("splitter_sizes", self.splitter.sizes())

@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 
+from cleantext_studio.ui.theme.tokens import CONTROL_HEIGHT, RADIUS, SPACING
+
 
 class Theme(StrEnum):
     SYSTEM = "system"
@@ -27,18 +29,18 @@ class DesignToken:
     warning: str
     error: str
     selection: str
-    xs: int = 4
-    sm: int = 8
-    md: int = 12
-    lg: int = 16
-    xl: int = 24
-    radius_small: int = 6
-    radius_medium: int = 10
-    radius_large: int = 14
-    radius_dialog: int = 16
-    control_height_small: int = 30
-    control_height_medium: int = 36
-    control_height_large: int = 42
+    xs: int = SPACING.spacing_xs
+    sm: int = SPACING.spacing_sm
+    md: int = SPACING.spacing_md
+    lg: int = SPACING.spacing_lg
+    xl: int = SPACING.spacing_xl
+    radius_small: int = RADIUS.radius_sm
+    radius_medium: int = RADIUS.radius_md
+    radius_large: int = RADIUS.radius_lg
+    radius_dialog: int = RADIUS.radius_xl
+    control_height_small: int = CONTROL_HEIGHT.control_compact
+    control_height_medium: int = CONTROL_HEIGHT.control_normal
+    control_height_large: int = CONTROL_HEIGHT.control_large
 
 
 LIGHT = DesignToken(
@@ -84,10 +86,11 @@ def stylesheet(theme: Theme) -> str:
     check = (root / "assets" / "icons" / "check.svg").as_posix()
     return f"""
     QMainWindow, QDialog, QMessageBox, QWidget {{ background:{token.background}; color:{token.text_primary}; }}
-    QFrame#panel {{ background:{token.surface}; border:1px solid {token.border}; border-radius:{token.radius_large}px; }}
-    QLabel#panelTitle {{ background:{token.surface_alt}; border-radius:{token.radius_small}px; padding:{token.sm}px {token.md}px; }}
-    QLabel#ruleCount {{ background:{token.surface_alt}; border-radius:{token.radius_small}px; padding:{token.sm}px; }}
+    QFrame#cardPanel {{ background:{token.surface}; border:1px solid {token.border}; border-radius:{token.radius_large}px; }}
+    QLabel#panelTitle {{ background:transparent; padding:0 {token.xs}px; }}
+    QLabel#ruleCount {{ background:{token.surface_alt}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:{token.sm}px; }}
     QPlainTextEdit, QTextEdit, QLineEdit, QSpinBox, QDoubleSpinBox {{ background:{token.surface}; color:{token.text_primary}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:8px; selection-background-color:{token.selection}; }}
+    QScrollArea {{ background:transparent; border:0; }} QScrollArea > QWidget > QWidget {{ background:transparent; }}
     QPlainTextEdit:focus, QLineEdit:focus, QComboBox:focus {{ border:1px solid {token.accent}; }}
     QPushButton, QToolButton {{ min-height:{token.control_height_medium}px; padding:2px 12px; border:1px solid {token.border}; border-radius:{token.radius_medium}px; background:{token.surface}; }}
     QPushButton:hover, QToolButton:hover {{ border-color:{token.border_hover}; background:{token.surface_alt}; }}

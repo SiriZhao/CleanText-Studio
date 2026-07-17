@@ -9,7 +9,7 @@ def _manager() -> I18nManager:
     return I18nManager(settings)
 
 
-def test_all_formal_languages_load_with_english_fallback() -> None:
+def test_all_formal_languages_load_complete_catalogs() -> None:
     manager = _manager()
     for language in manager.languages():
         manager.set_language(language.code)
@@ -25,8 +25,8 @@ def test_language_switch_and_rtl_direction() -> None:
     assert manager.direction().name == "LeftToRight"
 
 
-def test_missing_key_falls_back_to_english_and_internal_values_are_not_translated() -> None:
+def test_complete_catalog_uses_the_selected_language_and_unknown_keys_are_visible() -> None:
     manager = _manager()
     manager.set_language("ja_JP")
-    assert manager.tr("paragraph.smart") == "Keep breaks only between major sections"
+    assert manager.tr("paragraph.smart") != "Keep breaks only between major sections"
     assert manager.tr("missing.key") == "missing.key"

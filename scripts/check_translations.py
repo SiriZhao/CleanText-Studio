@@ -1,4 +1,8 @@
-"""Fail fast if a formal UI catalog is unreadable or incomplete after fallback."""
+"""Fail fast when a formal UI catalog is unreadable or incomplete.
+
+The product must never rely on a per-key English fallback: that is precisely
+what creates a mixed-language window at runtime.
+"""
 
 from __future__ import annotations
 
@@ -18,12 +22,15 @@ def main() -> int:
     for code, catalog in catalogs.items():
         if any(not str(value).strip() for value in catalog.values()):
             raise SystemExit(f"empty translation in {code}")
-        if code == "en_US":
-            continue
-        # Catalogs can intentionally inherit keys from English; explicitly supplied keys must be valid.
+        missing_keys = keys - set(catalog)
         unknown = set(catalog) - keys
-        if unknown:
-            raise SystemExit(f"unknown translation keys in {code}: {sorted(unknown)}")
+        if missing_keys or unknown:
+            details: list[str] = []
+            if missing_keys:
+                details.append(f"missing={sorted(missing_keys)}")
+            if unknown:
+                details.append(f"unknown={sorted(unknown)}")
+            raise SystemExit(f"catalog key mismatch in {code}: {'; '.join(details)}")
     print(f"translation catalogs OK: {len(catalogs)} catalogs, {len(keys)} base keys")
     return 0
 

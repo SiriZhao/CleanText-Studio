@@ -26,11 +26,15 @@ LANGUAGES: tuple[Language, ...] = (
     Language("ru_RU", "Русский"), Language("ar", "العربية", True), Language("hi_IN", "हिन्दी"),
 )
 
-# These late-added keys remain in the localization layer rather than in widget
-# code.  Catalog contributors can move them into every JSON resource without
-# changing the public key names.
+ # Backwards-compatible source for v1.4 catalogs.  v1.5 writes these keys to
+ # every static catalog and no longer uses per-key runtime inheritance.
 RUNTIME_LABELS: dict[str, dict[str, str]] = {
     "en_US": {
+        "about.title": "About CleanText Studio",
+        "about.copy_version": "Copy version information",
+        "about.details": "Version: v{version}\nDeveloper: SiriZhao\n\nA local-first text cleanup, document-structure, and Word/TXT formatting tool.\n\nProject homepage: {repository}\n\nCopyright © 2026 SiriZhao. All rights reserved.\nLicense: MIT License\n\nBasic cleanup is performed locally. AI optimization only calls a third-party API that you configure yourself. The app provides no public API key and does not proxy or resell model services.\n\nThis software is for text cleanup, structure recovery, and document layout. It does not provide AI-detection evasion, plagiarism evasion, or academic-misconduct features.",
+        "about.license_message": "CleanText Studio is distributed under the MIT License. See the repository LICENSE file for the complete text.",
+        "about.open_failed": "Copy this project address: {repository}",
         "tip.detect_math": "Detect LaTeX, Unicode, and common equations before text cleaning.",
         "tip.protect_math": "Protect delimiters, subscripts, and commands before Markdown cleaning.",
         "tip.normalize_math": "Fix only clear formula spacing; never calculate or rewrite math.",
@@ -39,6 +43,11 @@ RUNTIME_LABELS: dict[str, dict[str, str]] = {
         "tip.math_output": "Choose how formulas are represented in cleaned text and TXT output.",
     },
     "zh_CN": {
+        "about.title": "关于净文排版",
+        "about.copy_version": "复制版本信息",
+        "about.details": "版本：v{version}\n开发者：SiriZhao\n\n一款本地优先的文本格式清洗、结构整理与 Word/TXT 排版工具。\n\n项目主页：{repository}\n\nCopyright © 2026 SiriZhao. All rights reserved.\n许可证：MIT License\n\n基础清洗完全在本机完成。AI 优化仅在用户主动操作后调用其自行配置的第三方 API。应用不提供公共 API Key，也不代理或转售模型服务。\n\n本软件用于文本格式清理、结构整理和文档排版，不提供规避 AI 检测、绕过查重或实施学术不端的功能。",
+        "about.license_message": "净文排版采用 MIT License 发布，完整文本见仓库中的 LICENSE 文件。",
+        "about.open_failed": "请复制项目地址：{repository}",
         "tip.detect_math": "在文本清洗前识别 LaTeX、Unicode 和常见方程式。",
         "tip.protect_math": "在 Markdown 清理前保护公式定界符、下标和命令。",
         "tip.normalize_math": "仅修复明确的公式空格，不计算或改写数学含义。",
@@ -47,6 +56,11 @@ RUNTIME_LABELS: dict[str, dict[str, str]] = {
         "tip.math_output": "选择清洗结果和 TXT 中的公式表示方式。",
     },
     "es_ES": {
+        "about.title": "Acerca de CleanText Studio",
+        "about.copy_version": "Copiar información de versión",
+        "about.details": "Versión: v{version}\nDesarrollador: SiriZhao\n\nUna herramienta local para limpiar texto, recuperar estructura y exportar Word/TXT.\n\nProyecto: {repository}\n\nCopyright © 2026 SiriZhao. Todos los derechos reservados.\nLicencia: MIT License\n\nLa limpieza básica se realiza localmente. La optimización con IA usa solo una API de terceros que usted configure.",
+        "about.license_message": "CleanText Studio se distribuye bajo la licencia MIT. Consulte LICENSE para el texto completo.",
+        "about.open_failed": "Copie esta dirección del proyecto: {repository}",
         "tip.detect_math": "Detecta LaTeX, Unicode y ecuaciones comunes antes de limpiar el texto.",
         "tip.protect_math": "Protege delimitadores, subíndices y comandos antes de limpiar Markdown.",
         "tip.normalize_math": "Corrige solo espacios claros; no calcula ni reescribe matemáticas.",
@@ -148,11 +162,4 @@ class I18nManager(QObject):
         }
         if "en_US" not in catalogs:
             raise RuntimeError("The English translation catalog is required")
-        for code, labels in RUNTIME_LABELS.items():
-            catalogs.setdefault(code, {}).update(labels)
-        baseline = catalogs["en_US"]
-        for code, catalog in tuple(catalogs.items()):
-            if code == "en_US":
-                continue
-            catalogs[code] = {**baseline, **catalog}
         return catalogs

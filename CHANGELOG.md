@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.5.0 - 2026-07-17
+
+### Added
+
+- Centralized `I18nService`, stable translated enum models, and a local Help dialog.
+- Shared rounded card and theme-token primitives for the three primary panels.
+- Strict catalog auditing that rejects incomplete locale resources instead of mixing per-key English fallbacks.
+
+### Fixed
+
+- Refresh presentation labels from stable values rather than translated combo-box text.
+- Replace the former one-message Help popup with a scrollable, re-translatable dialog.
+- Remove square panel-title and rule-summary surfaces from the primary theme path.
+
+### Compatibility
+
+- Cleaning, table, mathematical-formula, DOCX, and TXT output behavior remains frozen against the v1.4.2 fixture.
+
 ## 1.4.2 - 2026-07-17
 
 ### Fixed

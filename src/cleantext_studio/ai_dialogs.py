@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from cleantext_studio.i18n import I18nService
 from cleantext_studio.llm.base import LLMProvider, RequestEstimate
 from cleantext_studio.llm.models import OptimizationMode, ProviderConfig
 from cleantext_studio.llm.presets import ProviderPreset, all_presets
@@ -56,7 +57,8 @@ class ProviderDialog(QDialog):
         self, parent: QWidget | None = None, existing: ProviderConfig | None = None
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("AI 智能优化配置")
+        self.i18n = getattr(parent, "i18n", None)
+        self.setWindowTitle(self._tr("dialog.ai.title"))
         self.resize(590, 610)
         self.presets = all_presets()
         self._last_preset = self.presets[0]
@@ -150,8 +152,13 @@ class ProviderDialog(QDialog):
         else:
             self._apply_preset(self.presets[0], True)
 
+    def _tr(self, key: str) -> str:
+        if isinstance(self.i18n, I18nService):
+            return self.i18n.tr(key)
+        return key
+
     def start_connection_test(self, provider: LLMProvider) -> None:
-        self.test_button.setText("正在测试……")
+        self.test_button.setText(self._tr("dialog.ai.testing"))
         self.test_button.setEnabled(False)
         self._worker = ConnectionWorker(provider)
         self._worker.succeeded.connect(lambda: self._connection_finished("连接成功"))
@@ -165,7 +172,7 @@ class ProviderDialog(QDialog):
         self.test_button.setEnabled(True)
 
     def start_model_fetch(self, provider: LLMProvider) -> None:
-        self.fetch_models.setText("正在刷新……")
+        self.fetch_models.setText(self._tr("dialog.ai.refreshing"))
         self.fetch_models.setEnabled(False)
         self._model_worker = ModelWorker(provider)
         self._model_worker.succeeded.connect(self._models_loaded)
@@ -178,7 +185,7 @@ class ProviderDialog(QDialog):
             self.model.clear()
             self.model.addItems(models)
             self.model.setEditText(current or models[0])
-        self.fetch_models.setText("刷新模型")
+        self.fetch_models.setText(self._tr("dialog.ai.fetch_models"))
         self.fetch_models.setEnabled(True)
 
     def preset(self) -> ProviderPreset:
@@ -205,7 +212,7 @@ class ProviderDialog(QDialog):
 
     def _mark_custom_url(self) -> None:
         self._custom_url = True
-        self.url_status.setText("自定义接口地址")
+        self.url_status.setText(self._tr("dialog.ai.custom_url"))
 
     def _provider_changed(self, _: int) -> None:
         self._apply_preset(self.preset(), not self._custom_url)
@@ -256,7 +263,8 @@ class SendConfirmationDialog(QDialog):
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("确认 AI 智能优化")
+        self.i18n = getattr(parent, "i18n", None)
+        self.setWindowTitle(self._tr("dialog.ai.title"))
         layout = QVBoxLayout(self)
         self.mode = QComboBox()
         self.mode.addItems(["结构识别", "换行优化", "轻度整理", "列表自然化", "学术和报告结构"])
@@ -279,6 +287,11 @@ class SendConfirmationDialog(QDialog):
         cancel.clicked.connect(self.reject)
         confirm.clicked.connect(self.accept)
 
+    def _tr(self, key: str) -> str:
+        if isinstance(self.i18n, I18nService):
+            return self.i18n.tr(key)
+        return key
+
     def selected_mode(self) -> OptimizationMode:
         return list(OptimizationMode)[:5][self.mode.currentIndex()]
 
@@ -288,7 +301,8 @@ class AIDiffDialog(QDialog):
         self, local: str, suggested: str, risky: bool, parent: QWidget | None = None
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("AI 建议差异确认")
+        self.i18n = getattr(parent, "i18n", None)
+        self.setWindowTitle(self._tr("dialog.ai.title"))
         self.resize(1100, 700)
         layout = QVBoxLayout(self)
         if risky:
@@ -311,3 +325,8 @@ class AIDiffDialog(QDialog):
         layout.addLayout(buttons)
         accept.clicked.connect(self.accept)
         reject.clicked.connect(self.reject)
+
+    def _tr(self, key: str) -> str:
+        if isinstance(self.i18n, I18nService):
+            return self.i18n.tr(key)
+        return key
