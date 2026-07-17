@@ -1,78 +1,78 @@
-<p align="center"><img src="assets/icon.png" width="96" alt="净文排版图标"></p>
+<p align="center"><img src="assets/icon.png" width="96" alt="CleanText Studio logo"></p>
 
-# 净文排版 · CleanText Studio
+# 清洁文本工作室
 
-**一款本地优先的文本格式清洗、文档结构整理、公式预览与 Word/TXT 导出工具。**
+**本地优先文本清理、文档结构恢复、公式感知预览以及复制的、AI 生成的和格式不良的文本的 DOCX/TXT 导出。**
 
-[English](README.md) · **简体中文** · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt-BR.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md)
+[English](README.md) · [简体中文](README.zh-CN.md) · [繁体中文](README.zh-TW.md) · [日本语](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [德语](README.de.md) · [葡萄牙语](README.pt-BR.md) · [Русский](README.ru.md) · [हिन्दी](README.hi.md) · [हिन्दी](README.hi.md)
 
-[![最新 Release](https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver)](https://github.com/SiriZhao/CleanText-Studio/releases) [![CI](https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg)](https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml) ![Python 3.12](https://img.shields.io/badge/Python-3.12-blue) ![Windows](https://img.shields.io/badge/Windows-x64-0078d4) [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/SiriZhao/CleanText-Studio?display_name=tag&sort=semver)](https://github.com/SiriZhao/CleanText-Studio/releases) [![CI](https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml/badge.svg)](https://github.com/SiriZhao/CleanText-Studio/actions/workflows/ci.yml) ![Python 3.12](https://img.shields.io/badge/Python-3.12-blue) ![Windows](https://img.shields.io/badge/Windows-x64-0078d4) [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 <!-- section:download -->
-## Windows 下载
+## 下载 Windows 版
 
-当前版本：**v1.4.2**。请从 [Releases](https://github.com/SiriZhao/CleanText-Studio/releases/latest) 下载 Windows x64 安装版，或下载 **Portable ZIP** 解压运行。安装版默认只为当前用户安装；两种版本均不要求另行安装 Python。
+Current version: **v1.5.0**. Download the [Windows installer](https://github.com/SiriZhao/CleanText-Studio/releases/latest) for a per-user installation, or the **Portable ZIP** to run without installation. Packages are built for Windows x64 and do not require a separately installed Python runtime.
 
-![净文排版中文主界面](assets/screenshots/v1.4.2/main-zh-cn.png)
+![CleanText Studio in English](assets/screenshots/v1.5.0/hero-main-en.png)
 
 <!-- section:features -->
-## v1.4.2 更新重点
+## v1.5.0 中的新增内容
 
-- 修复按钮、显示模式、输入/结果占位文字、状态栏、规则数量和公式提示的运行时翻译刷新。
-- 下拉框显示文字与稳定业务值彻底解耦；切换语言不会改变清洗预设、不会触发清洗。
-- 通过统一 DesignToken 整合面板、复选框、下拉框、焦点边框和统计提示的圆角与间距。
-- 使用合法系统字体回退；本版本不内置苹方、HarmonyOS Sans 或任何来源不明的字体文件。
-- 重写项目首页文档，并加入 README、界面语言一致性与清洗冻结自动检查。
+- 完整的静态语言环境目录、本地帮助对话框以及表示层的原子语言环境验证。
+- 将组合框标签与稳定的清洁值分开，因此更改语言永远不会改变预设或触发清洁。
+- 通过共享设计令牌统一面板、控件、焦点、复选框和摘要卡舍入。
+- 使用法律系统字体后备。此版本中未捆绑 PingFang、HarmonyOS Sans 或其他字体文件。
+- 重新设计了旗舰文档并添加了自动自述文件、UI 语言和清理冻结检查。
 
-## 能解决什么问题
+## 它的作用
 
-净文排版用于整理从聊天工具、网页、Office 或各类模型复制出来的格式混乱文本。它会清除无用 Markdown 和复制残留，同时尽量保留标题、列表、引用、代码、表格和数学公式等有价值的结构。预览、TXT 和 Word 导出共享同一份结构化文档模型，避免“预览正常、导出丢表格或公式”的问题。
+CleanText Studio 删除复制的格式残留，同时保留有用的文档结构。它可以识别标题、列表、引文、代码、Markdown 表格、链接和常见的数学公式。相同的结构化文档模型为文本编辑器、预览、TXT 导出和 DOCX 导出提供支持，因此表格或公式在导出时不会默默丢失。
 
-### 文本清洗与结构恢复
+### 清洁和结构恢复
 
-- 清理 Markdown 标题、强调、行内代码、链接、图片、分隔线、HTML 复制残留、表情和装饰符号。
-- 识别标题、列表、引用、代码块和表格，不把它们粗暴压成字符墙。
-- 提供紧凑合并、智能分段和原样保留三种段落换行模式。
-- 默认保留独立 URL；链接和 URL 的处理方式均可明确配置。
+- 干净的 Markdown 标题、强调、内联代码、链接、图像、分隔符、HTML 复制残留、表情符号和装饰字符。
+- 检测标题、列表、引文、代码块和表格，而不是将它们压平到字符墙中。
+- 选择紧凑的连接、智能的节间距或保留的段落边界。
+- 默认保留独立 URL；可选的 URL 处理是显式的。
 
-### 表格与 Word 导出
+### 表格和Word导出
 
-Markdown 表格会被解析为结构块。预览模式显示真实表格，Word 导出生成原生表格：表头加粗、边框可见、列宽按内容规划、单元格文字已完成清洗。较长中文不会被无意义地拆成大量短行。
+Markdown 表被解析为结构化表块。预览模式显示真实的表格，DOCX 导出会写入带有粗体标题、可见边框、自适应宽度和干净单元格文本的本机 Word 表格。长内容仍然可读，而不是变成一系列强制的短行。
 
-### 数学公式
+### 数学
 
-常用行内/块级 LaTeX、Unicode 数学表达式和简单方程会先被保护，再参与 Markdown 清洗。支持范围内的公式导出为 Word OMML 原生公式；复杂公式会降级为完整可读文本，而不会静默丢失变量。程序不会计算、证明、化简或改写数学含义。
+常见的内联和显示 LaTeX、Unicode 数学表达式和简单方程在 Markdown 清理之前受到保护。支持的公式导出为Word OMML本机方程；不受支持的构造会退回到可读文本而不是丢失变量。该应用程序不会计算、证明或更改数学含义。
 
 ### 可选的 BYOK AI 优化
 
-基础清洗、预览、TXT 和 Word 导出都可离线使用。AI 优化仅在用户主动配置自己的 Provider、Base URL、模型和 API Key 后调用。项目不提供公共 API Key、不代付模型费用、不代理模型服务；请勿提交不适合交由第三方处理的敏感内容。
+本地清理工作完全离线进行。 AI 优化是可选的，仅在您配置自己的提供商、端点、模型和 API 密钥后运行。 CleanText Studio 不提供公钥、代理提供商或支付模型账单。请勿发送不适合第三方处理的材料。
 
 <!-- section:privacy -->
-## 隐私与安全
+## 隐私和安全
 
-本地清洗不会上传文本，也没有广告、遥测、账号系统或公共密钥。本软件用于文本格式清理、结构整理和文档排版；不提供规避 AI 检测、绕过查重、伪装人工写作、学术不端或伪造引用功能。
+基本清理、预览、TXT 导出和 Word 导出在本地运行。该应用程序没有广告、遥测、帐户系统或公共人工智能密钥。它是一个格式化、文档结构和布局工具；它**不**提供人工智能检测规避、剽窃规避、冒充、学术不端行为或伪造引用。
 
-## 快速开始
+## 快速启动
 
-1. 启动应用，粘贴文本或打开 TXT、Markdown、DOCX。
-2. 选择清洗预设与段落模式。
-3. 点击“开始清洗”，在文本模式或预览模式检查结果。
-4. 导出 UTF-8 TXT 或结构化 Word 文档。
+1. 启动应用程序，粘贴文本或打开 TXT、Markdown 或 DOCX。
+2. 选择清洁预设和段落模式。
+3. 单击 **清理** 并检查 **文本模式** 或 **预览模式**。
+4. 将结构化内容导出到 TXT 或 Word。
 
 ```text
-清洗前：### 测试账号
+Before: ### Test account
         ---
-        **无需登录**
+        **No login required**
 
-清洗后：测试账号
-        无需登录
+After:  Test account
+        No login required
 ```
 
-## 输入、输出与系统要求
+## 输入、输出和系统要求
 
-支持导入 `.txt`、`.md`、`.markdown`、`.docx`，导出 UTF-8 `.txt` 和结构化 `.docx`。v1.4.2 当前正式发布 Windows x64 桌面版本；macOS、Linux 和 Android 尚未作为已发布平台宣传。
+输入：“.txt”、“.md”、“.markdown”和“.docx”。输出：UTF-8 `.txt` 和结构化的 `.docx`。 v1.5.0 是 Windows x64 桌面版本。 macOS、Linux 和 Android 未声明为已发布平台。
 
-## 从源码运行
+## 从源头
 
 ```powershell
 py -3.12 -m venv .venv
@@ -82,7 +82,7 @@ $env:PYTHONPATH = "src"
 ```
 
 <!-- section:build -->
-## 测试与 Windows 构建
+## 测试和构建
 
 ```powershell
 $env:PYTHONPATH = "src"
@@ -96,15 +96,17 @@ $env:PYTHONPATH = "src"
 .\scripts\build_windows.ps1
 ```
 
-构建脚本会在 `dist/` 下生成 onedir 应用、便携版 ZIP、Inno Setup 安装包、SHA256 校验文件和发布说明。
+Windows 版本会在“dist/”下生成一个 onedir 应用程序、一个便携式 ZIP、一个 Inno Setup 安装程序、SHA256 校验和以及发行说明。
 
-## 多语言、贡献与已知限制
+## 本地化、贡献和限制
 
-界面支持简体中文、繁體中文、English、日本語、한국어、Español、Français、Deutsch、Português（Brasil）、Русский、العربية（RTL）和 हिन्दी。欢迎协助审校翻译，参见 [翻译指南](docs/TRANSLATION_GUIDE.md)。复杂自定义 LaTeX 宏可能回退为可读文本；DOCX 导入不保证保留所有原始样式或嵌入图片。
+界面提供简体中文、繁体中文、英语、日语、韩语、西班牙语、法语、德语、巴西葡萄牙语、俄语、阿拉伯语（RTL）和印地语。欢迎翻译审校；请参阅[翻译指南](docs/TRANSLATION_GUIDE.md)。复杂的自定义 LaTeX 宏可能会使用文本后备，并且 DOCX 导入不会保留每个源文档样式或嵌入图像。
 
-开发者：[SiriZhao](https://github.com/SiriZhao) · 项目主页：[SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio) · 贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+Developer: [SiriZhao](https://github.com/SiriZhao) · Project: [SiriZhao/CleanText-Studio](https://github.com/SiriZhao/CleanText-Studio) · See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
 
 <!-- section:license -->
-## 许可证
+## 执照
 
-MIT License。第三方说明见 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)。
+麻省理工学院许可证。请参阅 [许可证](许可证) 和 [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)。
+
+> Translation review from the community is welcome.
