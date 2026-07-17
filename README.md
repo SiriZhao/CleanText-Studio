@@ -41,7 +41,7 @@
 </p>
 
 <div align="center">
-  <img src="assets/screenshots/01-main-light.png" alt="CleanText Studio showing source text, cleanup controls, and a structured result" width="100%">
+  <img src="assets/screenshots/v1.5.2/01-main-light.png" alt="CleanText Studio showing source text, cleanup controls, and a structured result" width="100%">
 </div>
 
 > **Current source tag:** v1.5.2 · **Published desktop platform:** Windows x64 · **Basic cleanup:** local-first
@@ -153,17 +153,17 @@ When AI refinement is used, the selected provider receives only the material req
 ## Screenshots
 
 <div align="center">
-  <img src="assets/screenshots/02-main-dark.png" alt="CleanText Studio dark theme" width="48%">
-  <img src="assets/screenshots/03-settings.png" alt="CleanText Studio cleaning settings" width="48%">
+  <img src="assets/screenshots/v1.5.2/02-main-dark.png" alt="CleanText Studio dark theme" width="48%">
+  <img src="assets/screenshots/v1.5.2/07-settings.png" alt="CleanText Studio cleaning settings" width="48%">
 </div>
 
 <div align="center">
-  <img src="assets/screenshots/06-formula-rendering.png" alt="Formula-aware document preview" width="48%">
-  <img src="assets/screenshots/05-word-export.png" alt="Word export confirmation in CleanText Studio" width="48%">
+  <img src="assets/screenshots/v1.5.2/05-table-export.png" alt="Structured table preview in CleanText Studio" width="48%">
+  <img src="assets/screenshots/v1.5.2/06-word-export.png" alt="Word export workflow in CleanText Studio" width="48%">
 </div>
 
 <div align="center">
-  <img src="assets/screenshots/04-about.png" alt="About CleanText Studio dialog" width="48%">
+  <img src="assets/screenshots/v1.5.2/08-about.png" alt="About CleanText Studio dialog" width="48%">
 </div>
 
 All screenshots are captured from the real Qt application with public sample content. They contain no API key, private path, browser window, or generated mockup.
@@ -254,7 +254,7 @@ Markdown tables become structured table blocks. Preview mode displays a table, a
 For formulas, CleanText Studio protects supported math while surrounding prose is cleaned. v1.5.2 specifically improves bare LaTeX expressions embedded in prose, lists, and table cells. Its verification index exported 15 native OMath elements with no supported LaTeX command residue in `word/document.xml`.
 
 <div align="center">
-  <img src="assets/screenshots/06-formula-rendering.png" alt="Formula preview in CleanText Studio" width="72%">
+  <img src="assets/screenshots/v1.5.2/03-before-after-light.png" alt="Before-and-after cleanup workflow in CleanText Studio" width="72%">
 </div>
 
 ### Table workflow

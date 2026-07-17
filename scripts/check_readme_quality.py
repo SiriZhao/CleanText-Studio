@@ -14,10 +14,9 @@ README_FILES = (
 VERSION = "v1.5.2"
 RELEASE = "https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.5.2"
 REQUIRED_IMAGES = {
-    "01-main-light.png", "02-main-dark.png", "03-settings.png",
-    "04-about.png", "05-word-export.png", "06-formula-rendering.png",
-    "cleaning-before-after.png", "table-preview.png", "math-preview.png",
-    "ai-settings.png", "rounded-ui-details.png",
+    "01-main-light.png", "02-main-dark.png", "03-before-after-light.png",
+    "05-table-export.png", "06-word-export.png", "07-settings.png",
+    "08-about.png",
 }
 FORBIDDEN = (
     "README_EN.md", "screenshots/v1.4", "screenshots/v1.5.0", "TODO",
@@ -61,13 +60,11 @@ def main() -> int:
             image_path = ROOT / image
             if not image_path.exists() or image_path.stat().st_size == 0:
                 errors.append(f"{name} references missing image: {image}")
-    # The flagship English page uses unversioned, carefully curated showcase
-    # assets; the localized pages retain the locale-specific v1.5.2 captures.
     missing = REQUIRED_IMAGES - {Path(image).name for image in all_images}
     if (ROOT / "README.md").exists():
         main = (ROOT / "README.md").read_text(encoding="utf-8")
-        showcase = {"01-main-light.png", "02-main-dark.png", "03-settings.png", "04-about.png", "05-word-export.png", "06-formula-rendering.png"}
-        missing_showcase = {name for name in showcase if f"assets/screenshots/{name}" not in main}
+        showcase = {"01-main-light.png", "02-main-dark.png", "03-before-after-light.png", "05-table-export.png", "06-word-export.png"}
+        missing_showcase = {name for name in showcase if f"assets/screenshots/v1.5.2/{name}" not in main}
         if missing_showcase:
             errors.append(f"README.md misses showcase assets: {sorted(missing_showcase)}")
     if missing:

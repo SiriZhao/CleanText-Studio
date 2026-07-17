@@ -214,17 +214,27 @@ class MainWindow(QMainWindow):
         return panel, layout, heading
 
     def _buttons(
-        self, layout: QVBoxLayout, items: list[tuple[str, object, str]]
+        self,
+        layout: QVBoxLayout,
+        items: list[tuple[str, object, str]],
+        *,
+        columns: int | None = None,
     ) -> list[QPushButton]:
+        rows: list[QHBoxLayout] = []
         row = QHBoxLayout()
+        rows.append(row)
         buttons = []
-        for text, callback, tip in items:
+        for index, (text, callback, tip) in enumerate(items):
+            if columns and index and index % columns == 0:
+                row = QHBoxLayout()
+                rows.append(row)
             button = QPushButton(text)
             button.clicked.connect(callback)
             button.setToolTip(tip)
             row.addWidget(button)
             buttons.append(button)
-        layout.addLayout(row)
+        for button_row in rows:
+            layout.addLayout(button_row)
         return buttons
 
     def _build_ui(self) -> None:
@@ -381,6 +391,7 @@ class MainWindow(QMainWindow):
                 (self.tr("action.restore"), self.restore_result, self.tr("action.restore")),
                 (self.tr("action.clear"), self.clear_result, self.tr("tip.clear")),
             ],
+            columns=3,
         )
         (
             self.word_button,

@@ -16,12 +16,14 @@ ROOT = Path(__file__).parents[1]
 SOURCE = ROOT / "assets" / "screenshots" / "v1.5.2"
 TARGET = ROOT / "assets" / "screenshots"
 MAPPING = {
-    "01-main-light.png": "hero-main-en.png",
-    "02-main-dark.png": "hero-main-dark-en.png",
-    "03-settings.png": "rounded-ui-details.png",
-    "04-about.png": "about-en.png",
-    "05-word-export.png": "export-summary.png",
-    "06-formula-rendering.png": "math-preview.png",
+    "01-main-light.png": "01-main-light.png",
+    "02-main-dark.png": "02-main-dark.png",
+    "03-before-after-light.png": "03-before-after-light.png",
+    "04-before-after-dark.png": "04-before-after-dark.png",
+    "05-table-export.png": "05-table-export.png",
+    "06-word-export.png": "06-word-export.png",
+    "07-settings.png": "07-settings.png",
+    "08-about.png": "08-about.png",
 }
 
 
@@ -47,7 +49,7 @@ def main() -> int:
         ROOT / "assets" / "demo.gif",
         save_all=True,
         append_images=frames[1:],
-        duration=[3500, 3000, 3500, 3000, 3500, 3500],
+        duration=[3000, 3000, 3000, 3000, 3000, 3000, 1000, 1000],
         loop=0,
         optimize=True,
         disposal=2,

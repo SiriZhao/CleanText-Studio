@@ -26,7 +26,7 @@
   <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 sommes de contrôle</a>
 </p>
 
-![CleanText Studio interface anglaise](assets/screenshots/v1.5.2/main-fr.png)
+![CleanText Studio interface anglaise](assets/screenshots/v1.5.2/01-main-light.png)
 
 CleanText Studio transforme le texte copié en désordre en un document lisible et modifiable sans traiter la structure utile comme du bruit. Il supprime les Markdown et la décoration redondants, récupère les titres, les listes, les tableaux et la notation mathématique courante, puis vous offre une vue texte, un aperçu structuré et une exportation DOCX ou TXT. Un nettoyage de base est effectué sur l'appareil ; L'optimisation facultative de l'IA utilise uniquement un fournisseur API que vous configurez vous-même.
 
@@ -95,7 +95,7 @@ La gestion des liens peut conserver Markdown, conserver uniquement le texte à a
 
 Les tables Markdown sont analysées en blocs de tables structurés. Le mode Aperçu affiche le tableau sous forme de tableau et l'exportation DOCX crée un tableau Word natif avec une ligne d'en-tête, un contenu de cellule lisible, des bordures et des largeurs choisies dans le contenu plutôt qu'une répartition égale fixe. Les lignes de séparation Markdown, les marqueurs d'accentuation résiduels, les colonnes vides sans signification et les sauts de ligne accidentels sont nettoyés avant l'exportation lorsque les paramètres de nettoyage actifs le permettent.
 
-![Aperçu du tableau structuré](assets/screenshots/v1.5.2/table-preview.png)
+![Aperçu du tableau structuré](assets/screenshots/v1.5.2/05-table-export.png)
 
 ### Formules mathématiques et équations Word modifiables
 
@@ -103,7 +103,7 @@ Les délimiteurs communs en ligne et d'affichage LaTeX, les expressions mathéma
 
 Les macros personnalisées complexes ne sont pas ignorées en silence. Lorsqu'une formule se situe en dehors de la plage de conversion prise en charge, l'application conserve une solution de secours lisible et la signale dans les informations sur la qualité de l'exportation.
 
-![Aperçu compatible avec les formules](assets/screenshots/v1.5.2/math-preview.png)
+![Aperçu compatible avec les formules](assets/screenshots/v1.5.2/06-word-export.png)
 
 ### Mode texte et mode aperçu
 
@@ -133,7 +133,9 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![Source et résultat nettoyé](assets/screenshots/v1.5.2/cleaning-before-after.png)
+`
+
+![Source et résultat nettoyé](assets/screenshots/v1.5.2/03-before-after-light.png)
 
 ##Formats d'exportation
 
@@ -155,7 +157,7 @@ L'interface de bureau propose le chinois simplifié, le chinois traditionnel, l'
 
 Les thèmes clairs et sombres partagent le même système de panneau, de contrôle, de mise au point et de surface arrondie. L'application utilise des polices de secours légales du système lorsqu'elles sont disponibles ; il ne regroupe **pas** les fichiers Apple PingFang.
 
-![Thème sombre et surfaces arrondies](assets/screenshots/v1.5.2/rounded-ui-details.png)
+![Thème sombre et surfaces arrondies](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Optimisation facultative de l'IA (BYOK)
 
@@ -163,7 +165,7 @@ L'optimisation de l'IA est facultative. Le nettoyage de base, l'aperçu, l'expor
 
 DeepSeek et d'autres fournisseurs exposés par la configuration de l'application installée peuvent être sélectionnés via la boîte de dialogue des paramètres AI. Les identifiants du fournisseur et du modèle restent distincts des étiquettes d'affichage traduites. Consultez les propres conditions de données du fournisseur avant d’envoyer du matériel sensible.
 
-![Configuration IA](assets/screenshots/v1.5.2/ai-settings.png)
+![Configuration IA](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Démarrage rapide
 

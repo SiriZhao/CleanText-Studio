@@ -26,7 +26,7 @@
   <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 Prüfsummen</a>
 </p>
 
-![CleanText Studio Englische Schnittstelle](assets/screenshots/v1.5.2/main-de.png)
+![CleanText Studio Englische Schnittstelle](assets/screenshots/v1.5.2/01-main-light.png)
 
 CleanText Studio verwandelt unordentlichen kopierten Text in ein lesbares, bearbeitbares Dokument, ohne nützliche Strukturen als Rauschen zu behandeln. Es entfernt überflüssige Markdown und Verzierungen, stellt Überschriften, Listen, Tabellen und allgemeine mathematische Notationen wieder her und bietet Ihnen dann eine Textansicht, eine strukturierte Vorschau und einen DOCX- oder TXT-Export. Auf dem Gerät wird eine Grundreinigung durchgeführt; Die optionale KI-Optimierung verwendet nur einen API-Anbieter, den Sie selbst konfigurieren.
 
@@ -95,7 +95,7 @@ Die Linkverarbeitung kann Markdown beibehalten, nur den Anzeigetext beibehalten 
 
 Markdown Tabellen werden in strukturierte Tabellenblöcke analysiert. Im Vorschaumodus wird die Tabelle als Tabelle angezeigt, und der DOCX-Export erstellt eine native Word-Tabelle mit einer Kopfzeile, lesbarem Zelleninhalt, Rändern und Breiten, die aus dem Inhalt ausgewählt werden, und nicht mit einer festen, gleichen Aufteilung. Markdown Trennzeilen, verbleibende Hervorhebungsmarkierungen, bedeutungslose leere Spalten und versehentliche weiche Zeilenumbrüche werden vor dem Export bereinigt, wenn die aktiven Bereinigungseinstellungen dies zulassen.
 
-![Strukturierte Tabellenvorschau](assets/screenshots/v1.5.2/table-preview.png)
+![Strukturierte Tabellenvorschau](assets/screenshots/v1.5.2/05-table-export.png)
 
 ### Mathematische Formeln und bearbeitbare Word Gleichungen
 
@@ -103,7 +103,7 @@ Gängige Inline- und Anzeigetrennzeichen LaTeX, mathematische Unicode-Ausdrücke
 
 Komplexe benutzerdefinierte Makros werden nicht stillschweigend verworfen. Wenn eine Formel außerhalb des unterstützten Konvertierungsbereichs liegt, behält die Anwendung einen lesbaren Fallback bei und meldet dies in den Exportqualitätsinformationen.
 
-![Formelbasierte Vorschau](assets/screenshots/v1.5.2/math-preview.png)
+![Formelbasierte Vorschau](assets/screenshots/v1.5.2/06-word-export.png)
 
 ### Textmodus und Vorschaumodus
 
@@ -133,7 +133,9 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![Quelle und bereinigtes Ergebnis](assets/screenshots/v1.5.2/cleaning-before-after.png)
+`
+
+![Quelle und bereinigtes Ergebnis](assets/screenshots/v1.5.2/03-before-after-light.png)
 
 ## Formate exportieren
 
@@ -155,7 +157,7 @@ Die Desktop-Oberfläche bietet vereinfachtes Chinesisch, traditionelles Chinesis
 
 Helle und dunkle Themen haben das gleiche Panel, die gleiche Steuerung, den gleichen Fokus und das gleiche abgerundete Oberflächensystem. Die Anwendung verwendet, sofern verfügbar, Fallbacks für gesetzliche Systemschriften. Apple PingFang-Dateien werden **nicht** gebündelt.
 
-![Dunkles Thema und abgerundete Oberflächen](assets/screenshots/v1.5.2/rounded-ui-details.png)
+![Dunkles Thema und abgerundete Oberflächen](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Optionale KI-Optimierung (BYOK)
 
@@ -163,7 +165,7 @@ KI-Optimierung ist optional. Einfache Bereinigung, Vorschau, TXT-Export und DOCX
 
 DeepSeek und andere Anbieter, die durch die installierte Anwendungskonfiguration verfügbar gemacht werden, können über den AI-Einstellungsdialog ausgewählt werden. Anbieter- und Modellkennungen bleiben von den übersetzten Anzeigebezeichnungen getrennt. Lesen Sie die Datenbedingungen des Anbieters, bevor Sie sensibles Material versenden.
 
-![AI-Konfiguration](assets/screenshots/v1.5.2/ai-settings.png)
+![AI-Konfiguration](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Schnellstart
 

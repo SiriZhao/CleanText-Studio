@@ -26,7 +26,7 @@
   <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 sumas de comprobación</a>
 </p>
 
-![CleanText Studio interfaz en inglés](assets/screenshots/v1.5.2/main-es.png)
+![CleanText Studio interfaz en inglés](assets/screenshots/v1.5.2/01-main-light.png)
 
 CleanText Studio convierte el texto copiado desordenado en un documento legible y editable sin tratar la estructura útil como ruido. Elimina Markdown y decoración redundantes, recupera encabezados, listas, tablas y notación matemática común, luego le brinda una vista de texto, una vista previa estructurada y exportación DOCX o TXT. La limpieza básica se realiza en el dispositivo; La optimización de IA opcional utiliza solo un proveedor API que usted mismo configura.
 
@@ -95,7 +95,7 @@ El manejo de enlaces puede mantener Markdown, mantener solo el texto para mostra
 
 Las tablas Markdown se analizan en bloques de tablas estructuradas. El modo de vista previa muestra la tabla como una tabla y la exportación DOCX crea una tabla Word nativa con una fila de encabezado, contenido de celda legible, bordes y anchos elegidos del contenido en lugar de una división igual fija. Markdown las filas de separación, los marcadores de énfasis residuales, las columnas vacías sin sentido y los saltos de línea suaves accidentales se limpian antes de la exportación cuando la configuración de limpieza activa lo permite.
 
-![Vista previa de la tabla estructurada](assets/screenshots/v1.5.2/table-preview.png)
+![Vista previa de la tabla estructurada](assets/screenshots/v1.5.2/05-table-export.png)
 
 ### Fórmulas matemáticas y ecuaciones Word editables
 
@@ -103,7 +103,7 @@ Los delimitadores comunes en línea y en pantalla LaTeX, las expresiones matemá
 
 Las macros personalizadas complejas no se descartan silenciosamente. Cuando una fórmula está fuera del rango de conversión admitido, la aplicación mantiene un respaldo legible y lo informa en la información de calidad de exportación.
 
-![Vista previa con reconocimiento de fórmulas](assets/screenshots/v1.5.2/math-preview.png)
+![Vista previa con reconocimiento de fórmulas](assets/screenshots/v1.5.2/06-word-export.png)
 
 ### Modo texto y modo vista previa
 
@@ -133,7 +133,9 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![Fuente y resultado limpio](assets/screenshots/v1.5.2/cleaning-before-after.png)
+`
+
+![Fuente y resultado limpio](assets/screenshots/v1.5.2/03-before-after-light.png)
 
 ## Formatos de exportación
 
@@ -155,7 +157,7 @@ La interfaz de escritorio ofrece chino simplificado, chino tradicional, inglés,
 
 Los temas claros y oscuros comparten el mismo panel, control, enfoque y sistema de superficie redondeada. La aplicación utiliza fuentes alternativas del sistema legal cuando estén disponibles; **no** incluye archivos Apple PingFang.
 
-![Tema oscuro y superficies redondeadas](assets/screenshots/v1.5.2/rounded-ui-details.png)
+![Tema oscuro y superficies redondeadas](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Optimización de IA opcional (BYOK)
 
@@ -163,7 +165,7 @@ La optimización de la IA es opcional. La limpieza básica, la vista previa, la 
 
 DeepSeek y otros proveedores expuestos por la configuración de la aplicación instalada se pueden seleccionar a través del cuadro de diálogo de configuración de AI. Los identificadores de proveedor y modelo permanecen separados de las etiquetas de visualización traducidas. Revise los términos de datos del propio proveedor antes de enviar material confidencial.
 
-![Configuración de IA](assets/screenshots/v1.5.2/ai-settings.png)
+![Configuración de IA](assets/screenshots/v1.5.2/07-settings.png)
 
 ## Inicio rápido
 

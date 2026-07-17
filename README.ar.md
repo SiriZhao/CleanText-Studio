@@ -28,7 +28,7 @@
   <a href="https://github.com/SiriZhao/CleanText-Studio/releases/download/v1.5.2/SHA256SUMS.txt">SHA256 المجموع الاختباري</a>
 </p>
 
-![CleanText Studio الواجهة الإنجليزية](assets/screenshots/v1.5.2/main-ar-rtl.png)
+![CleanText Studio الواجهة الإنجليزية](assets/screenshots/v1.5.2/01-main-light.png)
 
 CleanText Studio يحول النص المنسوخ الفوضوي إلى مستند قابل للقراءة والتحرير دون التعامل مع البنية المفيدة على أنها ضوضاء. فهو يزيل Markdown والزخارف الزائدة عن الحاجة، ويستعيد العناوين والقوائم والجداول والرموز الرياضية الشائعة، ثم يمنحك عرضًا نصيًا ومعاينة منظمة وتصدير DOCX أو TXT. يتم إجراء التنظيف الأساسي على الجهاز؛ يستخدم تحسين الذكاء الاصطناعي الاختياري فقط موفر API الذي تقوم بتكوينه بنفسك.
 
@@ -97,7 +97,7 @@ CleanText Studio يحول النص المنسوخ الفوضوي إلى مستن
 
 يتم تحليل جداول Markdown إلى كتل جدول منظمة. يعرض وضع المعاينة الجدول كجدول، ويقوم تصدير DOCX بإنشاء جدول Word أصلي مع صف رأس ومحتوى خلية قابل للقراءة وحدود وعروض مختارة من المحتوى بدلاً من تقسيم متساوي ثابت. Markdown يتم تنظيف الصفوف الفاصلة وعلامات التركيز المتبقية والأعمدة الفارغة التي لا معنى لها وفواصل الأسطر الناعمة غير المقصودة قبل التصدير عندما تسمح إعدادات التنظيف النشطة بذلك.
 
-![معاينة الجدول المنظم](assets/screenshots/v1.5.2/table-preview.png)
+![معاينة الجدول المنظم](assets/screenshots/v1.5.2/05-table-export.png)
 
 ### صيغ الرياضيات ومعادلات Word القابلة للتحرير
 
@@ -105,7 +105,7 @@ CleanText Studio يحول النص المنسوخ الفوضوي إلى مستن
 
 لا يتم تجاهل وحدات الماكرو المخصصة المعقدة بصمت. عندما تكون الصيغة خارج نطاق التحويل المدعوم، يحتفظ التطبيق بنسخة احتياطية قابلة للقراءة ويبلغ عنها في معلومات جودة التصدير.
 
-![معاينة مع مراعاة الصيغة](assets/screenshots/v1.5.2/math-preview.png)
+![معاينة مع مراعاة الصيغة](assets/screenshots/v1.5.2/06-word-export.png)
 
 ### وضع النص ووضع المعاينة
 
@@ -135,7 +135,9 @@ Read the draft first.
 • Remove decorative labels
 
 The table and E = mc² formula remain structured in Preview and DOCX export.
-```![المصدر والنتيجة المنظفة](assets/screenshots/v1.5.2/cleaning-before-after.png)
+`
+
+![المصدر والنتيجة المنظفة](assets/screenshots/v1.5.2/03-before-after-light.png)
 
 ## تنسيقات التصدير
 
@@ -157,7 +159,7 @@ The table and E = mc² formula remain structured in Preview and DOCX export.
 
 تشترك السمات الفاتحة والداكنة في نفس اللوحة والتحكم والتركيز ونظام السطح المستدير. يستخدم التطبيق النسخ الاحتياطية لخط النظام القانوني حيثما كان ذلك متاحًا؛ فهو لا يجمع ملفات Apple PingFang.
 
-![مظهر داكن وأسطح مستديرة](assets/screenshots/v1.5.2/rounded-ui-details.png)
+![مظهر داكن وأسطح مستديرة](assets/screenshots/v1.5.2/07-settings.png)
 
 ## تحسين اختياري للذكاء الاصطناعي (BYOK)
 
@@ -165,7 +167,7 @@ The table and E = mc² formula remain structured in Preview and DOCX export.
 
 يمكن تحديد DeepSeek والموفرين الآخرين الذين تم الكشف عنهم بواسطة تكوين التطبيق المثبت من خلال مربع حوار إعدادات الذكاء الاصطناعي. تظل معرفات الموفر والطراز منفصلة عن تسميات العرض المترجمة. قم بمراجعة شروط البيانات الخاصة بموفر الخدمة قبل إرسال المواد الحساسة.
 
-![تكوين الذكاء الاصطناعي](assets/screenshots/v1.5.2/ai-settings.png)
+![تكوين الذكاء الاصطناعي](assets/screenshots/v1.5.2/07-settings.png)
 
 ## بداية سريعة
 

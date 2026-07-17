@@ -38,5 +38,5 @@ Get-FileHash .\CleanText-Studio-v1.5.2-Windows-x64-Portable.zip -Algorithm SHA25
 - The supported LaTeX subset is deliberately safe. Unknown custom macros are
   preserved as a whole-formula fallback and are reported; v1.5.2's supported
   complex index has zero fallback formulae.
-- This release provides Windows packages only. It does not claim macOS,
-  Linux, Android, AI-detection evasion, or plagiarism-evasion support.
+- This release provides Windows packages only. macOS, Linux, and Android
+  packages are not currently published.
