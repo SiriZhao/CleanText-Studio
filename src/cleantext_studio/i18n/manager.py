@@ -72,6 +72,17 @@ class I18nManager(QObject):
         system = QLocale.system().name()
         if system in self._catalogs:
             return system
+        aliases = {
+            "zh_SG": "zh_CN",
+            "zh_MY": "zh_CN",
+            "zh_HK": "zh_TW",
+            "zh_MO": "zh_TW",
+            "en_GB": "en_US",
+            "en_AU": "en_US",
+            "pt_PT": "pt_BR",
+        }
+        if system in aliases:
+            return aliases[system]
         prefix = system.split("_", 1)[0]
         return next((item for item in self._catalogs if item.split("_", 1)[0] == prefix), "en_US")
 

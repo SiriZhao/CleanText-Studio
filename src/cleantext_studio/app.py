@@ -201,14 +201,14 @@ class MainWindow(QMainWindow):
         self.help_action = bar.addAction(self.tr("toolbar.help"), self.show_help)
         self.about_action = bar.addAction(self.tr("toolbar.about"), self.about)
 
-    def _panel(self, title: str) -> tuple[QFrame, QVBoxLayout]:
+    def _panel(self, title: str) -> tuple[QFrame, QVBoxLayout, QLabel]:
         panel = QFrame()
         panel.setObjectName("panel")
         layout = QVBoxLayout(panel)
         heading = QLabel(title)
         heading.setStyleSheet("font-size:16px;font-weight:600")
         layout.addWidget(heading)
-        return panel, layout
+        return panel, layout, heading
 
     def _buttons(
         self, layout: QVBoxLayout, items: list[tuple[str, object, str]]
@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
         return buttons
 
     def _build_ui(self) -> None:
-        left, lv = self._panel(self.tr("panel.source"))
+        left, lv, self.source_heading = self._panel(self.tr("panel.source"))
         self.source_buttons = self._buttons(
             lv,
             [
@@ -240,26 +240,25 @@ class MainWindow(QMainWindow):
         self.input = QPlainTextEdit()
         self.input.setPlaceholderText(self.tr("placeholder.source"))
         lv.addWidget(self.input)
-        self.source_meta = QLabel("0 字符 · 0 段 · UTF-8")
+        self.source_meta = QLabel(self.tr("status.source_meta", count=0, paragraphs=0, encoding="UTF-8"))
         self.source_meta.setObjectName("muted")
         lv.addWidget(self.source_meta)
-        middle, mv = self._panel(self.tr("panel.settings"))
+        middle, mv, self.settings_heading = self._panel(self.tr("panel.settings"))
         self.settings_panel = middle
         self.preset = QComboBox()
         for key, value in (("preset.light", "light"), ("preset.standard", "standard"), ("preset.deep", "deep"), ("preset.markdown", "markdown"), ("preset.linebreak", "linebreak"), ("preset.custom", "custom")):
             self.preset.addItem(self.tr(key), value)
         self.preset.setCurrentIndex(1)
-        mv.addWidget(QLabel(self.tr("preset.label")))
+        self.preset_label = QLabel(self.tr("preset.label"))
+        mv.addWidget(self.preset_label)
         mv.addWidget(self.preset)
         rules = QWidget()
         rv = QVBoxLayout(rules)
-        self.remove_markdown = QCheckBox("删除 Markdown 标记\n清除 #、**、--- 等格式符号")
+        self.remove_markdown = QCheckBox(self.tr("option.remove_markdown"))
         self.remove_markdown.setChecked(True)
-        self.remove_emoji = QCheckBox("删除表情和装饰符号")
+        self.remove_emoji = QCheckBox(self.tr("option.remove_emoji"))
         self.remove_emoji.setChecked(True)
-        self.clean_instructional = QCheckBox(
-            "清理碎片化操作标签\n清理独立的填写、点击、等待等短标签"
-        )
+        self.clean_instructional = QCheckBox(self.tr("option.instructional"))
         self.clean_instructional.setChecked(False)
         self.link_mode = QComboBox()
         for key, value in (("link.text", LinkMode.TEXT_ONLY), ("link.url", LinkMode.TEXT_AND_URL), ("link.markdown", LinkMode.KEEP_MARKDOWN)):
@@ -274,48 +273,55 @@ class MainWindow(QMainWindow):
         self.list_mode = QComboBox()
         for key, value in (("list.keep", ListMode.KEEP), ("list.remove", ListMode.REMOVE_MARKERS), ("list.natural", ListMode.NATURAL_PARAGRAPH)):
             self.list_mode.addItem(self.tr(key), value)
-        self.detect_math = QCheckBox("自动识别数学公式")
+        self.detect_math = QCheckBox(self.tr("option.detect_math"))
         self.detect_math.setChecked(True)
         self.detect_math.setToolTip("识别 LaTeX、Unicode 和常见方程式，避免清洗过程破坏公式。")
-        self.protect_math = QCheckBox("保护公式结构")
+        self.protect_math = QCheckBox(self.tr("option.protect_math"))
         self.protect_math.setChecked(True)
         self.protect_math.setToolTip("在 Markdown 和空白清理之前保护公式定界符、下标和命令。")
-        self.normalize_math = QCheckBox("规范公式空格")
+        self.normalize_math = QCheckBox(self.tr("option.normalize_math"))
         self.normalize_math.setChecked(True)
         self.normalize_math.setToolTip("仅修复明显的 LaTeX 空格，不计算或改写数学含义。")
-        self.repair_math = QCheckBox("修复明显定界符问题")
+        self.repair_math = QCheckBox(self.tr("option.repair_math"))
         self.repair_math.setChecked(True)
         self.repair_math.setToolTip("仅在修复方式高度确定时调整公式定界符。")
-        self.preserve_equation_numbers = QCheckBox("保留公式编号")
+        self.preserve_equation_numbers = QCheckBox(self.tr("option.equation_numbers"))
         self.preserve_equation_numbers.setChecked(True)
-        self.word_math_omml = QCheckBox("Word 导出为可编辑公式")
+        self.word_math_omml = QCheckBox(self.tr("option.word_omml"))
         self.word_math_omml.setChecked(True)
         self.word_math_omml.setToolTip("将支持的公式转换为 Word 原生公式，复杂公式会保留原始文本。")
         self.math_output_mode = QComboBox()
         for key, value in (("math.preserve", MathOutputMode.PRESERVE), ("math.latex", MathOutputMode.LATEX), ("math.unicode", MathOutputMode.UNICODE)):
             self.math_output_mode.addItem(self.tr(key), value)
         self.math_output_mode.setToolTip("选择清洗结果和 TXT 中的公式表示方式。")
+        self.group_basic = QLabel(self.tr("group.basic"))
+        self.group_links = QLabel(self.tr("group.links"))
+        self.group_url = QLabel(self.tr("group.url"))
+        self.group_paragraph = QLabel(self.tr("group.paragraph"))
+        self.group_list = QLabel(self.tr("group.list"))
+        self.group_math = QLabel(self.tr("group.math"))
+        self.group_math_output = QLabel(self.tr("group.math_output"))
         for widget in (
-            QLabel("基础格式"),
+            self.group_basic,
             self.remove_markdown,
             self.remove_emoji,
             self.clean_instructional,
-            QLabel("链接处理"),
+            self.group_links,
             self.link_mode,
-            QLabel("独立 URL 处理"),
+            self.group_url,
             self.url_mode,
-            QLabel("段落与换行"),
+            self.group_paragraph,
             self.paragraph_mode,
-            QLabel("标题与列表"),
+            self.group_list,
             self.list_mode,
-            QLabel("数学公式"),
+            self.group_math,
             self.detect_math,
             self.protect_math,
             self.normalize_math,
             self.repair_math,
             self.preserve_equation_numbers,
             self.word_math_omml,
-            QLabel("公式规范化输出"),
+            self.group_math_output,
             self.math_output_mode,
         ):
             rv.addWidget(widget)
@@ -333,9 +339,10 @@ class MainWindow(QMainWindow):
         self.clean_button.setEnabled(False)
         self.clean_button.clicked.connect(self.start_clean)
         mv.addWidget(self.clean_button)
-        right, ov = self._panel(self.tr("panel.result"))
+        right, ov, self.result_heading = self._panel(self.tr("panel.result"))
         mode_row = QHBoxLayout()
-        mode_row.addWidget(QLabel(self.tr("result.mode")))
+        self.result_mode_label = QLabel(self.tr("result.mode"))
+        mode_row.addWidget(self.result_mode_label)
         self.result_mode = QComboBox()
         self.result_mode.addItem(self.tr("result.text"), "text")
         self.result_mode.addItem(self.tr("result.preview"), "preview")
@@ -384,7 +391,7 @@ class MainWindow(QMainWindow):
         self.open_folder_button = QPushButton(self.tr("action.open_folder"))
         self.open_folder_button.hide()
         ov.addWidget(self.open_folder_button)
-        self.result_meta = QLabel("0 字符 · 0 项修改")
+        self.result_meta = QLabel(self.tr("status.result_meta", count=0))
         self.result_meta.setObjectName("muted")
         ov.addWidget(self.result_meta)
         self.splitter = QSplitter()
@@ -469,19 +476,24 @@ class MainWindow(QMainWindow):
             bool(text.strip()) and not (self.worker and self.worker.isRunning())
         )
         self.source_meta.setText(
-            f"{len(text):,} 字符 · {len([x for x in text.splitlines() if x.strip()]):,} 段 · {self.session.encoding}"
+            self.tr(
+                "status.source_meta",
+                count=len(text),
+                paragraphs=len([line for line in text.splitlines() if line.strip()]),
+                encoding=self.session.encoding,
+            )
         )
         if self.session.local_result_text:
             self.session.result_outdated = True
-            self.result_notice.setText("注意：原始文本已改变，当前结果可能已过期 · 可重新清洗")
+            self.result_notice.setText(self.tr("status.outdated"))
 
     def _result_changed(self) -> None:
         text = self.output.toPlainText()
         self.session.edited_result_text = text
         if self.session.local_result_text and text != self.session.local_result_text:
             self.session.result_modified = True
-            self.result_notice.setText("结果已手动修改")
-        self.result_meta.setText(f"{len(text):,} 字符")
+            self.result_notice.setText(self.tr("status.modified"))
+        self.result_meta.setText(self.tr("status.result_meta", count=len(text)))
         self._set_result_actions(bool(text))
 
     def _set_result_actions(self, enabled: bool) -> None:
@@ -806,6 +818,9 @@ class MainWindow(QMainWindow):
         QApplication.instance().setFont(FontManager(locale=self.i18n.active).application_font())  # type: ignore[union-attr]
         self.setWindowTitle(self.tr("app.title"))
         self.brand_label.setText("  " + self.tr("brand.title") + "  ")
+        self.source_heading.setText(self.tr("panel.source"))
+        self.settings_heading.setText(self.tr("panel.settings"))
+        self.result_heading.setText(self.tr("panel.result"))
         self.theme_button.setText(self.tr("toolbar.theme"))
         for _theme, action in self.theme_actions.items():
             action.setText(self.tr(cast(str, action.data())))
@@ -821,9 +836,36 @@ class MainWindow(QMainWindow):
         self.clean_button.setText(self.tr("action.clean"))
         self.input.setPlaceholderText(self.tr("placeholder.source"))
         self.output.setPlaceholderText(self.tr("placeholder.result"))
+        self.preset_label.setText(self.tr("preset.label"))
+        self.group_basic.setText(self.tr("group.basic"))
+        self.group_links.setText(self.tr("group.links"))
+        self.group_url.setText(self.tr("group.url"))
+        self.group_paragraph.setText(self.tr("group.paragraph"))
+        self.group_list.setText(self.tr("group.list"))
+        self.group_math.setText(self.tr("group.math"))
+        self.group_math_output.setText(self.tr("group.math_output"))
+        self.result_mode_label.setText(self.tr("result.mode"))
+        self.remove_markdown.setText(self.tr("option.remove_markdown"))
+        self.remove_emoji.setText(self.tr("option.remove_emoji"))
+        self.clean_instructional.setText(self.tr("option.instructional"))
+        self.detect_math.setText(self.tr("option.detect_math"))
+        self.protect_math.setText(self.tr("option.protect_math"))
+        self.normalize_math.setText(self.tr("option.normalize_math"))
+        self.repair_math.setText(self.tr("option.repair_math"))
+        self.preserve_equation_numbers.setText(self.tr("option.equation_numbers"))
+        self.word_math_omml.setText(self.tr("option.word_omml"))
         self.word_tip.setText(self.tr("result.word_tip"))
         self.residual_button.setText(self.tr("action.view_residuals"))
         self.open_folder_button.setText(self.tr("action.open_folder"))
+        self.source_meta.setText(
+            self.tr(
+                "status.source_meta",
+                count=len(self.input.toPlainText()),
+                paragraphs=len([line for line in self.input.toPlainText().splitlines() if line.strip()]),
+                encoding=self.session.encoding,
+            )
+        )
+        self.result_meta.setText(self.tr("status.result_meta", count=len(self.output.toPlainText())))
         self._retranslate_combo(self.preset, (("preset.light", "light"), ("preset.standard", "standard"), ("preset.deep", "deep"), ("preset.markdown", "markdown"), ("preset.linebreak", "linebreak"), ("preset.custom", "custom")))
         self._retranslate_combo(self.paragraph_mode, (("paragraph.compact", ParagraphBreakMode.COMPACT), ("paragraph.smart", ParagraphBreakMode.SMART_SECTIONS), ("paragraph.preserve", ParagraphBreakMode.PRESERVE_ALL)))
         self._retranslate_combo(self.list_mode, (("list.keep", ListMode.KEEP), ("list.remove", ListMode.REMOVE_MARKERS), ("list.natural", ListMode.NATURAL_PARAGRAPH)))

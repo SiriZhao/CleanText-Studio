@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.1 - 2026-07-17
+
+### Fixed
+
+- Complete runtime refresh of the three-panel shell, cleaning controls, placeholders, metadata, and stable combo-box selections.
+- Fix Simplified Chinese settings labels and option descriptions falling back to English.
+- Add deterministic locale aliases for regional Chinese, English, and Portuguese system locales.
+- Keep selected checkbox indicators high-contrast in both themes.
+
+### Changed
+
+- Localization remains presentation-only; the v1.3.2 cleaning-output freeze baseline is unchanged.
+
 ## 1.4.0 - 2026-07-17
 
 ### Added
