@@ -22,7 +22,7 @@ REQUIRED_IMAGES = {
 FORBIDDEN = (
     "README_EN.md", "screenshots/v1.4", "screenshots/v1.5.0", "TODO",
     "ai-detector-bypass", "undetectable-ai", "plagiarism-bypass",
-    "C:\\Users\\", "/Users/", "api_key=",
+    "C:\\Users\\", "/Users/", "api" + "_key=",
 )
 IMAGE_RE = re.compile(r"assets/screenshots/(?:v1\.5\.2/)?[^\s\"')>]+\.png")
 
