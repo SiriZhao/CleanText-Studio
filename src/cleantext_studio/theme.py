@@ -77,6 +77,7 @@ def stylesheet(theme: Theme) -> str:
     token = DARK if theme == Theme.DARK else LIGHT
     root = Path(getattr(sys, "_MEIPASS", Path(__file__).parents[2]))
     arrow = (root / "assets" / "icons" / "chevron-down.svg").as_posix()
+    check = (root / "assets" / "icons" / "check.svg").as_posix()
     return f"""
     QMainWindow, QDialog, QMessageBox, QWidget {{ background:{token.background}; color:{token.text_primary}; }}
     QFrame#panel {{ background:{token.surface}; border:1px solid {token.border}; border-radius:{token.radius_large}px; }}
@@ -90,7 +91,7 @@ def stylesheet(theme: Theme) -> str:
     QComboBox {{ min-height:34px; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:0 32px 0 10px; background:{token.surface}; }}
     QComboBox::drop-down {{ width:28px; border:0; border-top-right-radius:{token.radius_medium}px; border-bottom-right-radius:{token.radius_medium}px; }} QComboBox::down-arrow {{ image:url({arrow}); width:12px; height:12px; }}
     QComboBox QAbstractItemView {{ background:{token.surface}; color:{token.text_primary}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:6px; selection-background-color:{token.selection}; outline:0; }}
-    QCheckBox::indicator {{ width:17px; height:17px; border:1px solid {token.border}; border-radius:5px; background:{token.surface}; }} QCheckBox::indicator:checked {{ background:{token.accent}; border-color:{token.accent}; }}
+    QCheckBox {{ spacing:8px; }} QCheckBox::indicator {{ width:17px; height:17px; border:1px solid {token.border}; border-radius:5px; background:{token.surface}; }} QCheckBox::indicator:hover {{ border-color:{token.border_hover}; background:{token.surface_alt}; }} QCheckBox::indicator:pressed {{ background:{token.selection}; }} QCheckBox::indicator:checked {{ background:{token.accent}; border-color:{token.accent}; image:url({check}); }} QCheckBox::indicator:checked:hover {{ background:{token.accent_hover}; }} QCheckBox::indicator:checked:disabled {{ background:{token.text_disabled}; border-color:{token.text_disabled}; }} QCheckBox::indicator:focus {{ border:2px solid {token.accent}; }}
     QRadioButton::indicator {{ width:17px; height:17px; border:1px solid {token.border}; border-radius:9px; }} QRadioButton::indicator:checked {{ background:{token.accent}; border:4px solid {token.surface}; }}
     QMenu {{ background:{token.surface}; color:{token.text_primary}; border:1px solid {token.border}; border-radius:{token.radius_medium}px; padding:6px; }} QMenu::item:selected {{ background:{token.selection}; border-radius:6px; }}
     QToolTip {{ color:{token.text_primary}; background:{token.surface_alt}; border:1px solid {token.border}; border-radius:6px; padding:6px; }}

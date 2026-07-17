@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.0 - 2026-07-17
+
+### Added
+
+- Offline runtime localization infrastructure with Simplified/Traditional Chinese, English, Japanese, Korean, Spanish, French, German, Brazilian Portuguese, Russian, Arabic, and Hindi catalogs.
+- System locale detection, live language selection, Arabic RTL layout switching, locale-aware font fallback, and translation catalog validation.
+- Stable `QComboBox` data values so translated labels never affect cleaning options.
+- High-contrast SVG checkmarks for selected setting checkboxes.
+- Cleaning-output SHA256 freeze verification and translation contribution documentation.
+
+### Changed
+
+- Localization and UI presentation only: CleaningPipeline behavior and defaults remain frozen from v1.3.2.
+
 ## 1.3.2 - 2026-07-13
 
 ### Fixed

@@ -4,11 +4,18 @@
 
 A local-first Windows app for text cleanup, document structure, math typesetting, and TXT/DOCX export.
 
-[![Version](https://img.shields.io/badge/version-v1.3.2-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+[![Version](https://img.shields.io/badge/version-v1.4.0-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.4.0) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Windows download
 
-Download the x64 installer or portable package from the [v1.3.2 release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2). Current version: **v1.3.2**. Developer: **SiriZhao**.
+Download the x64 installer or portable package from the [v1.4.0 release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.4.0). Current version: **v1.4.0**. Developer: **SiriZhao**.
+
+## v1.4.0 global interface and usability
+
+- Runtime switching for Simplified/Traditional Chinese, English, Japanese, Korean, Spanish, French, German, Brazilian Portuguese, Russian, Arabic, and Hindi.
+- Arabic uses RTL layout; locale-aware font fallbacks keep mixed-script UI readable.
+- Selected cleaning rules now show an SVG checkmark in light and dark themes.
+- Cleaning behavior remains frozen and compatible with v1.3.2.
 
 ## v1.3.2 stability fixes
 

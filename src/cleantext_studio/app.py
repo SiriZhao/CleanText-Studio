@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
+    QDialog,
     QFileDialog,
     QFrame,
     QHBoxLayout,
@@ -39,6 +40,7 @@ from cleantext_studio.cleaners import clean_text
 from cleantext_studio.cleaners.tables import TableWidthPlanner
 from cleantext_studio.exporters import export_docx_blocks, export_txt
 from cleantext_studio.font_manager import FontManager
+from cleantext_studio.i18n import I18nManager
 from cleantext_studio.importers import import_file
 from cleantext_studio.llm.base import LLMProvider
 from cleantext_studio.llm.config_store import ProviderConfigStore
@@ -129,11 +131,13 @@ class MainWindow(QMainWindow):
         self.worker: CleanWorker | None = None
         self.ai_worker: AIWorker | None = None
         self.settings_store = QSettings("CleanText Studio", "CleanText Studio")
+        self.i18n = I18nManager(self.settings_store)
+        self.i18n.language_changed.connect(self._language_changed)
         self.theme_preference = Theme(str(self.settings_store.value("theme", Theme.SYSTEM.value)))
         self.theme_watcher = SystemThemeWatcher()
         self.theme_watcher.changed.connect(self._system_theme_changed)
         self.theme_watcher.start()
-        self.setWindowTitle("净文排版 · CleanText Studio")
+        self.setWindowTitle(self.tr("app.title"))
         self.resize(1440, 900)
         self.setMinimumSize(1100, 700)
         root = Path(getattr(sys, "_MEIPASS", Path(__file__).parents[3]))
@@ -143,24 +147,28 @@ class MainWindow(QMainWindow):
         self._global_toolbar()
         self._build_ui()
         self._shortcuts()
-        QApplication.instance().setFont(FontManager().application_font())  # type: ignore[union-attr]
+        QApplication.instance().setLayoutDirection(self.i18n.direction())  # type: ignore[union-attr]
+        QApplication.instance().setFont(FontManager(locale=self.i18n.active).application_font())  # type: ignore[union-attr]
         self.apply_theme(self.theme_preference)
         saved = self.settings_store.value("splitter_sizes")
         self.splitter.setSizes(
             [int(x) for x in saved] if isinstance(saved, list) else [520, 290, 520]
         )
-        self.statusBar().showMessage("就绪 · 文本仅在本机处理")
+        self.statusBar().showMessage(self.tr("status.ready"))
+
+    def tr(self, key: str, /, **values: object) -> str:  # type: ignore[override]
+        return self.i18n.tr(key, **values)
 
     def _global_toolbar(self) -> None:
-        bar = QToolBar("全局")
+        bar = QToolBar("global")
         bar.setMovable(False)
         self.addToolBar(bar)
-        title = QLabel("  净文排版 · CleanText Studio  ")
-        title.setStyleSheet("font-size:16px;font-weight:600")
-        self.file_label = QLabel("未命名")
+        self.brand_label = QLabel("  " + self.tr("brand.title") + "  ")
+        self.brand_label.setStyleSheet("font-size:16px;font-weight:600")
+        self.file_label = QLabel(self.tr("file.untitled"))
         self.file_label.setObjectName("muted")
         self.dirty_label = QLabel("")
-        bar.addWidget(title)
+        bar.addWidget(self.brand_label)
         bar.addSeparator()
         bar.addWidget(self.file_label)
         bar.addWidget(self.dirty_label)
@@ -170,16 +178,17 @@ class MainWindow(QMainWindow):
         )
         bar.addWidget(spacer)
         self.theme_button = QToolButton()
-        self.theme_button.setText("主题")
+        self.theme_button.setText(self.tr("toolbar.theme"))
         self.theme_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         menu = QMenu(self.theme_button)
         self.theme_actions = {}
-        for theme, label in (
-            (Theme.SYSTEM, "跟随系统"),
-            (Theme.LIGHT, "浅色"),
-            (Theme.DARK, "深色"),
+        for theme, key in (
+            (Theme.SYSTEM, "theme.system"),
+            (Theme.LIGHT, "theme.light"),
+            (Theme.DARK, "theme.dark"),
         ):
-            action = menu.addAction(label)
+            action = menu.addAction(self.tr(key))
+            action.setData(key)
             action.setCheckable(True)
             action.triggered.connect(
                 lambda checked=False, selected=theme: self.set_theme_preference(selected)
@@ -187,10 +196,10 @@ class MainWindow(QMainWindow):
             self.theme_actions[theme] = action
         self.theme_button.setMenu(menu)
         bar.addWidget(self.theme_button)
-        bar.addAction("折叠设置", self.toggle_settings_panel)
-        bar.addAction("设置", self.show_settings)
-        bar.addAction("帮助", self.show_help)
-        bar.addAction("关于", self.about)
+        self.collapse_action = bar.addAction(self.tr("toolbar.collapse_settings"), self.toggle_settings_panel)
+        self.settings_action = bar.addAction(self.tr("toolbar.settings"), self.show_settings)
+        self.help_action = bar.addAction(self.tr("toolbar.help"), self.show_help)
+        self.about_action = bar.addAction(self.tr("toolbar.about"), self.about)
 
     def _panel(self, title: str) -> tuple[QFrame, QVBoxLayout]:
         panel = QFrame()
@@ -216,31 +225,31 @@ class MainWindow(QMainWindow):
         return buttons
 
     def _build_ui(self) -> None:
-        left, lv = self._panel("原始文本")
-        self._buttons(
+        left, lv = self._panel(self.tr("panel.source"))
+        self.source_buttons = self._buttons(
             lv,
             [
-                ("新建", self.new, "创建新的文本任务 · Ctrl+N"),
-                ("打开", self.open, "打开 TXT、Markdown、Word 文件 · Ctrl+O"),
-                ("粘贴", self.paste_source, "粘贴剪贴板内容 · Ctrl+V"),
-                ("示例", self.load_sample, "加载示例文本"),
-                ("清空", self.clear_source, "清空当前内容"),
+                (self.tr("action.new"), self.new, self.tr("tip.new")),
+                (self.tr("action.open"), self.open, self.tr("tip.open")),
+                (self.tr("action.paste"), self.paste_source, self.tr("tip.paste")),
+                (self.tr("action.sample"), self.load_sample, self.tr("tip.sample")),
+                (self.tr("action.clear"), self.clear_source, self.tr("tip.clear")),
             ],
-        )[-1].setObjectName("danger")
+        )
+        self.source_buttons[-1].setObjectName("danger")
         self.input = QPlainTextEdit()
-        self.input.setPlaceholderText("在此粘贴文本，或拖入 TXT、Markdown、Word 文件")
+        self.input.setPlaceholderText(self.tr("placeholder.source"))
         lv.addWidget(self.input)
         self.source_meta = QLabel("0 字符 · 0 段 · UTF-8")
         self.source_meta.setObjectName("muted")
         lv.addWidget(self.source_meta)
-        middle, mv = self._panel("清洗设置")
+        middle, mv = self._panel(self.tr("panel.settings"))
         self.settings_panel = middle
         self.preset = QComboBox()
-        self.preset.addItems(
-            ["轻度清洗", "标准清洗", "深度清洗", "仅清除 Markdown", "仅修复换行", "自定义"]
-        )
-        self.preset.setCurrentText("标准清洗")
-        mv.addWidget(QLabel("清洗预设"))
+        for key, value in (("preset.light", "light"), ("preset.standard", "standard"), ("preset.deep", "deep"), ("preset.markdown", "markdown"), ("preset.linebreak", "linebreak"), ("preset.custom", "custom")):
+            self.preset.addItem(self.tr(key), value)
+        self.preset.setCurrentIndex(1)
+        mv.addWidget(QLabel(self.tr("preset.label")))
         mv.addWidget(self.preset)
         rules = QWidget()
         rv = QVBoxLayout(rules)
@@ -253,18 +262,18 @@ class MainWindow(QMainWindow):
         )
         self.clean_instructional.setChecked(False)
         self.link_mode = QComboBox()
-        self.link_mode.addItems(["仅保留显示文字", "保留显示文字和 URL", "保持 Markdown 原样"])
+        for key, value in (("link.text", LinkMode.TEXT_ONLY), ("link.url", LinkMode.TEXT_AND_URL), ("link.markdown", LinkMode.KEEP_MARKDOWN)):
+            self.link_mode.addItem(self.tr(key), value)
         self.url_mode = QComboBox()
-        self.url_mode.addItems(["保留独立 URL", "合并到上一段", "删除教程型独立 URL"])
+        for key, value in (("url.keep", IndependentURLMode.PRESERVE), ("url.merge", IndependentURLMode.MERGE_PREVIOUS), ("url.delete", IndependentURLMode.DELETE_TUTORIAL)):
+            self.url_mode.addItem(self.tr(key), value)
         self.paragraph_mode = QComboBox()
-        self.paragraph_mode.addItems(
-            ["删除段落间换行", "仅保留大分段之间的换行", "保留所有段落间换行"]
-        )
+        for key, value in (("paragraph.compact", ParagraphBreakMode.COMPACT), ("paragraph.smart", ParagraphBreakMode.SMART_SECTIONS), ("paragraph.preserve", ParagraphBreakMode.PRESERVE_ALL)):
+            self.paragraph_mode.addItem(self.tr(key), value)
         self.paragraph_mode.setCurrentIndex(1)
         self.list_mode = QComboBox()
-        self.list_mode.addItems(
-            ["保留列表结构", "删除项目符号，保留逐行内容", "智能转换为自然段（实验性）"]
-        )
+        for key, value in (("list.keep", ListMode.KEEP), ("list.remove", ListMode.REMOVE_MARKERS), ("list.natural", ListMode.NATURAL_PARAGRAPH)):
+            self.list_mode.addItem(self.tr(key), value)
         self.detect_math = QCheckBox("自动识别数学公式")
         self.detect_math.setChecked(True)
         self.detect_math.setToolTip("识别 LaTeX、Unicode 和常见方程式，避免清洗过程破坏公式。")
@@ -283,7 +292,8 @@ class MainWindow(QMainWindow):
         self.word_math_omml.setChecked(True)
         self.word_math_omml.setToolTip("将支持的公式转换为 Word 原生公式，复杂公式会保留原始文本。")
         self.math_output_mode = QComboBox()
-        self.math_output_mode.addItems(["保留原样", "统一为 LaTeX", "统一为 Unicode 可读格式"])
+        for key, value in (("math.preserve", MathOutputMode.PRESERVE), ("math.latex", MathOutputMode.LATEX), ("math.unicode", MathOutputMode.UNICODE)):
+            self.math_output_mode.addItem(self.tr(key), value)
         self.math_output_mode.setToolTip("选择清洗结果和 TXT 中的公式表示方式。")
         for widget in (
             QLabel("基础格式"),
@@ -315,43 +325,44 @@ class MainWindow(QMainWindow):
         scroll.setFrameShape(QFrame.Shape.NoFrame)
         scroll.setWidget(rules)
         mv.addWidget(scroll)
-        self.rule_count = QLabel("将应用 8 项规则")
+        self.rule_count = QLabel(self.tr("status.rules", count=8))
         self.rule_count.setAlignment(Qt.AlignmentFlag.AlignCenter)
         mv.addWidget(self.rule_count)
-        self.clean_button = QPushButton("开始清洗")
+        self.clean_button = QPushButton(self.tr("action.clean"))
         self.clean_button.setObjectName("primary")
         self.clean_button.setEnabled(False)
         self.clean_button.clicked.connect(self.start_clean)
         mv.addWidget(self.clean_button)
-        right, ov = self._panel("清洗结果")
+        right, ov = self._panel(self.tr("panel.result"))
         mode_row = QHBoxLayout()
-        mode_row.addWidget(QLabel("显示模式"))
+        mode_row.addWidget(QLabel(self.tr("result.mode")))
         self.result_mode = QComboBox()
-        self.result_mode.addItems(["文本模式", "预览模式"])
+        self.result_mode.addItem(self.tr("result.text"), "text")
+        self.result_mode.addItem(self.tr("result.preview"), "preview")
         mode_row.addWidget(self.result_mode)
         mode_row.addStretch()
         ov.addLayout(mode_row)
         result_buttons = self._buttons(
             ov,
             [
-                ("导出 Word", self.save_word, "生成结构化 Word 文档 · Ctrl+Shift+W"),
-                ("复制", self.copy_result, "复制清洗结果 · Ctrl+Shift+C"),
-                ("导出 TXT", self.save_txt, "导出 TXT Ctrl+Shift+T"),
-                ("撤销", self.undo_result, "撤销最近一次修改 · Ctrl+Z"),
-                ("恢复本次", self.restore_result, "恢复上一次状态"),
-                ("清空", self.clear_result, "清空结果"),
+                (self.tr("action.export_word"), self.save_word, self.tr("tip.export_word")),
+                (self.tr("action.copy"), self.copy_result, self.tr("tip.copy")),
+                (self.tr("action.export_txt"), self.save_txt, "Ctrl+Shift+T"),
+                (self.tr("action.undo"), self.undo_result, "Ctrl+Z"),
+                (self.tr("action.restore"), self.restore_result, self.tr("action.restore")),
+                (self.tr("action.clear"), self.clear_result, self.tr("tip.clear")),
             ],
         )
         self.word_button, self.copy_button, self.txt_button = result_buttons[:3]
-        self.word_tip = QLabel("推荐导出 Word：支持标题、列表、表格完整排版。")
+        self.word_tip = QLabel(self.tr("result.word_tip"))
         self.word_tip.setObjectName("muted")
         ov.addWidget(self.word_tip)
-        self.ai_button = QPushButton("AI 智能优化")
-        self.ai_button.setToolTip("调用 AI 进一步优化文本")
+        self.ai_button = QPushButton(self.tr("action.ai"))
+        self.ai_button.setToolTip(self.tr("tip.ai"))
         self.ai_button.clicked.connect(self.start_ai_optimization)
         ov.addWidget(self.ai_button)
         self.output = QPlainTextEdit()
-        self.output.setPlaceholderText("清洗后的文本将在这里显示")
+        self.output.setPlaceholderText(self.tr("placeholder.result"))
         self.preview_container = QWidget()
         self.preview_layout = QVBoxLayout(self.preview_container)
         self.preview_layout.addStretch()
@@ -362,15 +373,15 @@ class MainWindow(QMainWindow):
         self.result_stack.addWidget(self.output)
         self.result_stack.addWidget(self.preview)
         ov.addWidget(self.result_stack)
-        self.result_notice = QLabel("尚未清洗")
+        self.result_notice = QLabel(self.tr("status.not_cleaned"))
         self.result_notice.setObjectName("muted")
         self.result_notice.setWordWrap(True)
         ov.addWidget(self.result_notice)
-        self.residual_button = QPushButton("查看残留")
+        self.residual_button = QPushButton(self.tr("action.view_residuals"))
         self.residual_button.clicked.connect(self.show_residuals)
         self.residual_button.hide()
         ov.addWidget(self.residual_button)
-        self.open_folder_button = QPushButton("打开文件夹")
+        self.open_folder_button = QPushButton(self.tr("action.open_folder"))
         self.open_folder_button.hide()
         ov.addWidget(self.open_folder_button)
         self.result_meta = QLabel("0 字符 · 0 项修改")
@@ -428,27 +439,15 @@ class MainWindow(QMainWindow):
             self.addAction(action)
 
     def _options(self) -> CleanOptions:
-        modes = {0: ListMode.KEEP, 1: ListMode.REMOVE_MARKERS, 2: ListMode.NATURAL_PARAGRAPH}
-        paragraph_modes = {
-            0: ParagraphBreakMode.COMPACT,
-            1: ParagraphBreakMode.SMART_SECTIONS,
-            2: ParagraphBreakMode.PRESERVE_ALL,
-        }
-        link_modes = {0: LinkMode.TEXT_ONLY, 1: LinkMode.TEXT_AND_URL, 2: LinkMode.KEEP_MARKDOWN}
-        url_modes = {
-            0: IndependentURLMode.PRESERVE,
-            1: IndependentURLMode.MERGE_PREVIOUS,
-            2: IndependentURLMode.DELETE_TUTORIAL,
-        }
         return CleanOptions(
             remove_markdown=self.remove_markdown.isChecked(),
             remove_emoji=self.remove_emoji.isChecked(),
             merge_level=MergeLevel.STANDARD,
-            paragraph_break_mode=paragraph_modes[self.paragraph_mode.currentIndex()],
-            list_mode=modes[self.list_mode.currentIndex()],
+            paragraph_break_mode=cast(ParagraphBreakMode, self.paragraph_mode.currentData()),
+            list_mode=cast(ListMode, self.list_mode.currentData()),
             clean_instructional_labels=self.clean_instructional.isChecked(),
-            link_mode=link_modes[self.link_mode.currentIndex()],
-            independent_url_mode=url_modes[self.url_mode.currentIndex()],
+            link_mode=cast(LinkMode, self.link_mode.currentData()),
+            independent_url_mode=cast(IndependentURLMode, self.url_mode.currentData()),
             detect_math=self.detect_math.isChecked(),
             protect_math=self.protect_math.isChecked(),
             normalize_math_spacing=self.normalize_math.isChecked(),
@@ -459,11 +458,7 @@ class MainWindow(QMainWindow):
                 if self.word_math_omml.isChecked()
                 else MathExportMode.LATEX_TEXT
             ),
-            math_output_mode={
-                0: MathOutputMode.PRESERVE,
-                1: MathOutputMode.LATEX,
-                2: MathOutputMode.UNICODE,
-            }[self.math_output_mode.currentIndex()],
+            math_output_mode=cast(MathOutputMode, self.math_output_mode.currentData()),
         )
 
     def _source_changed(self) -> None:
@@ -494,19 +489,20 @@ class MainWindow(QMainWindow):
             button.setEnabled(enabled)
 
     def _customized(self, *_: object) -> None:
-        if self.preset.currentText() != "自定义":
+        if self.preset.currentData() != "custom":
             self.preset.blockSignals(True)
-            self.preset.setCurrentText("自定义")
+            self.preset.setCurrentIndex(self.preset.findData("custom"))
             self.preset.blockSignals(False)
 
-    def _preset_changed(self, name: str) -> None:
-        if name == "自定义":
+    def _preset_changed(self, _name: str) -> None:
+        name = cast(str, self.preset.currentData())
+        if name == "custom":
             return
-        self.remove_markdown.setChecked(name != "仅修复换行")
-        self.remove_emoji.setChecked(name not in {"仅清除 Markdown", "仅修复换行"})
-        self.clean_instructional.setChecked(name == "深度清洗")
+        self.remove_markdown.setChecked(name != "linebreak")
+        self.remove_emoji.setChecked(name not in {"markdown", "linebreak"})
+        self.clean_instructional.setChecked(name == "deep")
         self.paragraph_mode.setCurrentIndex(
-            2 if name == "轻度清洗" else 0 if name == "深度清洗" else 1
+            2 if name == "light" else 0 if name == "deep" else 1
         )
 
     def start_clean(self) -> None:
@@ -780,7 +776,69 @@ class MainWindow(QMainWindow):
             action.setChecked(value == self.theme_preference)
 
     def show_settings(self) -> None:
-        self.configure_provider()
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("settings.title"))
+        layout = QVBoxLayout(dialog)
+        layout.addWidget(QLabel(self.tr("settings.language_region")))
+        layout.addWidget(QLabel(self.tr("settings.interface_language")))
+        selector = QComboBox(dialog)
+        for language in self.i18n.languages():
+            label = self.tr("settings.follow_system") if language.code == "system" else language.native_name
+            selector.addItem(label, language.code)
+        selector.setCurrentIndex(selector.findData(self.i18n.preference))
+        layout.addWidget(selector)
+        buttons = QHBoxLayout()
+        buttons.addStretch()
+        cancel = QPushButton(self.tr("dialog.cancel"))
+        save = QPushButton(self.tr("dialog.save"))
+        save.setObjectName("primary")
+        cancel.clicked.connect(dialog.reject)
+        save.clicked.connect(dialog.accept)
+        buttons.addWidget(cancel)
+        buttons.addWidget(save)
+        layout.addLayout(buttons)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.i18n.set_language(cast(str, selector.currentData()))
+
+    def _language_changed(self, _code: str) -> None:
+        """Refresh the visible shell without touching session or cleaning options."""
+        QApplication.instance().setLayoutDirection(self.i18n.direction())  # type: ignore[union-attr]
+        QApplication.instance().setFont(FontManager(locale=self.i18n.active).application_font())  # type: ignore[union-attr]
+        self.setWindowTitle(self.tr("app.title"))
+        self.brand_label.setText("  " + self.tr("brand.title") + "  ")
+        self.theme_button.setText(self.tr("toolbar.theme"))
+        for _theme, action in self.theme_actions.items():
+            action.setText(self.tr(cast(str, action.data())))
+        self.collapse_action.setText(self.tr("toolbar.collapse_settings"))
+        self.settings_action.setText(self.tr("toolbar.settings"))
+        self.help_action.setText(self.tr("toolbar.help"))
+        self.about_action.setText(self.tr("toolbar.about"))
+        for button, key in zip(self.source_buttons, ("action.new", "action.open", "action.paste", "action.sample", "action.clear"), strict=True):
+            button.setText(self.tr(key))
+        for button, key in zip((self.word_button, self.copy_button, self.txt_button), ("action.export_word", "action.copy", "action.export_txt"), strict=True):
+            button.setText(self.tr(key))
+        self.ai_button.setText(self.tr("action.ai"))
+        self.clean_button.setText(self.tr("action.clean"))
+        self.input.setPlaceholderText(self.tr("placeholder.source"))
+        self.output.setPlaceholderText(self.tr("placeholder.result"))
+        self.word_tip.setText(self.tr("result.word_tip"))
+        self.residual_button.setText(self.tr("action.view_residuals"))
+        self.open_folder_button.setText(self.tr("action.open_folder"))
+        self._retranslate_combo(self.preset, (("preset.light", "light"), ("preset.standard", "standard"), ("preset.deep", "deep"), ("preset.markdown", "markdown"), ("preset.linebreak", "linebreak"), ("preset.custom", "custom")))
+        self._retranslate_combo(self.paragraph_mode, (("paragraph.compact", ParagraphBreakMode.COMPACT), ("paragraph.smart", ParagraphBreakMode.SMART_SECTIONS), ("paragraph.preserve", ParagraphBreakMode.PRESERVE_ALL)))
+        self._retranslate_combo(self.list_mode, (("list.keep", ListMode.KEEP), ("list.remove", ListMode.REMOVE_MARKERS), ("list.natural", ListMode.NATURAL_PARAGRAPH)))
+        self._retranslate_combo(self.link_mode, (("link.text", LinkMode.TEXT_ONLY), ("link.url", LinkMode.TEXT_AND_URL), ("link.markdown", LinkMode.KEEP_MARKDOWN)))
+        self._retranslate_combo(self.url_mode, (("url.keep", IndependentURLMode.PRESERVE), ("url.merge", IndependentURLMode.MERGE_PREVIOUS), ("url.delete", IndependentURLMode.DELETE_TUTORIAL)))
+        self._retranslate_combo(self.math_output_mode, (("math.preserve", MathOutputMode.PRESERVE), ("math.latex", MathOutputMode.LATEX), ("math.unicode", MathOutputMode.UNICODE)))
+
+    def _retranslate_combo(self, combo: QComboBox, values: tuple[tuple[str, object], ...]) -> None:
+        current = combo.currentData()
+        combo.blockSignals(True)
+        combo.clear()
+        for key, value in values:
+            combo.addItem(self.tr(key), value)
+        combo.setCurrentIndex(combo.findData(current))
+        combo.blockSignals(False)
 
     def configure_provider(self) -> None:
         dialog = ProviderDialog(self)

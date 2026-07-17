@@ -1,16 +1,27 @@
 <p align="center"><img src="assets/icon.png" width="96" alt="CleanText Studio Logo"></p>
 
-# 净文排版 · CleanText Studio
+# CleanText Studio
+
+Local-first Windows desktop app for cleaning text formatting and exporting polished TXT and Word documents.
+
+**Languages:** [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt-BR.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md)
 
 本地优先的文本格式清洗、结构整理、数学公式排版与 Word/TXT 导出工具。
 
-[![Version](https://img.shields.io/badge/version-v1.3.2-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+[![Version](https://img.shields.io/badge/version-v1.4.0-4f46e5)](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.4.0) ![Python](https://img.shields.io/badge/Python-3.12-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Windows 下载
 
-从 [CleanText Studio v1.3.2 Release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.3.2) 下载 Windows x64 安装版或便携版。安装版按当前用户安装；便携版解压后运行 `CleanText Studio.exe`。
+Download the Windows x64 installer or portable ZIP from the [v1.4.0 release](https://github.com/SiriZhao/CleanText-Studio/releases/tag/v1.4.0). The installer is per-user; unpack the portable ZIP and run `CleanText Studio.exe`.
 
-当前版本：**v1.3.2**。开发者：**SiriZhao** · [项目主页](https://github.com/SiriZhao/CleanText-Studio)
+Current version: **v1.4.0** · Developer: **SiriZhao** · [Project home](https://github.com/SiriZhao/CleanText-Studio)
+
+## v1.4.0: Global interface and usability
+
+- Switch the interface at runtime between 12 supported locales; Arabic uses RTL layout.
+- Clear SVG checkmarks make selected cleaning rules recognizable in light and dark themes.
+- Cleaning option IDs are stable across translated interfaces and legacy labels can migrate safely.
+- This release does **not** change the v1.3.2 local cleaning algorithm or its default output.
 
 ## v1.3.2 稳定性修复
 

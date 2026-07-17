@@ -46,5 +46,6 @@ def test_font_fallback_order() -> None:
 
 def test_about_information_has_no_sensitive_context() -> None:
     value = version_information()
-    assert "v1.3.2" in value and REPOSITORY in value
+    from cleantext_studio import __version__
+    assert f"v{__version__}" in value and REPOSITORY in value
     assert "API Key" not in value and "Users\\" not in value

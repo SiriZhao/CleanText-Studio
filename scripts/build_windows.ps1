@@ -33,6 +33,7 @@ $Process = Start-Process $Executable -PassThru
 Start-Sleep -Seconds 5
 if ($Process.HasExited) { throw 'Packaged application exited during smoke test.' }
 Stop-Process -Id $Process.Id
+Wait-Process -Id $Process.Id -ErrorAction SilentlyContinue
 "Packaged application started and remained responsive for 5 seconds." | Set-Content 'dist\logs\smoke-test.log'
 $Release = 'dist\release'
 if (Test-Path $Release) { Remove-Item $Release -Recurse -Force }
@@ -45,7 +46,18 @@ Copy-Item LICENSE, README.md "$Stage"
 Copy-Item docs\USER_GUIDE.md "$Stage"
 $Zip = "dist\release\CleanText-Studio-v$Version-Windows-x64-Portable.zip"
 Remove-Item $Zip -Force -ErrorAction SilentlyContinue
-Compress-Archive "$Stage\*" $Zip
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+for ($Attempt = 1; $Attempt -le 3; $Attempt++) {
+  try {
+    if (Test-Path $Zip) { Remove-Item $Zip -Force }
+    [System.IO.Compression.ZipFile]::CreateFromDirectory((Resolve-Path $Stage), (Resolve-Path '.').Path + '\\' + $Zip, [System.IO.Compression.CompressionLevel]::Optimal, $false)
+    break
+  } catch {
+    if ($Attempt -eq 3) { throw "Portable ZIP creation failed: $($_.Exception.Message)" }
+    Start-Sleep -Seconds 2
+  }
+}
+if (-not (Test-Path $Zip) -or (Get-Item $Zip).Length -lt 1MB) { throw 'Portable ZIP is missing or incomplete.' }
 "Created $Zip" | Set-Content 'dist\logs\portable-package.log'
 $Iscc = Get-Command iscc -ErrorAction SilentlyContinue
 if (-not $Iscc) {

@@ -21,7 +21,7 @@ version_file.write_text(f'''VSVersionInfo(
     VarFileInfo([VarStruct('Translation', [2052, 1200])])]
 )''', encoding='utf-8')
 
-datas = collect_data_files('emoji') + collect_data_files('keyring') + [('assets/icon.png', 'assets'), ('assets/icons/*.svg', 'assets/icons'), ('src/cleantext_studio/llm/prompts/*.txt', 'cleantext_studio/llm/prompts')]
+datas = collect_data_files('emoji') + collect_data_files('keyring') + [('assets/icon.png', 'assets'), ('assets/icons/*.svg', 'assets/icons'), ('src/cleantext_studio/i18n/translations/*.json', 'cleantext_studio/i18n/translations'), ('src/cleantext_studio/llm/prompts/*.txt', 'cleantext_studio/llm/prompts')]
 a = Analysis(['src/cleantext_studio/main.py'], pathex=['src'], binaries=[], datas=datas, hiddenimports=['PySide6.QtSvg', 'keyring.backends.Windows', 'openai', 'anthropic', 'certifi'], hookspath=[], runtime_hooks=[], excludes=[], noarchive=False)
 pyz = PYZ(a.pure)
 exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name='CleanText Studio', icon='assets/icon.ico', version=str(version_file), debug=False, bootloader_ignore_signals=False, strip=False, upx=False, console=False)
